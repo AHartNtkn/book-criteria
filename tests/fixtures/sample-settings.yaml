@@ -1,0 +1,19 @@
+iteration_cap: 5
+
+novel_plan:
+  - auditor: narrative-arc
+    enabled: true
+  - auditor: premise-alignment
+    enabled: false
+
+chapter_plan:
+  - auditor: scene-design
+    enabled: true
+
+scene:
+  - auditor: prose-quality
+    enabled: true
+  - auditor: character-voice
+    enabled: true
+  - auditor: dialogue-subtext
+    enabled: false

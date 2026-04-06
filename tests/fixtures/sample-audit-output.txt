@@ -1,0 +1,22 @@
+This scene demonstrates strong prose quality in several areas. The opening
+paragraph grounds the reader effectively with concrete sensory detail.
+
+However, the dialogue in the middle section is weak — characters sound
+interchangeable and several exchanges serve only to dump exposition.
+
+The pacing falters in the final third where two consecutive paragraphs
+describe the same emotional state without advancement.
+
+```json
+{
+    "criteria": {
+        "sensory-grounding": {"score": 5, "evidence": "Opening paragraph uses smell, sound, and texture to establish the market setting"},
+        "sentence-variety": {"score": 4, "evidence": "Mix of short and long sentences throughout, though the middle section gets monotonous"},
+        "show-not-tell": {"score": 3, "evidence": "The line 'She felt betrayed' tells directly; contrast with the stronger 'She pushed the ring across the table'"}
+    },
+    "sentinels": {
+        "llm-stock-phrases": {"status": "PASS", "evidence": "No instances of 'a testament to', 'echoed through', or similar"},
+        "excessive-nodding": {"status": "FAIL", "evidence": "Characters nod 4 times in 800 words — twice in consecutive paragraphs"}
+    }
+}
+```
