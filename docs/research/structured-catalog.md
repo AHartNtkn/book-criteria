@@ -32,102 +32,70 @@ These items appeared in multiple source files. They have been collapsed into one
 | Unfired Chekhov's Guns | sentinel | cat01, cat07 | The narrative introduces elements with heightened emphasis (unusual details, lengthy descriptions, pointed attention) th... |
 | Uniform Paragraph Length | sentinel | cat05, cat20 | Measure the line/word count of 10+ consecutive paragraphs. If all paragraphs are within 20% of the median length, the va... |
 
-## Ambiguous Duplicates (User Decision Needed)
+## Ambiguous Duplicates (RESOLVED)
 
-These groups are similar but not obviously identical. User should decide whether to merge.
+All 13 ambiguous duplicate groups have been resolved. Decisions and resulting items are recorded below.
 
-### Group 1: Microtension / Line-Level Tension
-- **Microtension (Page-Level Engagement)** (cat01, criterion): Maintains curiosity and tension at the page level through small moments of uncertainty
-- **Microtension (Line-Level Tension)** (cat04, criterion): Tension at sentence/paragraph level through conflicting emotions and subtext
-- **Microtension Continuity** (cat03, criterion): Every page contains some form of tension, curiosity, or forward pull
-- **Micro-Tension (Maass)** (cat18, criterion): Every page/paragraph/line contains moment-by-moment tension from conflicting emotions
-- **Why ambiguous**: All describe page/line-level tension. cat01/cat03/cat18 are broader (any tension device per page), cat04 is specifically about conflicting emotions in prose. May be one concept with different emphases or genuinely distinct tools.
+### Group 1: Microtension — FUSED into one item
+**Original items**: Microtension (Page-Level Engagement) (cat01, cat04), Microtension (Line-Level Tension) (cat04), Microtension Continuity (cat03), Micro-Tension (Maass) (cat18)
+**Result**: One criterion — **Microtension (Page-Level Engagement)** — covering all aspects: whether the narrative maintains moment-to-moment tension, curiosity, and forward pull at the page and line level through devices such as conflicting emotions, unresolved micro-questions, mismatch between expectation and reality, and subtext. Table entries SC-140 and SC-143 removed; SC-142 updated to cover the merged concept.
 
-### Group 2: Foreshadowing / Setup-Payoff / Chekhov's Gun
-- **Foreshadowing-to-Payoff Ratio** (cat01, criterion): Whether foreshadowing elements are paid off and major payoffs have adequate foreshadowing
-- **Setup and Payoff Balance** (cat02, criterion): Whether setups are resolved as payoffs and payoffs are prepared by setups
-- **Foreshadowing Quality** (cat02, criterion): Whether hints are embedded with sufficient subtlety, rewarding re-reading
-- **Foreshadowing and Payoff Structural Integrity** (cat03, criterion): Whether setups are paid off and payoffs earned through prior setup
-- **Seed-Planting Integrity** (cat01, criterion): Whether early emphasized elements play important roles throughout and at climax
-- **Why ambiguous**: All address the setup/payoff relationship. cat01/cat03 focus on structural integrity (are setups paid off?), cat02 Setup-Payoff focuses on balance, cat02 Foreshadowing focuses on subtlety/craft, cat01 Seed-Planting focuses on opening emphasis. Different angles of same concept vs. genuinely distinct criteria.
+### Group 2: Foreshadowing / Setup-Payoff — FUSED into two items
+**Original items**: Foreshadowing-to-Payoff Ratio (cat01), Setup and Payoff Balance (cat02), Foreshadowing Quality (cat02), Foreshadowing and Payoff Structural Integrity (cat03), Seed-Planting Integrity (cat01), Foreshadowing and Payoff Balance (cat07)
+**Result**: Two criteria requiring separate evaluation contexts:
+1. **Setup Payoff Completeness** — Are foreshadowed elements, planted seeds, and emphasized setups paid off? Evaluates from the setup's perspective: given a setup, does the story deliver a corresponding payoff? Includes quality of foreshadowing craft (subtlety, re-readability).
+2. **Payoff Earned-ness** — Are payoffs properly prepared by prior setup? Evaluates from the payoff's perspective: given a payoff or resolution, was there adequate foreshadowing and groundwork? An unfired setup won't locate its missing payoff, and an unearned payoff doesn't even look like a payoff — these require separate passes.
+Table entries CC-075, CC-076, CC-077, CC-166, CC-169 removed; CC-078 reformulated as Setup Payoff Completeness; new entry added for Payoff Earned-ness.
 
-### Group 3: Promise-Progress-Payoff variants
-- **Promise-Progress-Payoff Structural Integrity** (cat01, criterion): Whether story follows complete arc of promises, progress, and payoffs
-- **Promise-Progress-Payoff Alignment** (cat02, criterion): Whether opening promises lead to meaningful progress and surprising-but-fulfilling payoff
-- **Promise-Progress-Payoff Architecture** (cat03, criterion): Whether beginning promises, middle progresses, and end pays off satisfyingly
-- **Promise-Progress-Payoff at Scene Level** (cat06, criterion): Whether individual scenes follow the three-part framework
-- **Why ambiguous**: First three are the same concept (Sanderson's PPP framework) at the same level (whole story). cat06 applies it at scene level. The whole-story versions may be mergeable; the scene-level version is distinct.
+### Group 3: Promise-Progress-Payoff — FUSED into one multi-level item
+**Original items**: PPP Structural Integrity (cat01), PPP Alignment (cat02), PPP Architecture (cat03), PPP Information Structure (cat07), PPP at Scene Level (cat06)
+**Result**: One criterion — **Promise-Progress-Payoff Integrity** — that explicitly asks about BOTH satisfaction (does the payoff fulfill the promise?) AND surprise (is the payoff surprising despite fulfilling the promise?). Applies at multiple pipeline levels: scene, chapter-plan, and novel-plan. Table entries NC-020, NC-021, NC-022, NC-024 removed; NC-023 reformulated and moved to Multi-Level Items as ML-060.
 
-### Group 4: Stakes Escalation / Rising Action / Escalation
-- **Stakes Escalation** (cat02, criterion): Potential consequences of failure increase progressively
-- **Escalation and Rising Stakes** (cat03, criterion): Conflicts, stakes, and consequences escalate toward climax
-- **Stakes Escalation** (cat04, criterion): Stakes progressively increase, highest at climax
-- **Escalation Pattern** (cat04, criterion): Complications intensify progressively rather than remaining flat
-- **Escalating Stakes Across Scenes** (cat05, criterion): Each successive scene raises stakes/consequences/complexity
-- **Why ambiguous**: cat02 and cat04 Stakes Escalation are exact duplicates. cat03 Escalation and Rising Stakes is very similar. cat04 Escalation Pattern focuses on complications, not just stakes. cat05 is scene-by-scene. May collapse to 2-3 items.
+### Group 4: Stakes Escalation — FUSED into one flexible criterion
+**Original items**: Stakes Escalation (cat02, cat04), Escalation and Rising Stakes (cat03), Escalation Pattern (cat04), Escalating Stakes Across Scenes (cat05)
+**Result**: One criterion — **Narrative Escalation** — covering all forms of escalation: introduction of new stakes, existing stakes becoming more salient, and complications increasing without stakes themselves changing. Distinguishes between overall story escalation (a structural arc) and scene-to-scene escalation (a local pattern) without rigidly demanding that every individual scene must escalate. Table entries CC-065, CC-066, CC-068 removed; CC-176 reformulated.
 
-### Group 5: Scene-Sequel / Tension-Release Rhythm
-- **Scene-Sequel Rhythm** (cat03, criterion): Alternation between active conflict scenes and reflective sequels
-- **Scene-Sequel Structure** (cat04, criterion): Action scenes followed by reaction scenes processing events
-- **Tension-Release Rhythm** (cat04, criterion): Alternation between tension-building and release/recovery
-- **Recovery Beats / Emotional Processing Scenes** (cat05, criterion): Adequate breathing room after intense sequences
-- **Scene-Sequel Structure (Bickham)** (cat18, criterion): Alternation between scenes and sequels creating motivation-reaction cycle
-- **Why ambiguous**: All describe the same Swain/Bickham scene-sequel concept. cat04 Tension-Release is a broader concept (rhythm of intensity). cat05 Recovery Beats is the sequel portion specifically. These might be 2 items: scene-sequel structure and recovery beats.
+### Group 5: Scene-Sequel / Tension-Release Rhythm — SPLIT into two items
+**Original items**: Scene-Sequel Rhythm (cat03), Scene-Sequel Structure (cat04, cat18), Tension-Release Rhythm (cat04), Recovery Beats (cat05), Scene-Sequel Structure Bickham (cat18)
+**Result**: Two criteria:
+1. **Scene-Sequel Structure** — Whether the narrative alternates between active conflict scenes (goal-conflict-disaster) and reflective sequel sequences (reaction-dilemma-decision), creating a motivation-reaction rhythm of tension and release. CC-160 retained; SC-275 and ML-036 absorbed.
+2. **Recovery Beats / Emotional Processing** — Whether the story provides adequate breathing room after intense sequences, allowing characters and readers to process emotional experiences before the next escalation. CC-133 retained.
 
-### Group 6: Subplot Integration variants
-- **B-Plot Integration** (cat01, criterion): Subplots feel like organic extensions rather than distractions
-- **Subplot Integration** (cat02, criterion): Subplots connect to main plot by advancing, reflecting, or complicating it
-- **Subplot Integration Quality** (cat03, criterion): Subplots woven as structural reinforcement rather than filler
-- **Why ambiguous**: All measure whether subplots serve the main plot. cat01 emphasizes organic feel, cat02 emphasizes functional connection, cat03 emphasizes structural weaving. May be one criterion with different emphases.
+### Group 6: Subplot Integration — FUSED into one multi-part item
+**Original items**: B-Plot Integration (cat01), Subplot Integration (cat02), Subplot Integration Quality (cat03)
+**Result**: One criterion — **Subplot Integration** — a multi-part question asking from the same evidence: Do subplots feel like organic extensions of the main story? Do they connect to the main plot by advancing, reflecting, or complicating it? Are they woven as structural reinforcement rather than filler? Table entries CC-009 and CC-179 removed; CC-178 reformulated.
 
-### Group 7: Character Voice Distinctiveness variants
-- **Character Voice Distinctiveness** (cat08, criterion): Whether each character has a recognizable, distinctive speaking/thinking style
-- **Character Voice Distinctiveness in Narration** (cat09, criterion): Whether character voice comes through in narration, not just dialogue
-- **Voice Distinction Between Characters** (cat10, criterion): Whether characters have distinguishable voices in dialogue
-- **C6: Character Voice Differentiation** (cat21, criterion): Whether individual characters have distinctive speech patterns
-- **Why ambiguous**: All measure character voice distinction. cat08/cat10/cat21 are essentially the same (distinct voices). cat09 specifically addresses narration filtering. May be 2 items: dialogue voice distinction and narration-filtered voice.
+### Group 7: Character Voice Distinctiveness — FUSED into one item
+**Original items**: Character Voice Distinctiveness (cat08), Character Voice Distinctiveness in Narration (cat09), Voice Distinction Between Characters (cat10), C6: Character Voice Differentiation (cat21)
+**Result**: One criterion — **Character Voice Distinctiveness** — asking several angles on the same analysis: Are characters distinguishable by voice in dialogue? Do narration sections reflect the POV character's unique vocabulary, syntax, and worldview? Do speech patterns, verbal habits, and register vary by character background and personality? Table entries SC-022, SC-037, SC-292 removed; SC-036 reformulated.
 
-### Group 8: Subtext in Dialogue variants
-- **Subtext as Tension Vehicle** (cat04, criterion): Tension through what goes unsaid
-- **Subtext Within Scenes** (cat06, criterion): Scenes operate on multiple levels with unspoken undercurrent
-- **Subtext Quality** (cat07, criterion): Quality of implied meaning beneath surface
-- **Subtext in Character Expression** (cat08, criterion): Gap between what characters say and what they mean
-- **Subtext and Indirection** (cat10, criterion): Dialogue communicates through implication
-- **Subtext and Implication** (cat18, criterion): Text communicates through what is unsaid
-- **C10: Subtext and Layered Meaning** (cat21, criterion): Text operates on multiple levels simultaneously
-- **Why ambiguous**: All measure subtext quality. They apply in different contexts (tension, scenes, exposition, character, dialogue, engagement, LLM detection). May be one general criterion plus specific applications.
+### Group 8: Subtext in Dialogue — FUSED into one item
+**Original items**: Subtext as Tension Vehicle (cat04), Subtext Within Scenes (cat06), Subtext Quality (cat07), Subtext in Character Expression (cat08), Subtext and Indirection (cat10), Subtext and Implication (cat18), C10: Subtext and Layered Meaning (cat21)
+**Result**: One criterion — **Subtext Quality** — covering all aspects: whether scenes operate on multiple levels with unspoken undercurrents; whether characters communicate through implication, withholding, and behavioral contradiction; whether the gap between surface meaning and underlying intention creates tension; whether the text communicates through what is unsaid and implied. Table entries SC-015, SC-257, SC-258, SC-259, SC-261, SC-263 removed; SC-256 reformulated.
 
-### Group 9: Emotional Authenticity / Show-Don't-Tell Emotions
-- **Emotional Authenticity** (cat08, criterion): Whether emotions feel genuine and earned
-- **Emotional Authenticity vs. Sentimentality** (cat16, criterion): Whether emotional content arises organically from specific situations
-- **C5: Show vs Tell in Emotional Rendering** (cat21, criterion): Whether emotions are rendered through action/detail rather than stated
-- **C12: Emotional Authenticity and Earned Catharsis** (cat21, criterion): Whether emotional moments are earned through narrative development
-- **Why ambiguous**: cat08/cat16/cat21-C12 measure authenticity of emotion. cat21-C5 specifically measures showing vs telling of emotion. Different facets of same concern vs. genuinely distinct.
+### Group 9: Emotional Authenticity — kept as TWO distinct items
+**Original items**: Emotional Authenticity (cat08), Emotional Authenticity vs. Sentimentality (cat16), C5: Show vs Tell in Emotional Rendering (cat21), C12: Emotional Authenticity and Earned Catharsis (cat21)
+**Result**: Two criteria requiring separate evaluation:
+1. **Emotional Authenticity** — Does the causal structure leading to emotions make sense? Are emotional responses specific to the character's psychology, history, and circumstances? Are emotional moments earned through narrative development rather than manufactured? SC-081 reformulated; SC-082 and CC-012 absorbed.
+2. **Emotional Rendering Quality** — Are emotions conveyed to the reader effectively? Are they rendered through action, physical detail, dialogue, and behavior rather than stated directly through narration? Does the text use appropriate craft modes (inner, outer, other) to generate reader emotion rather than merely describing character emotion? SC-021 reformulated.
 
-### Group 10: Thematic Subtlety / Not Telling Theme
-- **Theme Through Action, Not Exposition** (cat14, criterion): Whether theme emerges from story events rather than being stated
-- **Thematic Subtlety vs. Heavy-Handedness** (cat14, criterion): Whether thematic content is woven subtly vs. hammered
-- **Theme vs. Message Distinction** (cat14, criterion): Whether theme operates as question/exploration vs. delivered as sermon
-- **Why ambiguous**: All address the same concern: theme should be shown, not told. May be one criterion with different emphasis angles.
+### Group 10: Thematic Subtlety — FUSED into one item
+**Original items**: Theme Through Action, Not Exposition (cat14), Thematic Subtlety vs. Heavy-Handedness (cat14), Theme vs. Message Distinction (cat14)
+**Result**: One criterion — **Thematic Subtlety** — whether theme emerges organically from dramatic action and character choices rather than being stated through exposition or delivered as sermon; whether thematic content is woven subtly rather than hammered; whether the work operates as question and exploration rather than as message and moral lesson. Table entries SC-277 and CC-193 removed; CC-191 reformulated.
 
-### Group 11: Exposition Integration / Info-Dump Avoidance
-- **Exposition Integration Quality** (cat07, criterion): Whether exposition is woven into narrative rather than delivered in blocks
-- **Exposition Distribution** (cat03, criterion): Whether background info is delivered in appropriate doses at appropriate times
-- **Showing vs. Telling for Info Dumps** (cat05, criterion): Whether backstory is woven through action/dialogue rather than static blocks
-- **Info-Dump Avoidance in Description** (cat12, criterion): Whether exposition is avoided within descriptive passages
-- **Why ambiguous**: All address the same core issue: exposition should be integrated, not dumped. Different angles (general quality, timing, method, within description). May be one criterion.
+### Group 11: Exposition Integration / Backstory — SPLIT into two items
+**Original items**: Exposition Integration Quality (cat07), Exposition Distribution (cat03), Showing vs. Telling for Info Dumps (cat05), Info-Dump Avoidance in Description (cat12)
+**Result**: Two criteria recognizing that backstory is not necessarily exposition and exposition is not necessarily backstory:
+1. **Backstory Integration** — Whether character history and past events are revealed through organic narrative techniques (action, dialogue, implication) rather than static expository blocks, and whether revealed backstory serves present dramatic needs. SC-244 reformulated.
+2. **Exposition Handling** — Whether background information (world mechanics, setting context, factual details) is woven into the narrative at appropriate doses and times, integrated naturally into descriptive passages rather than delivered in blocks, and distributed to avoid info-dumps. SC-095 reformulated; SC-124 and CC-069 absorbed.
 
-### Group 12: Moral/Thematic Ambiguity variants
-- **Moral/Philosophical Complexity** (cat14, criterion): Whether the story presents genuine moral complexity
-- **Moral and Psychological Complexity** (cat16, criterion): Whether characters face genuinely ambiguous moral situations
-- **C7: Moral and Thematic Ambiguity** (cat21, criterion): Whether text presents moral complexity and thematic ambiguity
-- **Why ambiguous**: All measure moral complexity/ambiguity. Nearly identical concept across three files.
+### Group 12: Moral/Thematic Ambiguity — MERGED into one item
+**Original items**: Moral/Philosophical Complexity (cat14), Moral and Psychological Complexity (cat16), C7: Moral and Thematic Ambiguity (cat21)
+**Result**: One criterion — **Moral and Thematic Complexity** — whether the story presents genuine moral complexity with competing valid perspectives; whether characters face genuinely ambiguous moral situations exhibiting psychological depth; whether the text allows for complexity, contradiction, and unresolved tension rather than tidy moral lessons. Applies at multiple levels (scene through ideation). Table entries SC-023 and SC-146 removed; IC-006 reformulated and moved to Multi-Level Items as ML-061.
 
-### Group 13: Antagonist Complexity/Dimensionality
-- **Antagonist Dimensionality** (cat04, criterion): Whether opposing forces have their own coherent worldview
-- **Antagonist Complexity** (cat08, criterion): Whether antagonist has depth, motivation, and internal logic
-- **C13: Villain and Antagonist Complexity** (cat21, criterion): Whether antagonists are portrayed with genuine depth
-- **Why ambiguous**: All measure the same thing: antagonist depth and complexity.
+### Group 13: Antagonist Complexity — MERGED into one item
+**Original items**: Antagonist Dimensionality (cat04), Antagonist Complexity (cat08), C13: Villain and Antagonist Complexity (cat21)
+**Result**: One criterion — **Antagonist Complexity** — whether the antagonistic force has its own coherent worldview, motivations, internal logic, and psychological depth; whether the antagonist is portrayed with genuine sophistication rather than being evil for its own sake, purely obstructive, or sanitized and simplified. Table entries CC-003 and CC-013 removed; CC-002 reformulated.
 
 ## Scene-Level Criteria
 
@@ -149,15 +117,12 @@ Evaluatable only with actual prose text.
 | SC-012 | Authorial Voice Distinctiveness | Whether the prose has a recognizable, distinctive authorial personality that persists across scenes and would be identifiable even out of context, or ... | cat13 |
 | SC-013 | Backstory Integration | Whether character history is revealed through organic narrative techniques rather than expository dumps, and whether revealed backstory serves present... | cat08 |
 | SC-014 | Boredom Prevention | Whether every scene progresses the narrative question, whether character interaction is maximized, whether information is delivered through discovery ... | cat18 |
-| SC-015 | C10: Subtext and Layered Meaning | Whether the text operates on multiple levels simultaneously, with surface events carrying deeper implications that are not stated explicitly | cat21 |
 | SC-016 | C11: Authorial Voice and Stylistic Identity | Whether the prose exhibits a recognizable, distinctive authorial voice that could not be mistaken for a generic default | cat21 |
 | SC-017 | C1: Lexical Diversity and Vocabulary Breadth | Whether the text demonstrates varied and intentional word choice rather than clustering around a narrow band of statistically probable vocabulary | cat21 |
 | SC-018 | C2: Burstiness and Sentence-Length Variation | Whether the text exhibits natural variation in sentence length, structure, and rhythm across passages | cat21 |
 | SC-019 | C3: Entropy and Predictability | Whether the text contains genuine surprises in word choice, phrasing, and narrative development rather than always selecting the most statistically pr... | cat21 |
 | SC-020 | C4: Semantic Specificity vs Semantic Ablation | Whether the text uses specific, concrete, precise language rather than generic category labels and vague descriptions | cat21 |
-| SC-021 | C5: Show vs Tell in Emotional Rendering | Whether emotions are rendered through action, physical detail, dialogue, and behavior rather than stated directly through narration | cat21 |
-| SC-022 | C6: Character Voice Differentiation | Whether individual characters have distinctive speech patterns, vocabulary, syntax, and verbal habits that distinguish them from each other and from t... | cat21 |
-| SC-023 | C7: Moral and Thematic Ambiguity | Whether the text presents moral complexity and thematic ambiguity rather than over-explaining its themes and providing tidy moral lessons | cat21 |
+| SC-021 | Emotional Rendering Quality | Whether emotions are conveyed to the reader effectively — rendered through action, physical detail, dialogue, and behavior rather than stated directly through narration — and whether the text uses appropriate craft modes (inner, outer, other) to generate reader emotion rather than merely describing character emotion. | cat21, cat18 |
 | SC-024 | C9: Temporal Complexity | Whether the narrative employs varied and sophisticated temporal structures rather than strict linear chronology | cat21 |
 | SC-025 | Capitalization Consistency | Whether capitalization conventions are applied consistently throughout — titles and honorifics, proper nouns, invented terms, generic vs. specific use... | cat20 |
 | SC-026 | Chapter/Scene Length Variation | Whether chapter and scene lengths vary deliberately to control pacing and reading rhythm, rather than defaulting to a uniform length. | cat05 |
@@ -170,8 +135,7 @@ Evaluatable only with actual prose text.
 | SC-033 | Character Knowledge Tracking | Whether characters act on and reference only information they have actually acquired within the story, and whether they retain and use information the... | cat15 |
 | SC-034 | Character Name Overuse in Dialogue | Whether characters address each other by name with realistic frequency rather than the artificially high frequency common in weak fiction. | cat10 |
 | SC-035 | Character Self-Revelation | Whether the narrative includes moments where characters discover truths about themselves that the reader has been prepared to understand, creating sud... | cat08 |
-| SC-036 | Character Voice Distinctiveness | Whether each character speaks, thinks, and expresses themselves in ways unique to their personality, background, and emotional state, such that charac... | cat08 |
-| SC-037 | Character Voice Distinctiveness in Narration | Whether POV characters' narrative sections are voiced distinctively — reflecting their unique vocabulary, syntax, worldview, knowledge, and personalit... | cat09 |
+| SC-036 | Character Voice Distinctiveness | Whether each character is distinguishable by voice in dialogue, narration, and internal monologue — through unique speech patterns, vocabulary, syntax, verbal habits, and register reflecting their background and personality — and whether POV narration sections are voiced distinctively to reflect the character's worldview and knowledge. | cat08, cat09, cat10, cat21 |
 | SC-038 | Character-Driven Stakes | Whether what's at risk in the story is rooted in what the character specifically and intensely cares about, creating personal investment that generate... | cat08 |
 | SC-039 | Character-as-Theme | Whether the character's journey, psychology, and transformation embody and investigate the story's thematic questions rather than merely existing alon... | cat08 |
 | SC-040 | Cliche Avoidance | Whether the prose avoids figurative clichés (stock phrases and dead metaphors), prose rhythm clichés (predictable sentence patterns), and descriptive ... | cat13 |
@@ -215,8 +179,7 @@ Evaluatable only with actual prose text.
 | SC-078 | Ellipsis Formatting Consistency | Whether ellipses are formatted consistently throughout — whether using three spaced periods (. . .), three unspaced periods (...), or the Unicode elli... | cat20 |
 | SC-079 | Em Dash, En Dash, and Hyphen Distinction | Whether the manuscript correctly distinguishes between hyphens (-), en dashes (–), and em dashes (—) and uses each in its proper context. | cat20 |
 | SC-080 | Emotion Shown Through Speech Patterns Rather Than Declared | Whether characters' emotional states are conveyed through changes in their speech patterns, word choice, rhythm, and behavior rather than through expl... | cat10 |
-| SC-081 | Emotional Authenticity | Whether characters' emotional responses are specific to their individual psychology, history, and circumstances rather than generic or formulaic. | cat08 |
-| SC-082 | Emotional Authenticity vs. Sentimentality | Whether the fiction's emotional content arises organically from specific situations, characters, and details, or whether it deploys generic emotional ... | cat16 |
+| SC-081 | Emotional Authenticity | Whether the causal structure leading to emotions makes sense — whether emotional responses are specific to the character's individual psychology, history, and circumstances; whether emotional content arises organically from specific situations rather than deploying generic emotional triggers; whether emotional moments are earned through narrative development rather than manufactured. | cat08, cat16, cat21 |
 | SC-083 | Emotional Continuity | Whether characters carry appropriate emotional states between scenes, with emotions flowing logically from what has happened to them rather than reset... | cat15 |
 | SC-084 | Emotional Exposition Quality | Whether characters' emotional states are conveyed through behavior, physical response, action, and dialogue subtext rather than through direct emotion... | cat07 |
 | SC-085 | Emotional Mode Craft (Maass) | Whether the text uses appropriate emotional craft modes — inner (reporting feelings), outer (showing through action), and other (creating reader emoti... | cat18 |
@@ -229,7 +192,7 @@ Evaluatable only with actual prose text.
 | SC-092 | Epistolary/Document Narration Craft | When epistolary or found-document narration is used, whether each document type and narrator voice is authentic, distinct, and serves the story's info... | cat09 |
 | SC-093 | Expectation-Silence-Surprise Pattern | Whether the prose deploys a rhythmic trinity of establishing patterns (expectation), inserting breath and pause (silence), and breaking patterns strat... | cat05 |
 | SC-094 | Exposition Handling in Dialogue | Whether information necessary for the reader is delivered through dialogue naturally and without contrivance, avoiding the "As You Know, Bob" pattern ... | cat10 |
-| SC-095 | Exposition Integration Quality | Whether background information (character history, world mechanics, setting context) is woven into the narrative through action, dialogue, and scene w... | cat07 |
+| SC-095 | Exposition Handling | Whether background information (world mechanics, setting context, factual details) is woven into the narrative at appropriate doses and times, integrated naturally into descriptive passages rather than delivered in blocks, and distributed to avoid info-dumps. | cat03, cat07, cat12 |
 | SC-096 | Exposition Vehicle Character Design | Whether the narrative deploys characters with legitimate reasons for not knowing things (newcomers, outsiders, apprentices) as natural exposition vehi... | cat07 |
 | SC-097 | Extended/Controlling Metaphor Craft | Whether extended or controlling metaphors sustain and develop across passages or the entire work, creating unified meaning. | cat12 |
 | SC-098 | Fact-Checking for Fiction | Whether real-world facts referenced in the fiction are accurate — historical dates, geographical details, scientific principles, cultural practices, a... | cat20 |
@@ -258,7 +221,6 @@ Evaluatable only with actual prose text.
 | SC-121 | Hyphenation Consistency | Whether compound words and phrasal adjectives are hyphenated consistently throughout — the same compound is always hyphenated or always open or always... | cat20 |
 | SC-122 | Imagery-Clarity Balance | Whether poetic, figurative, or complex description maintains enough clarity for the reader to follow the narrative, or whether beauty comes at the exp... | cat12 |
 | SC-123 | In-Scene Object and Action Continuity | Whether objects, character positions, and physical actions remain consistent within individual scenes — whether characters are holding things they pic... | cat15 |
-| SC-124 | Info-Dump Avoidance in Description | Whether world-building and setting information is integrated naturally into the narrative or delivered as exposition blocks that break the fictional d... | cat12 |
 | SC-125 | Information Delivery Timing (Rate of Revelation) | Whether information is released at the optimal moment in the narrative -- not too early (losing tension), not too late (causing confusion), and at a p... | cat07 |
 | SC-126 | Information Density Management | Whether the narrative controls how much new information (worldbuilding, backstory, character detail, plot data) is delivered per unit of prose, avoidi... | cat05 |
 | SC-127 | Information Density and Reader Trust | Whether the prose trusts the reader to make inferences and draw connections, or whether it over-explains, repeats, hedges, and spoon-feeds information... | cat13 |
@@ -274,13 +236,10 @@ Evaluatable only with actual prose text.
 | SC-137 | Maximalist Density and Accumulation | Whether dense, layered description creates meaning through accretion, sensory saturation, and linguistic richness. | cat12 |
 | SC-138 | Meaningful vs Cosmetic Flaws | Whether character flaws actively create consequences and drive conflict rather than existing as decorative traits that never cost the character anythi... | cat08 |
 | SC-139 | Micro-Pacing (Line-Level Tempo Control) | Whether the author controls moment-to-moment reading speed through word choice, sound, and syntax at the individual line level. | cat05, cat13 |
-| SC-140 | Micro-Tension (Maass) | Whether every page, paragraph, and line contains moment-by-moment tension arising from conflicting emotions, ideas, or expectations — not from plot ac... | cat18 |
 | SC-141 | Micro-Tension in Expository Passages | Whether exposition passages maintain line-by-line tension through conflicting ideas, emotional undercurrents, or character voice, rather than presenti... | cat07 |
-| SC-142 | Microtension (Page-Level Engagement) | Whether the narrative maintains curiosity and tension at the page level, even in quiet scenes, through small moments of uncertainty, mismatch, or pres... | cat01, cat04 |
-| SC-143 | Microtension Continuity | Whether every page of the narrative contains some form of tension, curiosity, or forward pull | cat03 |
+| SC-142 | Microtension (Page-Level Engagement) | Whether the narrative maintains moment-to-moment tension, curiosity, and forward pull at the page and line level — through devices such as conflicting emotions, unresolved micro-questions, mismatch between expectation and reality, and subtext — even in quiet scenes. | cat01, cat03, cat04, cat18 |
 | SC-144 | Monologue and Long Speech Management | Whether extended character speeches are earned, purposeful, and broken up effectively rather than reading as lectures or author mouthpieces. | cat10 |
 | SC-145 | Mood Transition Smoothness | Whether shifts between different emotional tones (comedy to tragedy, action to intimacy, horror to calm) are handled with transitional craft rather th... | cat05 |
-| SC-146 | Moral and Psychological Complexity | Whether characters face genuinely ambiguous moral situations and exhibit psychological depth — whether the fiction allows for complexity, contradictio... | cat16 |
 | SC-147 | Multi-Character Conversation Management | Whether scenes with three or more speaking characters maintain clarity about who is speaking, give each character a distinct purpose in the conversati... | cat10 |
 | SC-148 | Narrative Depth Variation | Whether the narrative varies its depth of interiority strategically — going deep during emotionally significant moments and pulling back during transi... | cat09 |
 | SC-149 | Narrative Economy (Multi-Function Exposition) | Whether exposition passages serve multiple narrative functions simultaneously (revealing character, advancing plot, building atmosphere, establishing ... | cat07 |
@@ -378,7 +337,7 @@ Evaluatable only with actual prose text.
 | SC-241 | Show/Tell Balance for Pacing Control | Whether the narrative strategically uses both showing (dramatized, expanded) and telling (summarized, compressed) to control pace, rather than default... | cat05 |
 | SC-242 | Showing vs Telling Through POV | Whether the narrative leverages POV to show character experience directly rather than telling the reader about it — rendering sensory experience, emot... | cat09 |
 | SC-243 | Showing vs. Telling Balance | Whether the prose effectively uses sensory detail, action, and concrete imagery to immerse readers in experience (showing), while knowing when efficie... | cat13 |
-| SC-244 | Showing vs. Telling for Info Dumps | Whether backstory, worldbuilding, and expository information is woven into the narrative through action and dialogue rather than delivered in static b... | cat05 |
+| SC-244 | Backstory Integration | Whether character history and past events are revealed through organic narrative techniques (action, dialogue, implication) rather than static expository blocks, and whether revealed backstory serves present dramatic needs. | cat05 |
 | SC-245 | Significant Detail Selection | Whether descriptive details are chosen for their narrative, thematic, or characterological significance rather than being arbitrary or exhaustive. | cat12 |
 | SC-246 | Silence, Evasion, and Non-Response as Tools | Whether the text effectively uses what characters do not say, refuse to say, or avoid saying as meaningful dialogue tools that reveal character, creat... | cat10 |
 | SC-247 | Sound and Euphony | Whether the prose attends to the sonic qualities of language — consonance, assonance, euphony, cacophony — as elements of craft, or whether sound is a... | cat13 |
@@ -390,14 +349,9 @@ Evaluatable only with actual prose text.
 | SC-253 | Strong Nouns Over Adjective Padding | Whether the text relies on precise, evocative nouns (and verbs) rather than modifying weak nouns with multiple adjectives. | cat12 |
 | SC-254 | Style-Content Alignment | Whether the prose style serves and reinforces the content and themes of the work — whether form follows function — or whether style and content are di... | cat13 |
 | SC-255 | Subject-Verb Agreement | Whether subjects and verbs agree in number throughout, including tricky cases with collective nouns, compound subjects, intervening phrases, and indef... | cat20 |
-| SC-256 | Subtext Quality | Whether the narrative creates meaning through what is implied, unsaid, contradicted, or demonstrated through behavior -- the depth beneath the surface... | cat07 |
-| SC-257 | Subtext Within Scenes | Whether scenes operate on multiple levels -- with an unspoken undercurrent of meaning beneath the surface dialogue and action -- or whether everything... | cat06 |
-| SC-258 | Subtext and Implication | Whether the text communicates meaning through what is unsaid, implied, or beneath the surface — through loaded silences, contradictory actions, and la... | cat18 |
-| SC-259 | Subtext and Indirection | Whether dialogue operates on multiple levels, with surface conversation carrying unstated meaning, hidden agendas, and emotional undercurrents beneath... | cat10 |
+| SC-256 | Subtext Quality | Whether scenes operate on multiple levels with unspoken undercurrents of meaning; whether characters communicate through implication, withholding, and behavioral contradiction rather than stating thoughts and feelings directly; whether the gap between surface meaning and underlying intention creates tension; whether the text communicates through what is unsaid and implied. | cat04, cat06, cat07, cat08, cat10, cat18, cat21 |
 | SC-260 | Subtext as Pacing Lubricant | Whether the narrative employs subtext (meaning implied but not stated) to maintain intellectual engagement and reading momentum, rather than making ev... | cat05 |
-| SC-261 | Subtext as Tension Vehicle | Whether tension is created through what goes unsaid — the gap between surface dialogue/action and underlying emotional reality. | cat04 |
 | SC-262 | Subtext as Thematic Vehicle | Whether the work conveys thematic meaning through what is left unsaid, implied, or shown through behavior rather than through surface-level text. | cat14 |
-| SC-263 | Subtext in Character Expression | Whether characters communicate through implication, withholding, and behavioral contradiction rather than stating their thoughts and feelings directly... | cat08 |
 | SC-264 | Surprise and Misdirection | Whether the text delivers plot developments that are simultaneously unexpected and retrospectively inevitable — surprising the reader while making the... | cat18 |
 | SC-265 | Suspense and Anticipation | Whether the text creates and sustains psychological tension through information control, uncertainty about outcomes, and exploitation of the reader's ... | cat18 |
 | SC-266 | Symbolism and Image System Effectiveness | Whether the work employs symbols and image systems that reinforce theme through concrete imagery operating below conscious awareness. | cat14 |
@@ -409,9 +363,7 @@ Evaluatable only with actual prose text.
 | SC-272 | Tense Consistency and Purposefulness | Whether the narrative maintains consistent verb tense within its primary timeline, with any tense shifts serving clear narrative purposes (flashback, ... | cat09 |
 | SC-273 | Tense Selection Appropriateness | Whether the chosen narrative tense (past, present, or mixed) serves the story's needs for temporal flexibility, immediacy, and character complexity. | cat09 |
 | SC-274 | Tension Layering (Multiple Simultaneous Tensions) | Whether scenes carry multiple sources of potential conflict simultaneously (overarching plot tension, interpersonal tension, internal tension) rather ... | cat05 |
-| SC-275 | Tension-Release Rhythm | Whether the narrative alternates between tension-building and release/recovery, creating a sustainable emotional rhythm rather than unrelenting intens... | cat04 |
 | SC-276 | Thematic Freshness and Originality | Whether the work explores its theme in a way that feels fresh, specific, and individual rather than generic, cliched, or formulaic. | cat14 |
-| SC-277 | Theme Through Action, Not Exposition | Whether theme emerges from what characters DO (choices, consequences, dramatic action) rather than what they SAY (dialogue, internal monologue, narrat... | cat14 |
 | SC-278 | Theme-Plot Integration | Whether theme and plot are organically unified such that the plot serves as a metaphor for the thematic content, rather than being separable elements. | cat14 |
 | SC-279 | Three-Level Stakes Architecture | Whether stakes operate at public (plot), personal (character), and philosophical (theme) levels simultaneously, creating layered investment. | cat08 |
 | SC-280 | Ticking Clock / Narrative Urgency | Whether the narrative creates a sense of urgency through deadlines, countdowns, or deteriorating situations that pressure characters to act now rather... | cat05 |
@@ -426,7 +378,6 @@ Evaluatable only with actual prose text.
 | SC-289 | Verb Strength and Dynamic Action | Whether the prose uses precise, active, dynamic verbs rather than relying on weak verbs propped up by adverbs, or on nominalizations that drain energy... | cat13 |
 | SC-290 | Vivid and Continuous Dream | Whether the prose creates and sustains what John Gardner called "a vivid and continuous fictional dream" — an immersive experience where the reader is... | cat16 |
 | SC-291 | Vocabulary and Diction Alignment with POV | Whether the narrative's word choice matches the POV character's education, culture, age, era, and personality — or whether the author's vocabulary ble... | cat09 |
-| SC-292 | Voice Distinction Between Characters | Whether each character speaks with a recognizably individual voice that reflects their background, personality, education, and worldview, such that di... | cat10 |
 | SC-293 | Voice Layering (Author/Narrator/Character) | Whether the prose properly distinguishes between and manages the nested layers of voice — authorial voice, narrator voice, and individual character vo... | cat13 |
 | SC-294 | Weight Distribution (Word Count Proportional to Narrative Importance) | Whether the number of words devoted to an event or topic is proportional to its actual importance in the story. | cat05 |
 | SC-295 | White Space and Breath Units | Whether the text uses visual white space (paragraph breaks, scene breaks, chapter breaks, dialogue formatting) purposefully to create reading rhythm, ... | cat05 |
@@ -779,18 +730,14 @@ Evaluatable at the scene-level plan stage.
 | ID | Name | Summary | Source |
 |---|---|---|---|
 | CC-001 | Action/Spectacle Meaning (Space Opera) | Whether action sequences and spectacle serve story and character rather than existing for their own sake | cat17 |
-| CC-002 | Antagonist Complexity | Whether the antagonistic force has its own coherent motivation, internal logic, and psychological depth rather than being evil for its own sake. | cat08 |
-| CC-003 | Antagonist Dimensionality | Whether opposing forces have their own coherent worldview, motivations, and internal logic rather than being purely evil or obstructive. | cat04 |
+| CC-002 | Antagonist Complexity | Whether the antagonistic force has its own coherent worldview, motivations, internal logic, and psychological depth — portrayed with genuine sophistication rather than being evil for its own sake, purely obstructive, or sanitized and simplified. | cat04, cat08, cat21 |
 | CC-004 | Antagonist Goal Clarity | Whether the antagonistic force has a specific, understandable goal and plan that directly opposes the protagonist's goal, making the conflict measurab... | cat02 |
 | CC-005 | Antagonistic Force Credibility | Whether the opposition is believable, motivated, and poses a genuine threat that the protagonist might not overcome. | cat04 |
 | CC-006 | Anti-Episodic Integration | Whether scenes are causally connected to adjacent scenes through multiple threads (emotional, informational, physical, character) rather than function... | cat02 |
 | CC-007 | Anticipation and Dread Construction | Whether the narrative builds anticipation of coming conflict or consequences, creating emotional investment before events occur. | cat04 |
 | CC-008 | Avoidance of Monocultures (Planet of Hats) | Whether civilizations, races, and societies contain internal diversity rather than being defined by a single characteristic. | cat11 |
-| CC-009 | B-Plot Integration | Whether subplots and secondary narrative threads feel like organic extensions of the main story rather than distractions or diversions. | cat01 |
 | CC-010 | Backstory Distribution | Whether character and world history is revealed gradually throughout the narrative at points of relevance, or concentrated in early chapters or single... | cat07 |
 | CC-011 | Backstory-Tension Balance | Whether backstory and exposition are distributed so as not to interrupt or deflate moments of tension. | cat04 |
-| CC-012 | C12: Emotional Authenticity and Earned Catharsis | Whether emotional moments are earned through narrative development rather than manufactured through ornate language | cat21 |
-| CC-013 | C13: Villain and Antagonist Complexity | Whether antagonists and morally complex characters are portrayed with genuine depth and sophistication rather than being sanitized or simplified | cat21 |
 | CC-014 | Catharsis | Whether the narrative builds to emotional release through accumulated investment in characters, producing the cleansing of emotions (pity, fear, grief... | cat18 |
 | CC-015 | Causal Chain Integrity | Whether each plot event logically follows from preceding events through cause-and-effect rather than arbitrary sequence. | cat02, cat15 |
 | CC-016 | Central Conflict Clarity | Whether the story has a clearly identifiable central conflict that drives the narrative forward. | cat04 |
@@ -842,20 +789,14 @@ Evaluatable at the scene-level plan stage.
 | CC-062 | Emotional Payoff Appropriate to Genre | Whether the story's ending delivers the emotional experience genre readers specifically seek | cat17 |
 | CC-063 | Ensemble Differentiation | Whether each member of a multi-character cast is psychologically distinct, functionally non-redundant, and individually indispensable to the narrative... | cat08 |
 | CC-064 | Environmental Change and Dynamism | Whether the world changes over the course of the story -- through weather, seasons, consequences of plot events, ecological shifts, or political chang... | cat11 |
-| CC-065 | Escalating Stakes Across Scenes | Whether each successive scene raises the stakes, consequences, or complexity compared to the previous one, creating a progressive escalation toward th... | cat05 |
-| CC-066 | Escalation Pattern | Whether complications, obstacles, and consequences intensify progressively throughout the narrative rather than remaining flat or random. | cat04 |
 | CC-067 | Escalation Within Scenes | Whether conflict and complications within a scene escalate progressively rather than remaining at a constant level or repeating the same degree of dif... | cat06 |
-| CC-068 | Escalation and Rising Stakes | Whether conflicts, stakes, and consequences progressively escalate toward the climax | cat03 |
-| CC-069 | Exposition Distribution | Whether background information and world-building are delivered in appropriate doses at appropriate times | cat03 |
 | CC-070 | FTL and Technology Consistency (Space Opera) | Whether faster-than-light travel and other speculative technology operates consistently within established rules | cat17 |
 | CC-071 | Failure as Genuine Possibility | Whether the story establishes that the protagonist can genuinely fail, lose, or suffer permanent setbacks. | cat04 |
 | CC-072 | Fair Play with the Reader (Mystery) | Whether the mystery presents all necessary clues to the reader before the solution is revealed | cat17 |
 | CC-073 | Five Commandments Completeness | Whether every story unit (scene, sequence, act, global narrative) contains all five commandments: inciting incident, turning point progressive complic... | cat02 |
 | CC-074 | Foil and Mirror Cast Architecture | Whether supporting characters are designed to illuminate the protagonist through contrast (foils) and parallel (mirrors), serving architectural rather... | cat08 |
-| CC-075 | Foreshadowing Quality | Whether narrative hints and clues are embedded with sufficient subtlety that they prepare readers for future events without telegraphing them, and whe... | cat02 |
-| CC-076 | Foreshadowing and Payoff Balance | Whether significant plot developments, character changes, and revelations are properly prepared through earlier planted details, and whether those pla... | cat07 |
-| CC-077 | Foreshadowing and Payoff Structural Integrity | Whether setups planted early in the narrative are paid off, and whether payoffs are earned through prior setup | cat03 |
-| CC-078 | Foreshadowing-to-Payoff Ratio | Whether significant foreshadowing elements introduced in the story are eventually paid off, and whether major payoffs have adequate foreshadowing. | cat01 |
+| CC-078 | Setup Payoff Completeness | Whether foreshadowed elements, planted seeds, and emphasized setups are paid off — evaluating from the setup's perspective: given a setup, does the story deliver a corresponding payoff? Includes quality of foreshadowing craft (subtlety, re-readability, embedding). | cat01, cat02, cat03, cat07 |
+| CC-078b | Payoff Earned-ness | Whether payoffs and resolutions are properly prepared by prior setup and foreshadowing — evaluating from the payoff's perspective: given a payoff or resolution, was there adequate groundwork? An unfired setup won't locate its missing payoff, and an unearned payoff doesn't even look like a payoff, so these require separate evaluation passes. | cat01, cat02, cat03, cat07 |
 | CC-079 | Four Throughline Completeness | Whether the story addresses conflict through multiple perspectives (objective story, main character, obstacle character, relationship) rather than a s... | cat04 |
 | CC-080 | Genre Blending Coherence | Whether stories combining multiple genres successfully integrate conventions from each without confusing readers | cat17 |
 | CC-081 | Genre Innovation vs. Convention Violation | Whether departures from genre conventions are intentional innovations or accidental violations | cat17 |
@@ -937,26 +878,23 @@ Evaluatable at the scene-level plan stage.
 | CC-157 | Scene-Level Stakes | Whether the reader can identify what the character stands to lose or gain in this specific scene, and whether those stakes are clearly communicated re... | cat06 |
 | CC-158 | Scene-Level Thematic Integration | Whether each individual scene advances or challenges the theme, rather than theme existing only at the macro level. | cat14 |
 | CC-159 | Scene-Level Value Shift | Whether each scene produces a measurable change in the character's situation, moving from one emotional or circumstantial state to another. | cat04 |
-| CC-160 | Scene-Sequel Structure | Whether action scenes (goal-conflict-disaster) are followed by reaction scenes (reaction-dilemma-decision) that process events and set up the next act... | cat04, cat18 |
+| CC-160 | Scene-Sequel Structure | Whether the narrative alternates between active conflict scenes (goal-conflict-disaster) and reflective sequel sequences (reaction-dilemma-decision), creating a motivation-reaction rhythm of tension and release that sustains emotional engagement without unrelenting intensity. | cat03, cat04, cat18 |
 | CC-161 | Scene-to-Summary Ratio | Whether the balance between dramatized scenes and narrative summary is appropriate | cat03, cat05 |
 | CC-162 | Second Act Structural Integrity | Whether the middle section of the novel avoids the "sagging middle" through sufficient turning points and forward momentum | cat03 |
 | CC-163 | Second-Order Consequences and Ripple Effects | Whether the world's speculative elements (magic, technology, altered physics, etc.) have been traced through their logical consequences on society, cu... | cat11 |
 | CC-164 | Secondary Belief vs. Suspension of Disbelief | Whether the world achieves what Tolkien called "secondary belief" -- genuine immersion where the reader believes in the world on its own terms -- rath... | cat11 |
 | CC-165 | Section Break and Transition Craft | Whether scene breaks, section breaks, and transitions serve clear purposes and maintain reader orientation | cat03 |
-| CC-166 | Seed-Planting Integrity | Whether elements introduced with emphasis early in the story play correspondingly important roles throughout and at the climax. | cat01 |
 | CC-167 | Sense of Wonder | Whether the story evokes the distinctive emotional and intellectual response of awe characteristic of speculative fiction | cat17 |
 | CC-168 | Setting as Active Force (World-as-Character) | Whether the setting functions as an active narrative force with its own personality, history, and capacity to shape events -- rather than serving mere... | cat11 |
-| CC-169 | Setup and Payoff Balance | Whether significant story elements introduced early (setups) are meaningfully resolved later (payoffs), and whether major payoffs are properly prepare... | cat02 |
 | CC-170 | Setup-Payoff Consistency (Chekhov's Gun) | Whether narrative elements introduced with emphasis or prominence are eventually used in the story, and whether resolutions are grounded in previously... | cat15 |
 | CC-171 | Showing vs. Telling Conflict | Whether pivotal conflict moments are dramatized in real-time scenes rather than summarized in exposition. | cat04 |
 | CC-172 | Signposting Quality | Whether the narrative provides regular signals to the reader that progress is being made toward the story's promised outcomes. | cat01 |
 | CC-173 | Social Structures and Power Dynamics | Whether the world's social hierarchies, governance systems, and power structures are coherent, consequential, and reflective of the world's other elem... | cat11 |
 | CC-174 | Stakes Clarity | Whether the reader understands what characters stand to lose or gain, and why it matters. | cat04 |
 | CC-175 | Stakes Clarity and Escalation | Whether the story establishes clear, personal stakes early and escalates them throughout the narrative. | cat01 |
-| CC-176 | Stakes Escalation | Whether the potential consequences of failure increase progressively throughout the narrative, with each new complication raising the personal and/or ... | cat02, cat04 |
+| CC-176 | Narrative Escalation | Whether the narrative escalates across its arc — through introduction of new stakes, existing stakes becoming more salient, or complications increasing in severity — creating a structural trajectory toward the climax. Covers both overall story escalation (the arc of rising intensity) and scene-to-scene escalation (local patterns of increasing pressure), without rigidly demanding that every individual scene must be more intense than the last. | cat02, cat03, cat04, cat05 |
 | CC-177 | Story Grid Five Commandments Per Unit | Whether each structural unit (scene, act, global story) contains the five essential story event components | cat03 |
-| CC-178 | Subplot Integration | Whether subplots connect to and serve the main plot by advancing it, reflecting it, or complicating it, rather than existing as disconnected narrative... | cat02 |
-| CC-179 | Subplot Integration Quality | Whether subplots are woven into the main narrative as structural reinforcement rather than mere filler | cat03 |
+| CC-178 | Subplot Integration | Whether subplots feel like organic extensions of the main story; whether they connect to the main plot by advancing, reflecting, or complicating it; whether they are woven as structural reinforcement rather than filler or disconnected narrative threads. | cat01, cat02, cat03 |
 | CC-180 | Subplot as Thematic Mirror | Whether subplots function as thematic echoes, mirrors, or foils to the main plot | cat03 |
 | CC-181 | Technology Level Consistency | Whether the world's technological capabilities are consistent across domains and logical given the world's history, resources, and speculative element... | cat11 |
 | CC-182 | Technology as Worldbuilding Driver (SF) | Whether technology in science fiction is integrated into the world logically — shaping society, politics, and conflict rather than serving as set dres... | cat17 |
@@ -968,9 +906,8 @@ Evaluatable at the scene-level plan stage.
 | CC-188 | Thematic Complexity (Multiple/Competing Themes) | Whether the work handles thematic complexity through layered, interacting themes rather than a single simplistic thesis. | cat14 |
 | CC-189 | Thematic Presence and Identifiability | Whether the work has a discernible central theme that can be experienced by readers, even if it cannot be reduced to a simple statement. | cat14 |
 | CC-190 | Thematic Resonance (Emotional Impact of Theme) | Whether the theme creates emotional impact that lingers with the reader beyond the final page, rather than being merely intellectual. | cat14 |
-| CC-191 | Thematic Subtlety vs. Heavy-Handedness | Whether the theme is embedded organically in the narrative or imposed through didactic techniques that undermine reader trust and engagement. | cat14 |
+| CC-191 | Thematic Subtlety | Whether theme emerges organically from dramatic action and character choices rather than being stated through exposition or delivered as sermon; whether thematic content is woven subtly rather than hammered; whether the work operates as question and exploration rather than as message and moral lesson. | cat14 |
 | CC-192 | Theme as Question vs. Theme as Answer | Whether the work poses thematic questions that invite reader exploration and interpretation, or delivers thematic answers that foreclose inquiry. | cat14 |
-| CC-193 | Theme vs. Message Distinction | Whether the work maintains the distinction between universal theme (inclusive, applicable to all readers) and specific message (exclusive, applicable ... | cat14 |
 | CC-194 | Theme-Character Arc Integration | Whether the protagonist's character arc embodies and dramatizes the theme through internal transformation. | cat14 |
 | CC-195 | Threat Proximity and Imminence | Whether threats feel close and immediate rather than distant and theoretical. | cat04 |
 | CC-196 | Three Levels of Stakes | Whether the story operates on public (external/plot), personal (emotional/relational), and philosophical (thematic/value) stakes simultaneously, with ... | cat02 |
@@ -1127,11 +1064,6 @@ Evaluatable at the chapter-level plan stage.
 | NC-017 | Narrative Coherence | Whether all elements of the story—characters, plot events, themes, settings—align logically and consistently to create an understandable, connected wh... | cat01 |
 | NC-018 | Novel Length Appropriateness | Whether the story's length is appropriate for its genre and content | cat03 |
 | NC-019 | Organic Unity of Structure | Whether all structural elements are interdependent and necessary, forming a cohesive whole | cat03 |
-| NC-020 | Promise-Progress-Payoff Alignment | Whether the story makes clear promises (genre, tone, character, conflict) in its opening, provides a sense of meaningful progress throughout its middl... | cat02 |
-| NC-021 | Promise-Progress-Payoff Architecture | Whether the story makes clear promises in its beginning, shows meaningful progress in its middle, and delivers satisfying payoffs in its end | cat03 |
-| NC-022 | Promise-Progress-Payoff Information Structure | Whether the novel's information architecture follows a promise-progress-payoff pattern where early information creates expectations, middle sections s... | cat07 |
-| NC-023 | Promise-Progress-Payoff Structural Integrity | Whether the story follows a complete arc of establishing promises, demonstrating progress toward those promises, and delivering satisfying payoffs. | cat01 |
-| NC-024 | Promise-Progress-Payoff at Scene Level | Whether individual scenes follow the three-part framework of making a promise (setup), showing progress (character effort), and delivering a payoff (r... | cat06 |
 | NC-025 | Protagonist Active Agency in Climax | Whether the protagonist plays an appropriately active role in resolving the central conflict, rather than being rescued or having the problem solved f... | cat01 |
 | NC-026 | Quest Structure Execution (Fantasy) | Whether the quest narrative (if used) is executed with purpose and freshness rather than as a formulaic journey | cat17 |
 | NC-027 | Redundancy and Structural Efficiency | Whether the story avoids repeating the same structural beat or delivering the same information multiple times | cat03 |
@@ -1181,7 +1113,6 @@ Useful as brainstorming guidance.
 | IC-003 | Concept Strength (Pre-Premise Appeal) | Whether the foundational idea underlying the premise is inherently interesting, provocative, or fascinating before any character or plot is attached. | cat01 |
 | IC-004 | Concept-to-Premise Development | Whether the story has progressed beyond a bare concept (a "what if") into a fully developed premise with specific characters, goals, and obstacles. | cat01 |
 | IC-005 | High-Concept Pitchability | Whether the story concept can be communicated in a way that immediately paints a picture in the listener's mind and generates desire to experience the... | cat01 |
-| IC-006 | Moral/Philosophical Complexity | Whether the thematic argument presents genuine complexity with competing valid perspectives, rather than a one-sided moral premise. | cat14 |
 | IC-007 | Premise Originality | Whether the premise offers something genuinely new—a fresh take, unexpected combination, or novel exploration—rather than retreading familiar territor... | cat01 |
 
 ## Ideation-Level Sentinels
@@ -1234,7 +1165,6 @@ Items that apply at more than one level. Listed once with their levels noted.
 | ML-033 | Repetitive Scene Beat Pattern | Map the sequence of beats across 5+ scenes (e.g., Description -> Theme -> Small action -> Description -> Foreshadowing).... | chapter_plan, scene | cat05 |
 | ML-034 | S58: "Eyeball Kicks" — Stacked Nonsensical Metaphors | Multiple metaphors are stacked to describe a single concept, creating internally contradictory or nonsensical imagery (e... | ideation, scene | cat21 |
 | ML-035 | Scene Opening Quality | Whether scenes open with hooks that engage the reader immediately, establish the scene's situation efficiently, and avoi... | chapter_plan, scene | cat06 |
-| ML-036 | Scene-Sequel Rhythm | Whether the narrative alternates between active conflict scenes and reflective sequel sequences to create pacing rhythm | chapter_plan, scene | cat03 |
 | ML-037 | Scenes Opening with Exposition Dumps | Scenes consistently begin with paragraphs of backstory, world-building, character history, or situational description be... | chapter_plan, scene | cat06 |
 | ML-038 | Sensory Detail Absence or Overload | Either scenes contain no sensory detail at all (white room syndrome) or they stack excessive, implausible sensory metaph... | ideation, scene | cat06 |
 | ML-039 | Sensory Detail as Plot Device | Whether sensory details serve plot functions (foreshadowing, revelation, misdirection) beyond atmospheric decoration. | chapter_plan, scene | cat12 |
@@ -1258,3 +1188,5 @@ Items that apply at more than one level. Listed once with their levels noted.
 | ML-057 | Unfired Chekhov's Guns | The narrative introduces elements with heightened emphasis (unusual details, lengthy descriptions, pointed attention) th... | chapter_plan, scene | cat01, cat07 |
 | ML-058 | Uniform Chapter/Scene Lengths | All chapters or scenes are approximately the same word count (within 10-15% of each other), regardless of content type o... | chapter_plan, scene | cat03 |
 | ML-059 | Uniform Narrator Voice Across All POV Characters | In a multi-POV narrative, extract three consecutive paragraphs from each POV character's sections. If the paragraphs are... | chapter_plan, scene | cat09 |
+| ML-060 | Promise-Progress-Payoff Integrity | Whether the narrative follows a complete arc of establishing promises, demonstrating progress, and delivering payoffs that are BOTH satisfying (fulfilling the promise) AND surprising (not merely the expected resolution). Applies at scene level (each scene promises, progresses, and pays off), chapter-plan level (act-level promises and payoffs), and novel-plan level (the story's global promise arc). | scene, chapter_plan, novel_plan | cat01, cat02, cat03, cat06, cat07 |
+| ML-061 | Moral and Thematic Complexity | Whether the story presents genuine moral complexity with competing valid perspectives; whether characters face genuinely ambiguous moral situations exhibiting psychological depth; whether the text allows for complexity, contradiction, and unresolved tension rather than tidy moral lessons or one-sided moral premises. | ideation, scene, chapter_plan | cat14, cat16, cat21 |
