@@ -36,6 +36,6 @@ Preserve what works. Parts not flagged by auditors are working — don't rewrite
 
 ## Output
 
-Produce the complete revised novel plan in the same format as the original. All chapters. Full content. Not a diff or changelog.
+Write the COMPLETE revised novel plan to the file you are instructed to write to. Every chapter. Full content. Same format as the original. This replaces the current plan entirely — if a chapter isn't in your output, it ceases to exist.
 
-Output ONLY the revised plan.
+Do not write commentary, changelogs, or descriptions of what you changed. The file should contain ONLY the revised plan. The first line of the file is the first line of the revised plan.

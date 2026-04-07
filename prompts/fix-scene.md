@@ -60,6 +60,6 @@ Priority:
 
 ## Output
 
-Write the complete rewritten scene as continuous prose. No commentary, no headers.
+Write the complete rewritten scene to the file you are instructed to write to. Continuous prose. No commentary, no headers.
 
-Output ONLY the rewritten scene (or the DELETE recommendation).
+The file should contain ONLY the rewritten scene (or the DELETE recommendation if deletion is warranted).

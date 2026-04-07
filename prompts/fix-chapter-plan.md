@@ -40,6 +40,6 @@ Priority order:
 
 ## Output
 
-Produce the complete revised chapter plan in the same format as the original. All scenes. Full content.
+Write the COMPLETE revised chapter plan to the file you are instructed to write to. All scenes. Full content. Same format as the original. This replaces the current plan entirely.
 
-Output ONLY the revised chapter plan.
+The file should contain ONLY the revised chapter plan. No commentary or changelogs.

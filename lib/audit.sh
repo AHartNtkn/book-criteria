@@ -186,15 +186,36 @@ run_auditors() {
         (
             step_start "audit-${safe_name}" "Auditor: $auditor_name"
 
-            local output
-            output=$(log_call "audit-${safe_name}" "$(cat "$filled_file")")
+            # Auditor writes its analysis to the feedback file
+            local write_prompt="$(cat "$filled_file")
 
-            # Save feedback
-            printf '--- Auditor: %s ---\n%s' "$auditor_name" "$output" > "$feedback_file"
+---
+IMPORTANT: Write your complete analysis and JSON scores block to the file: ${feedback_file}
+Use the Write tool to create this file. Do not output your response as text — write it to the file.
+Do not write any other files. Do not use any other tools."
 
-            # Extract scores
+            echo "$write_prompt" | claude -p - \
+                --tools "Read,Write" \
+                --dangerously-skip-permissions \
+                --output-format text \
+                > "$auditor_out_dir/${safe_name}.claude-stdout.txt" 2>&1
+
+            if [[ ! -f "$feedback_file" || ! -s "$feedback_file" ]]; then
+                echo '{"criteria":{},"sentinels":{}}' > "$scores_file"
+                step_failed "audit-${safe_name}" "output file not written"
+                exit 0
+            fi
+
+            # Prepend auditor name to feedback
+            local tmp_feedback
+            tmp_feedback=$(mktemp)
+            printf '--- Auditor: %s ---\n' "$auditor_name" > "$tmp_feedback"
+            cat "$feedback_file" >> "$tmp_feedback"
+            mv "$tmp_feedback" "$feedback_file"
+
+            # Extract scores from the feedback
             local scores
-            scores=$(echo "$output" | extract_scores 2>/dev/null) || {
+            scores=$(extract_scores < "$feedback_file" 2>/dev/null) || {
                 echo '{"criteria":{},"sentinels":{}}' > "$scores_file"
                 step_failed "audit-${safe_name}" "could not extract scores"
                 exit 0
@@ -264,18 +285,21 @@ run_enhancement() {
 
     echo "  Brainstorming enhancements..." >&2
 
+    local enhance_output="$STATE_DIR/current-enhancements.md"
+
     local filled
     filled=$(python3 "$PROJECT_DIR/fill_template.py" "$enhance_prompt" \
         "${context_args[@]}")
 
-    local enhancements
-    enhancements=$(log_call "enhance-${level}" "$filled")
+    run_claude_to_file "enhance-${level}" "$filled" "$enhance_output"
 
     # Append to combined feedback with clear header
-    printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$COMBINED_FEEDBACK"
-    printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$COMBINED_FEEDBACK"
-    printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$COMBINED_FEEDBACK"
-    printf '%s' "$enhancements" >> "$COMBINED_FEEDBACK"
+    if [[ -f "$enhance_output" && -s "$enhance_output" ]]; then
+        printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$COMBINED_FEEDBACK"
+        printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$COMBINED_FEEDBACK"
+        printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$COMBINED_FEEDBACK"
+        cat "$enhance_output" >> "$COMBINED_FEEDBACK"
+    fi
 }
 
 # The main audit/refine loop.
@@ -368,18 +392,29 @@ audit_refine_loop() {
             "${context_args[@]}" \
             "audit_feedback=$COMBINED_FEEDBACK")
 
-        local fixed_output
-        fixed_output=$(log_call "fix-${level}-round-${round}" "$assembled")
+        # Fixer writes directly to the content file
+        run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file"
 
-        # Check for deletion recommendation
-        if echo "$fixed_output" | head -5 | grep -q "^RECOMMENDATION: DELETE"; then
+        # Check for deletion recommendation (fixer may write this instead of content)
+        if [[ -f "$content_file" ]] && head -5 "$content_file" | grep -q "^RECOMMENDATION: DELETE"; then
             echo "FIXER RECOMMENDS DELETION" >&2
-            echo "$fixed_output" > "$STATE_DIR/delete-recommendation.txt"
+            cp "$content_file" "$STATE_DIR/delete-recommendation.txt"
             return 2
         fi
 
-        # Write fixed content
-        echo "$fixed_output" > "$content_file"
+        # Verify fixer produced output
+        if [[ ! -f "$content_file" || ! -s "$content_file" ]]; then
+            echo "ERROR: Fixer produced no output for round $round" >&2
+            # Restore from snapshot
+            local snapshot_dir="$LOG_DIR/snapshots"
+            local latest_snapshot
+            latest_snapshot=$(ls -t "$snapshot_dir"/*"$(basename "$content_file")" 2>/dev/null | head -1)
+            if [[ -n "$latest_snapshot" ]]; then
+                cp "$latest_snapshot" "$content_file"
+                echo "  Restored from snapshot: $latest_snapshot" >&2
+            fi
+        fi
+
         round=$((round + 1))
     done
 }

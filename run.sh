@@ -134,9 +134,13 @@ build_all_completed_prose() {
     done
 }
 
-run_claude() {
+# Run claude and write output to a file (not stdout).
+# Args: $1 = prompt text, $2 = description, $3 = output file path
+run_claude_write() {
+    local prompt="$1"
     local desc="${2:-unnamed}"
-    log_call "$desc" "$1"
+    local outfile="$3"
+    run_claude_to_file "$desc" "$prompt" "$outfile"
 }
 
 # ── Phase 0: Premise Brainstorming ────────────────────────────
@@ -191,15 +195,28 @@ phase_premise_brainstorm() {
                     "random_words=$words" \
                     "ideation_guidance=$STATE_DIR/ideation-guidance-premise.txt")
 
-                echo "$prompt" > "$idea_dir/prompt.md"
+                local idea_file="output/brainstorm/premise/idea-${idx}.md"
+                local write_prompt="${prompt}
+
+---
+IMPORTANT: Write your complete output to the file: ${idea_file}
+Use the Write tool to create this file. Do not output your response as text — write it to the file.
+Do not write any other files. Do not use any other tools."
+
+                echo "$write_prompt" > "$idea_dir/prompt.md"
                 step_heartbeat "$step_id"
 
-                if echo "$prompt" | claude -p - --output-format text \
-                    > "output/brainstorm/premise/idea-${idx}.md"; then
-                    cp "output/brainstorm/premise/idea-${idx}.md" "$idea_dir/response.md"
-                    step_done "$step_id" "$(wc -c < "output/brainstorm/premise/idea-${idx}.md") bytes"
+                echo "$write_prompt" | claude -p - \
+                    --tools "Read,Write" \
+                    --dangerously-skip-permissions \
+                    --output-format text \
+                    > "$idea_dir/claude-stdout.txt" 2>&1
+
+                if [[ -f "$idea_file" && -s "$idea_file" ]]; then
+                    cp "$idea_file" "$idea_dir/response.md"
+                    step_done "$step_id" "$(wc -c < "$idea_file") bytes"
                 else
-                    step_failed "$step_id" "claude -p exited $?"
+                    step_failed "$step_id" "output file not written"
                 fi
             ) &
 
@@ -234,7 +251,7 @@ phase_premise_brainstorm() {
     assembled=$(python3 fill_template.py prompts/synthesize-premise.md \
         "premise=premise.md" \
         "candidate_ideas=$STATE_DIR/all-premise-ideas.txt")
-    run_claude "$assembled" "synthesize-premise" > "$PREMISE_FILE"
+    run_claude_write "$assembled" "synthesize-premise" "$PREMISE_FILE"
 
     echo "Synthesized premise written to $PREMISE_FILE" >&2
 }
@@ -250,7 +267,7 @@ phase_novel_planning() {
         local assembled
         assembled=$(python3 fill_template.py prompts/plan-novel.md \
             "premise=$PREMISE_FILE")
-        run_claude "$assembled" "plan-novel" > output/novel-plan.md
+        run_claude_write "$assembled" "plan-novel" "output/novel-plan.md"
     fi
 
     echo "Auditing novel plan..." >&2
@@ -329,15 +346,28 @@ phase_chapter_brainstorm() {
                     "completed_chapters_summary=$summary_file" \
                     "random_words=$words")
 
-                echo "$prompt" > "$idea_log_dir/prompt.md"
+                local idea_file="$brainstorm_dir/idea-${idx}.md"
+                local write_prompt="${prompt}
+
+---
+IMPORTANT: Write your complete output to the file: ${idea_file}
+Use the Write tool to create this file. Do not output your response as text — write it to the file.
+Do not write any other files. Do not use any other tools."
+
+                echo "$write_prompt" > "$idea_log_dir/prompt.md"
                 step_heartbeat "$step_id"
 
-                if echo "$prompt" | claude -p - --output-format text \
-                    > "$brainstorm_dir/idea-${idx}.md"; then
-                    cp "$brainstorm_dir/idea-${idx}.md" "$idea_log_dir/response.md"
-                    step_done "$step_id" "$(wc -c < "$brainstorm_dir/idea-${idx}.md") bytes"
+                echo "$write_prompt" | claude -p - \
+                    --tools "Read,Write" \
+                    --dangerously-skip-permissions \
+                    --output-format text \
+                    > "$idea_log_dir/claude-stdout.txt" 2>&1
+
+                if [[ -f "$idea_file" && -s "$idea_file" ]]; then
+                    cp "$idea_file" "$idea_log_dir/response.md"
+                    step_done "$step_id" "$(wc -c < "$idea_file") bytes"
                 else
-                    step_failed "$step_id" "claude -p exited $?"
+                    step_failed "$step_id" "output file not written"
                 fi
             ) &
         done
@@ -356,7 +386,7 @@ phase_chapter_brainstorm() {
         "chapter_description=$ch_desc_file" \
         "completed_chapters_summary=$summary_file" \
         "candidate_approaches=$STATE_DIR/all-chapter-ideas.txt")
-    run_claude "$assembled" "synthesize-chapter-$ch" > "$concept_file"
+    run_claude_write "$assembled" "synthesize-chapter-$ch" "$concept_file"
 }
 
 # ── Phase 2+3: Chapter Planning + Scene Authoring ─────────────
@@ -423,7 +453,7 @@ plan_one_chapter() {
             "chapter_number=$ch" \
             "chapter_concept=$ch_dir/chapter-concept.md" \
             "completed_chapters_summary=$summary_file")
-        run_claude "$assembled" "plan-chapter-$ch" > "$plan_file"
+        run_claude_write "$assembled" "plan-chapter-$ch" "$plan_file"
     fi
 
     echo "  Auditing chapter $ch plan..." >&2
@@ -483,7 +513,7 @@ author_chapter_scenes() {
                 "scene_plan=$scene_plan_file" \
                 "chapter_number=$ch" \
                 "scene_number=$sc")
-            run_claude "$assembled" "author-scene-ch${ch}-sc${sc}" > "$scene_file"
+            run_claude_write "$assembled" "author-scene-ch${ch}-sc${sc}" "$scene_file"
         fi
 
         # Audit/refine scene
@@ -539,7 +569,7 @@ collect_scene_context() {
         "chapter_plan=$plan_file" \
         "upcoming_scene_plan=$scene_plan_file" \
         "completed_content=$prose_file")
-    run_claude "$assembled" "collect-context-ch${ch}-sc${sc}" > "$output_file"
+    run_claude_write "$assembled" "collect-context-ch${ch}-sc${sc}" "$output_file"
 }
 
 run_backtrack_chapter() {
@@ -559,6 +589,9 @@ run_backtrack_chapter() {
         return
     fi
 
+    local bt_output="$STATE_DIR/backtrack-chapter-result.md"
+    rm -f "$bt_output"
+
     local assembled
     assembled=$(python3 fill_template.py prompts/backtrack-chapter.md \
         "premise=$PREMISE_FILE" \
@@ -567,12 +600,11 @@ run_backtrack_chapter() {
         "chapter_plan=$ch_dir/chapter-plan.md" \
         "completed_scenes=$scenes_file")
 
-    local result
-    result=$(run_claude "$assembled" "backtrack-chapter-$ch")
+    run_claude_write "$assembled" "backtrack-chapter-$ch" "$bt_output"
 
-    if ! echo "$result" | head -1 | grep -q "^NO_CHANGE"; then
+    if [[ -f "$bt_output" && -s "$bt_output" ]] && ! head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
         echo "  Chapter plan revised by backtracking" >&2
-        echo "$result" > "$ch_dir/chapter-plan.md"
+        cp "$bt_output" "$ch_dir/chapter-plan.md"
 
         audit_refine_loop "chapter_plan" "$ch_dir/chapter-plan.md" \
             "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan-bt" \
@@ -591,6 +623,9 @@ run_backtrack_novel() {
     local summary_file="$STATE_DIR/completed-summary-bt.txt"
     build_completed_summary "$ch" > "$summary_file"
 
+    local bt_output="$STATE_DIR/backtrack-novel-result.md"
+    rm -f "$bt_output"
+
     local assembled
     assembled=$(python3 fill_template.py prompts/backtrack-novel.md \
         "premise=$PREMISE_FILE" \
@@ -598,12 +633,11 @@ run_backtrack_novel() {
         "novel_plan=output/novel-plan.md" \
         "completed_chapters_summary=$summary_file")
 
-    local result
-    result=$(run_claude "$assembled" "backtrack-novel-after-ch$ch")
+    run_claude_write "$assembled" "backtrack-novel-after-ch$ch" "$bt_output"
 
-    if ! echo "$result" | head -1 | grep -q "^NO_CHANGE"; then
+    if [[ -f "$bt_output" && -s "$bt_output" ]] && ! head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
         echo "Novel plan revised by backtracking" >&2
-        echo "$result" > output/novel-plan.md
+        cp "$bt_output" output/novel-plan.md
 
         audit_refine_loop "novel_plan" "output/novel-plan.md" \
             "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
