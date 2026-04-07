@@ -135,7 +135,29 @@ audit_refine_loop() {
 
     local iteration_cap
     iteration_cap=$(get_iteration_cap "$level")
+
+    # Resume from saved round if restarting mid-audit for the SAME content
     local round=1
+    local saved_round
+    saved_round=$(read_state "refinement_round")
+    local saved_status
+    saved_status=$(read_state "status")
+    local saved_audit_target
+    saved_audit_target=$(read_state "audit_target")
+
+    if [[ "$saved_audit_target" == "$log_prefix" && "$saved_round" != "0" && "$saved_round" != "null" ]]; then
+        if [[ "$saved_status" == "fixing" || "$saved_status" == "passed" || "$saved_status" == "cap_reached" ]]; then
+            # Crashed after fixing — content file has the fixed version, next round
+            round=$((saved_round + 1))
+            echo "Resuming audit from round $round (previous fix completed)" >&2
+        elif [[ "$saved_status" == "auditing" ]]; then
+            # Crashed during auditing — re-run this round
+            round=$saved_round
+            echo "Resuming audit from round $round (re-running interrupted audit)" >&2
+        fi
+    fi
+
+    update_state "audit_target" "\"$log_prefix\""
 
     while true; do
         echo "Audit round $round for $log_prefix" >&2
