@@ -14,7 +14,10 @@ get_auditors_for_level() {
         "$PROJECT_DIR/auditor-config.yaml"
 }
 
-# Run all auditors for a level using dynamic prompt assembly.
+# Maximum parallel auditor calls per batch
+AUDITOR_BATCH_SIZE=5
+
+# Run all auditors for a level in parallel using dynamic prompt assembly.
 # Sets: COMBINED_FEEDBACK (file path), COMBINED_SCORES (JSON string)
 #
 # Args: $1 = level (novel_plan|chapter_plan|scene)
@@ -33,51 +36,105 @@ run_auditors() {
     COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
     > "$COMBINED_FEEDBACK"
 
-    local auditor_prompt_file="$STATE_DIR/current-auditor-prompt.md"
+    # Create per-auditor output directory for this round
+    local auditor_out_dir="$STATE_DIR/auditor-results"
+    rm -rf "$auditor_out_dir"
+    mkdir -p "$auditor_out_dir"
 
+    # Phase 1: Assemble prompts and identify active auditors (sequential, fast)
+    local active_auditors=()
     while IFS= read -r auditor_name; do
         [[ -z "$auditor_name" ]] && continue
 
-        # Assemble the auditor prompt dynamically
-        # assemble_auditor.py reads auditor-config.yaml + criteria-definitions.yaml + criteria-settings.yaml
-        # and outputs a prompt with context placeholders ({scene}, {chapter_plan}, etc.)
+        local safe_name
+        safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
+        local prompt_file="$auditor_out_dir/${safe_name}.prompt.md"
+
         if ! python3 "$PROJECT_DIR/assemble_auditor.py" "$auditor_name" \
-                > "$auditor_prompt_file" 2>/dev/null; then
+                > "$prompt_file" 2>/dev/null; then
             echo "WARNING: Could not assemble auditor '$auditor_name'" >&2
             continue
         fi
 
-        # Check if auditor has any active criteria/sentinels
-        if grep -q "No active criteria" "$auditor_prompt_file" && \
-           grep -q "No active sentinels" "$auditor_prompt_file"; then
-            continue  # Skip empty auditors (all criteria toggled off)
+        # Skip empty auditors
+        if grep -q "No active criteria" "$prompt_file" && \
+           grep -q "No active sentinels" "$prompt_file"; then
+            continue
         fi
 
-        echo "  Auditing: $auditor_name" >&2
+        # Fill context placeholders
+        local filled_file="$auditor_out_dir/${safe_name}.filled.md"
+        python3 "$PROJECT_DIR/fill_template.py" "$prompt_file" \
+            "${context_args[@]}" > "$filled_file"
 
-        # Fill context placeholders with actual content
-        local filled
-        filled=$(python3 "$PROJECT_DIR/fill_template.py" "$auditor_prompt_file" \
-            "${context_args[@]}")
-
-        # Call claude with logging
-        local safe_name
-        safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
-        local output
-        output=$(log_call "audit-${safe_name}" "$filled")
-
-        # Append to combined feedback
-        printf '\n\n--- Auditor: %s ---\n%s' "$auditor_name" "$output" >> "$COMBINED_FEEDBACK"
-
-        # Extract and merge scores
-        local scores
-        scores=$(echo "$output" | extract_scores) || {
-            echo "WARNING: Could not extract scores from auditor '$auditor_name'" >&2
-            continue
-        }
-        COMBINED_SCORES=$(merge_scores "$COMBINED_SCORES" "$scores")
-
+        active_auditors+=("$safe_name|$auditor_name")
     done <<< "$auditor_names"
+
+    local total=${#active_auditors[@]}
+    echo "  Running $total auditors in parallel (batches of $AUDITOR_BATCH_SIZE)..." >&2
+
+    # Phase 2: Run all active auditors in parallel batches
+    local batch_count=0
+    for entry in "${active_auditors[@]}"; do
+        local safe_name="${entry%%|*}"
+        local auditor_name="${entry#*|}"
+        local filled_file="$auditor_out_dir/${safe_name}.filled.md"
+        local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
+        local scores_file="$auditor_out_dir/${safe_name}.scores.json"
+
+        (
+            step_start "audit-${safe_name}" "Auditor: $auditor_name"
+
+            local output
+            output=$(log_call "audit-${safe_name}" "$(cat "$filled_file")")
+
+            # Save feedback
+            printf '--- Auditor: %s ---\n%s' "$auditor_name" "$output" > "$feedback_file"
+
+            # Extract scores
+            local scores
+            scores=$(echo "$output" | extract_scores 2>/dev/null) || {
+                echo '{"criteria":{},"sentinels":{}}' > "$scores_file"
+                step_failed "audit-${safe_name}" "could not extract scores"
+                exit 0
+            }
+            echo "$scores" > "$scores_file"
+
+            step_done "audit-${safe_name}" "$(echo "$scores" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+nc=len(d.get('criteria',{}))
+ns=len(d.get('sentinels',{}))
+print(f'{nc} criteria, {ns} sentinels scored')
+" 2>/dev/null)"
+        ) &
+
+        batch_count=$((batch_count + 1))
+        if (( batch_count % AUDITOR_BATCH_SIZE == 0 )); then
+            wait
+        fi
+    done
+    wait
+
+    # Phase 3: Merge all results (sequential, fast)
+    for entry in "${active_auditors[@]}"; do
+        local safe_name="${entry%%|*}"
+        local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
+        local scores_file="$auditor_out_dir/${safe_name}.scores.json"
+
+        if [[ -f "$feedback_file" && -s "$feedback_file" ]]; then
+            printf '\n\n' >> "$COMBINED_FEEDBACK"
+            cat "$feedback_file" >> "$COMBINED_FEEDBACK"
+        fi
+
+        if [[ -f "$scores_file" && -s "$scores_file" ]]; then
+            local scores
+            scores=$(cat "$scores_file")
+            COMBINED_SCORES=$(merge_scores "$COMBINED_SCORES" "$scores")
+        fi
+    done
+
+    echo "  All $total auditors complete." >&2
 }
 
 # Run the enhancement agent for a level.
