@@ -11,21 +11,40 @@ Build a pipeline that produces novel-length fiction fit for human consumption us
 
 ## Pipeline Architecture
 
-The pipeline has three hierarchical levels of planning/authoring, each with its own audit/refine loop, plus backtracking after completion of each unit.
+The pipeline has hierarchical levels of brainstorming, planning, and authoring, each with its own mechanisms, plus backtracking after completion of each unit.
+
+### Phase 0: Premise Brainstorming
+
+- **Input**: `premise.md` (user's initial concept/constraints/goals)
+- **Process**: Random-injection parallel ideation
+  1. Launch 10 parallel agents, each generating 10 concept ideas
+  2. Each agent receives: the premise file + ideation-level criteria/sentinels as guidance + 5 random dictionary words as inspiration seeds
+  3. The random words are selected fresh for each agent at runtime, forcing each agent off the default attractor basin and into different regions of idea space
+  4. Output: 100 candidate concept ideas across `output/brainstorm/premise/`
+  5. A synthesis agent reads all 100, identifies the strongest elements, evaluates compatibility and complementarity, rejects combinations that create convolution, and produces a single synthesized concept
+- **Output**: `output/synthesized-premise.md` — the refined premise that feeds into novel planning
+- **Note**: Some criteria/sentinels apply here as ideation guidance (what to aim for, what to avoid) rather than as scoring criteria. These are given to the ideation agents, not to auditors.
 
 ### Phase 1: Novel Planning
 
-- **Input**: `premise.md`
+- **Input**: `output/synthesized-premise.md`
 - **Prompt**: `plan-novel.md`
 - **Output**: `output/novel-plan.md` — chapter-level plan (arc structure, chapter purposes, ordering)
 - **Loop**: Novel-plan auditors score it → `fix-novel-plan.md` refines → repeat until 4+ on all criteria, all sentinels pass, or iteration cap hit
 
-### Phase 2: Chapter Planning (per chapter, sequential)
+### Phase 2: Chapter Brainstorming + Planning (per chapter, sequential)
 
-- **Input**: premise + novel plan + any completed chapters
-- **Prompt**: `plan-chapter.md`
-- **Output**: `output/chapters/NN/chapter-plan.md` — scene-level plan (scene purposes, beat annotations, character arcs within chapter)
-- **Loop**: Chapter-plan auditors score it → `fix-chapter-plan.md` refines → repeat until passing
+- **Brainstorming** (per chapter, before scene planning):
+  1. Launch 5 parallel agents, each generating 5 ideas for how this chapter could play out
+  2. Each agent receives: synthesized premise + novel plan + chapter's high-level description from the novel plan + completed chapters summary + 5 random dictionary words
+  3. Output: 25 candidate chapter concepts across `output/brainstorm/chapters/NN/`
+  4. A synthesis agent reads all 25, produces the best chapter concept
+  5. Output: `output/chapters/NN/chapter-concept.md`
+- **Planning**:
+  - **Input**: synthesized premise + novel plan + chapter concept + any completed chapters
+  - **Prompt**: `plan-chapter.md`
+  - **Output**: `output/chapters/NN/chapter-plan.md` — scene-level plan (scene purposes, beat annotations, character arcs within chapter)
+  - **Loop**: Chapter-plan auditors score it → `fix-chapter-plan.md` refines → repeat until passing
 
 ### Phase 3: Scene Authoring (per scene, sequential within chapter)
 
@@ -70,7 +89,14 @@ Each auditor is a separate prompt focused on one category of quality. Each audit
 - **Criteria** (scored 0–5): Measurable quality dimensions with evidence requirements. These are the quality standards — prose quality, dialogue, pacing, tension, etc.
 - **Sentinels** (present/not-present + evidence): Binary checks that detect LLM autocomplete behavior. Not inherently bad, but statistically correlated with failure modes. Banning them sacrifices a small slice of design space to head off degraded output.
 
-Auditors are grouped by pipeline level. Some auditors only apply to novel plans, some only to chapter plans, some only to scenes. The settings file makes this explicit.
+Criteria and sentinels operate at four levels:
+
+1. **Ideation level** — given to brainstorming agents as generation guidance ("aim for this", "avoid that"). Not scored by auditors. Used during premise brainstorming and chapter concept brainstorming.
+2. **Novel plan level** — scored by auditors evaluating the chapter-level plan.
+3. **Chapter plan level** — scored by auditors evaluating the scene-level plan.
+4. **Scene level** — scored by auditors evaluating prose.
+
+Some criteria may exist at multiple levels (e.g., "concept originality" matters during ideation AND when auditing the novel plan). The way they're used differs: ideation uses them as generation guidance, refinement uses them as scoring criteria. Auditors are grouped by evidentiary overlap within a level.
 
 ### Criteria vs. Sentinels
 
@@ -195,15 +221,19 @@ Each prompt receives the full context above it in the hierarchy:
 
 | Prompt | Receives |
 |---|---|
-| `plan-novel.md` | premise |
-| `plan-chapter.md` | premise + novel plan |
-| `author-scene.md` | premise + novel plan + chapter plan + relevant context file + preceding scenes within current chapter |
-| `fix-novel-plan.md` | premise + novel plan + all auditor feedback for this round |
-| `fix-chapter-plan.md` | premise + novel plan + chapter plan + completed scenes + all auditor feedback |
-| `fix-scene.md` | premise + novel plan + chapter plan + relevant context file + preceding scenes + scene + all auditor feedback |
-| `backtrack-chapter.md` | premise + novel plan + chapter plan + all completed scenes in chapter |
-| `backtrack-novel.md` | premise + novel plan + all completed chapters |
-| Auditors (any level) | premise + full context stack for that level + the content being audited |
+| `ideate-premise.md` | premise + ideation criteria/sentinels + 5 random words |
+| `synthesize-premise.md` | premise + all 100 candidate ideas |
+| `ideate-chapter.md` | synthesized premise + novel plan + chapter description + completed chapters summary + 5 random words |
+| `synthesize-chapter.md` | all 25 candidate chapter concepts |
+| `plan-novel.md` | synthesized premise |
+| `plan-chapter.md` | synthesized premise + novel plan + chapter concept |
+| `author-scene.md` | synthesized premise + novel plan + chapter plan + relevant context file + preceding scenes within current chapter |
+| `fix-novel-plan.md` | synthesized premise + novel plan + all auditor feedback for this round |
+| `fix-chapter-plan.md` | synthesized premise + novel plan + chapter plan + completed scenes + all auditor feedback |
+| `fix-scene.md` | synthesized premise + novel plan + chapter plan + relevant context file + preceding scenes + scene + all auditor feedback |
+| `backtrack-chapter.md` | synthesized premise + novel plan + chapter plan + all completed scenes in chapter |
+| `backtrack-novel.md` | synthesized premise + novel plan + all completed chapters |
+| Auditors (any level) | synthesized premise + full context stack for that level + the content being audited |
 
 ### Goal-Directed Context Collection
 
