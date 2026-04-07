@@ -1,0 +1,1747 @@
+auditors:
+  # ============================================================
+  # Scene-Level Auditors
+  # ============================================================
+
+  - name: "Grammar and Mechanical Correctness"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-005
+      - SC-042
+      - SC-117
+      - SC-173
+      - SC-189
+      - SC-230
+      - SC-250
+      - SC-255
+      - SC-271
+      - SC-053
+    sentinels:
+      - SS-048
+      - SS-059
+      - SS-133
+      - SS-195
+      - SS-268
+
+  - name: "Punctuation and Formatting Consistency"
+    level: scene
+    context: [scene, preceding_scenes]
+    criteria:
+      - SC-025
+      - SC-046
+      - SC-062
+      - SC-078
+      - SC-079
+      - SC-121
+      - SC-133
+      - SC-157
+      - SC-192
+      - SC-209
+      - SC-296
+      - ML-008
+    sentinels:
+      - SS-077
+      - SS-078
+      - SS-081
+      - SS-169
+      - SS-241
+      - SS-317
+
+  - name: "Line-Level Prose Craft (Clarity, Concision, Polish)"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-002
+      - SC-044
+      - SC-134
+      - SC-174
+      - SC-195
+      - SC-231
+      - SC-253
+      - SC-289
+      - SC-298
+    sentinels:
+      - ML-015
+      - SS-008
+      - SS-135
+      - SS-161
+      - SS-178
+      - SS-215
+      - SS-320
+
+  - name: "AI Vocabulary and Diction Tells"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-017
+      - SC-019
+      - SC-020
+    sentinels:
+      - SS-014
+      - SS-021
+      - SS-025
+      - SS-026
+      - SS-027
+      - SS-201
+      - SS-208
+      - SS-211
+      - SS-216
+      - SS-217
+      - SS-224
+      - SS-225
+      - SS-239
+      - SS-262
+      - SS-273
+
+  - name: "AI Stock Phrases and Formulaic Constructions"
+    level: scene
+    context: [scene]
+    criteria: []
+    sentinels:
+      - ML-019
+      - SS-001
+      - SS-002
+      - SS-004
+      - SS-011
+      - SS-012
+      - SS-013
+      - SS-022
+      - SS-024
+      - SS-202
+      - SS-220
+      - SS-226
+      - SS-227
+      - SS-228
+      - SS-229
+      - SS-230
+      - SS-231
+      - SS-232
+      - SS-203
+      - SS-221
+
+  - name: "AI Formulaic Patterns (Structural Tics)"
+    level: scene
+    context: [scene]
+    criteria: []
+    sentinels:
+      - SS-015
+      - SS-016
+      - SS-017
+      - SS-018
+      - SS-019
+      - SS-020
+      - SS-065
+      - SS-108
+      - SS-154
+      - SS-155
+      - SS-212
+      - SS-213
+      - SS-214
+      - SS-233
+      - SS-234
+      - SS-235
+      - SS-250
+      - SS-251
+
+  - name: "AI Generation Tells (Broader Patterns)"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-018
+      - SC-024
+    sentinels:
+      - SS-028
+      - SS-138
+      - SS-139
+      - SS-140
+      - SS-141
+      - SS-144
+      - SS-196
+      - SS-205
+      - SS-252
+      - SS-254
+      - SS-255
+      - SS-256
+      - SS-257
+      - SS-269
+      - SS-277
+      - SS-316
+      - SS-236
+
+  - name: "Sentence Rhythm and Prose Cadence"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-087
+      - SC-093
+      - SC-139
+      - SC-171
+      - SC-172
+      - SC-185
+      - SC-232
+      - SC-233
+      - SC-234
+      - SC-235
+      - SC-247
+      - SC-295
+    sentinels:
+      - SS-068
+      - SS-079
+      - SS-292
+      - SS-297
+      - SS-308
+      - SS-318
+
+  - name: "Prose Style and Authorial Voice"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - SC-012
+      - SC-016
+      - SC-069
+      - SC-070
+      - SC-077
+      - SC-152
+      - SC-186
+      - SC-200
+      - SC-254
+      - SC-268
+      - SC-283
+      - SC-293
+      - ML-041
+    sentinels:
+      - SS-041
+      - SS-119
+      - SS-179
+      - SS-238
+      - SS-295
+
+  - name: "Prose Density and Layered Meaning"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-074
+      - SC-106
+      - SC-113
+      - SC-127
+      - SC-149
+      - SC-243
+      - ML-032
+      - ML-028
+    sentinels:
+      - ML-001
+      - ML-030
+      - SS-089
+      - SS-092
+      - SS-097
+      - SS-104
+      - SS-312
+
+  - name: "Cliche Detection and Originality in Prose"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-040
+      - SC-041
+      - SC-054
+      - SC-055
+      - SC-114
+      - ML-003
+    sentinels:
+      - SS-057
+      - SS-076
+      - SS-113
+      - SS-247
+      - SS-259
+      - SS-267
+      - SS-271
+      - SS-290
+
+  - name: "Echo Words and Repetition Control"
+    level: scene
+    context: [scene, preceding_scenes]
+    criteria:
+      - SC-075
+      - SC-199
+      - SC-244
+    sentinels:
+      - SS-050
+      - SS-062
+      - SS-134
+      - SS-193
+      - SS-194
+      - SS-210
+      - SS-279
+      - SS-280
+
+  - name: "Dialogue Voice and Distinctiveness"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - SC-034
+      - SC-036
+      - SC-059
+      - SC-201
+      - SC-291
+    sentinels:
+      - ML-059
+      - SS-037
+      - SS-038
+      - SS-051
+      - SS-094
+      - SS-156
+      - SS-209
+      - SS-314
+      - SS-324
+
+  - name: "Dialogue Craft and Exchange Dynamics"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-045
+      - SC-048
+      - SC-061
+      - SC-063
+      - SC-064
+      - SC-065
+      - SC-066
+      - SC-067
+      - SC-068
+      - SC-144
+      - SC-147
+      - SC-155
+      - SC-181
+      - SC-246
+    sentinels:
+      - SS-064
+      - SS-159
+      - SS-191
+      - SS-319
+
+  - name: "Dialogue Tags and Attribution Mechanics"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-206
+      - SC-080
+    sentinels:
+      - SS-003
+      - SS-035
+      - SS-171
+      - SS-249
+      - SS-274
+
+  - name: "Dialogue Subtext and On-the-Nose Avoidance"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-060
+      - SC-094
+      - SC-131
+      - SC-161
+      - SC-256
+    sentinels:
+      - SS-005
+      - SS-006
+      - SS-052
+      - SS-084
+      - SS-117
+      - SS-121
+      - SS-127
+      - SS-165
+
+  - name: "Dialogue Grounding and Physical Integration"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-118
+      - SC-178
+      - ML-040
+    sentinels:
+      - SS-298
+      - SS-325
+      - SS-326
+
+  - name: "Figurative Language Quality"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-097
+      - SC-101
+      - SC-102
+      - SC-103
+      - SC-175
+      - SC-177
+      - SC-267
+    sentinels:
+      - ML-021
+      - SS-007
+      - SS-023
+      - SS-043
+      - SS-103
+      - SS-143
+      - SS-181
+      - SS-248
+      - ML-034
+
+  - name: "Description — Sensory Detail and Imagery"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-076
+      - SC-122
+      - SC-224
+      - SC-225
+      - SC-226
+      - SC-227
+      - SC-228
+      - SC-249
+      - SC-299
+      - ML-006
+      - ML-039
+    sentinels:
+      - SS-029
+      - SS-042
+      - SS-115
+      - SS-281
+      - SS-283
+      - SS-288
+      - ML-038
+
+  - name: "Description — Structure, Pacing, and Integration"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-057
+      - SC-137
+      - SC-184
+      - SC-191
+      - SC-207
+      - SC-237
+      - SC-240
+      - SC-245
+      - SC-270
+      - ML-009
+    sentinels:
+      - SS-009
+      - SS-034
+      - SS-045
+      - SS-069
+      - SS-105
+      - SS-149
+      - SS-170
+      - SS-258
+      - SS-080
+
+  - name: "Description Filtered Through Character"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-056
+      - SC-058
+      - SC-158
+      - SC-159
+      - SC-229
+    sentinels:
+      - SS-111
+      - SS-282
+      - SS-109
+      - SS-098
+      - SS-223
+
+  - name: "Purple Prose and Overwrought Language"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-190
+      - SC-301
+      - ML-054
+    sentinels:
+      - SS-168
+      - SS-182
+      - SS-183
+      - SS-243
+      - SS-300
+      - ML-136
+
+  - name: "Atmosphere, Mood, and Setting Integration"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-007
+      - SC-050
+      - SC-223
+      - ML-063
+      - ML-018
+    sentinels:
+      - SS-036
+      - SS-054
+      - SS-116
+      - SS-309
+      - SS-322
+
+  - name: "POV Consistency and Discipline"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-110
+      - SC-116
+      - SC-119
+      - SC-162
+      - SC-163
+      - SC-164
+      - SC-165
+      - SC-166
+      - SC-167
+      - SC-169
+      - SC-180
+      - SC-272
+      - SC-273
+      - ML-022
+    sentinels:
+      - SS-010
+      - SS-120
+      - SS-242
+
+  - name: "POV Techniques and Narrative Distance"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-009
+      - SC-010
+      - SC-011
+      - SC-047
+      - SC-104
+      - SC-105
+      - SC-107
+      - SC-112
+      - SC-128
+      - SC-148
+      - SC-150
+      - SC-188
+      - SC-204
+      - SC-242
+    sentinels:
+      - SS-030
+      - SS-032
+      - SS-046
+      - SS-099
+      - SS-102
+      - SS-150
+
+  - name: "Specialized Narration Modes"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-072
+      - SC-092
+      - SC-129
+      - SC-153
+      - SC-160
+      - SC-222
+      - SC-252
+      - SC-287
+    sentinels:
+      - SS-136
+      - SS-174
+
+  - name: "Emotional Rendering Craft"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-021
+      - SC-081
+      - SC-084
+      - SC-085
+      - SC-086
+      - SC-193
+      - SC-238
+      - SC-239
+      - SC-241
+      - SC-187
+    sentinels:
+      - SS-053
+      - SS-055
+      - SS-083
+      - SS-095
+      - SS-132
+      - SS-151
+      - SS-187
+      - SS-299
+
+  - name: "Emotional Tone and Positivity Bias"
+    level: scene
+    context: [scene, preceding_scenes]
+    criteria:
+      - SC-088
+      - SC-145
+      - ML-053
+    sentinels:
+      - SS-040
+      - SS-082
+      - SS-086
+      - SS-087
+      - SS-088
+      - SS-112
+      - SS-123
+      - SS-126
+      - SS-148
+      - SS-152
+      - SS-177
+      - SS-206
+      - SS-253
+      - ML-055
+
+  - name: "Character Interiority and Psychological Depth"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - SC-030
+      - SC-032
+      - SC-130
+      - SC-197
+      - ML-066
+      - ML-067
+      - ML-069
+      - ML-070
+      - ML-079
+      - ML-103
+    sentinels:
+      - SS-180
+      - SS-287
+      - ML-093
+      - ML-098
+      - ML-100
+
+  - name: "Reader Engagement and Immersion"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-031
+      - SC-052
+      - SC-090
+      - SC-100
+      - SC-142
+      - SC-151
+      - SC-198
+      - SC-251
+      - SC-286
+      - SC-290
+      - ML-046
+      - ML-075
+    sentinels:
+      - SS-031
+      - SS-074
+      - SS-075
+      - SS-122
+      - SS-137
+      - SS-222
+
+  - name: "Exposition Handling and Information Delivery"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-013
+      - SC-073
+      - SC-095
+      - SC-096
+      - SC-125
+      - SC-141
+      - SC-183
+      - SC-260
+      - SC-288
+      - SC-297
+    sentinels:
+      - SS-101
+      - SS-110
+      - SS-131
+      - SS-157
+      - SS-162
+      - SS-188
+      - SS-192
+      - SS-286
+      - SS-327
+      - SS-301
+
+  - name: "Scene Structure and Dramatic Shape"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-111
+      - SC-182
+      - SC-208
+      - SC-210
+      - SC-211
+      - SC-212
+      - SC-213
+      - SC-214
+      - SC-215
+      - SC-220
+      - SC-221
+      - SC-236
+      - ML-035
+      - ML-076
+    sentinels:
+      - SS-073
+      - SS-082
+      - SS-090
+      - SS-100
+      - SS-106
+      - SS-114
+      - SS-164
+      - SS-172
+
+  - name: "Scene Polarity, Turns, and Value Shifts"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-285
+      - ML-016
+      - ML-083
+      - ML-060
+    sentinels:
+      - ML-026
+      - SS-147
+      - SS-190
+      - SS-200
+      - SS-275
+      - SS-276
+      - SS-284
+      - SS-285
+      - ML-090
+
+  - name: "Scene-Level Subtext, Theme, and Irony"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-262
+      - SC-276
+      - SC-278
+      - ML-049
+      - ML-061
+      - ML-114
+    sentinels:
+      - ML-023
+      - ML-045
+      - SS-033
+      - SS-056
+      - SS-096
+      - SS-306
+      - SS-067
+
+  - name: "Pacing — Macro-Rhythm and Tempo Control"
+    level: scene
+    context: [scene, preceding_scenes, chapter_plan]
+    criteria:
+      - SC-001
+      - SC-014
+      - SC-026
+      - SC-115
+      - SC-120
+      - SC-126
+      - SC-168
+      - SC-170
+      - SC-205
+      - SC-218
+      - SC-269
+      - SC-294
+      - ML-020
+      - ML-043
+    sentinels:
+      - SS-071
+      - SS-072
+      - SS-093
+      - SS-158
+      - SS-167
+      - SS-173
+
+  - name: "Scene Transition and Backstory Integration"
+    level: scene
+    context: [scene, preceding_scenes]
+    criteria:
+      - SC-216
+      - SC-217
+      - SC-219
+      - SC-274
+      - SC-280
+      - SC-281
+      - ML-077
+    sentinels:
+      - SS-047
+      - SS-166
+      - ML-010
+
+  - name: "Continuity — Factual Details and Physical Logic"
+    level: scene
+    context: [scene, relevant_context, preceding_scenes]
+    criteria:
+      - SC-004
+      - SC-033
+      - SC-043
+      - SC-098
+      - SC-099
+      - SC-123
+      - SC-248
+      - SC-282
+      - ML-062
+    sentinels:
+      - SS-049
+      - SS-060
+      - SS-063
+      - SS-085
+      - SS-118
+      - SS-130
+      - SS-145
+      - SS-163
+      - SS-176
+      - SS-311
+
+  - name: "Continuity — Internal Rules and World Consistency"
+    level: scene
+    context: [scene, relevant_context, preceding_scenes]
+    criteria:
+      - SC-132
+      - SC-179
+      - SC-203
+      - SC-300
+      - ML-074
+    sentinels:
+      - ML-027
+      - SS-107
+      - SS-142
+      - SS-175
+      - SS-189
+      - SS-198
+      - SS-260
+
+  - name: "AI Structural Tells (Scene-Level)"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-135
+      - ML-005
+      - ML-025
+    sentinels:
+      - SS-061
+      - SS-070
+      - SS-129
+      - SS-153
+      - SS-160
+      - SS-199
+      - SS-204
+      - SS-207
+      - SS-219
+      - SS-237
+      - SS-240
+      - SS-244
+      - SS-245
+      - SS-246
+
+  - name: "AI Structural Tells (Pattern Repetition)"
+    level: scene
+    context: [scene, preceding_scenes]
+    criteria:
+      - ML-080
+      - ML-089
+      - ML-081
+    sentinels:
+      - ML-033
+      - SS-039
+      - SS-218
+      - SS-261
+      - SS-263
+      - SS-264
+      - SS-265
+      - SS-266
+      - SS-270
+      - SS-272
+      - SS-310
+      - SS-313
+
+  - name: "Reader Emotion and Engagement Mechanics"
+    level: scene
+    context: [scene]
+    criteria:
+      - ML-073
+      - ML-085
+      - ML-086
+      - ML-087
+      - ML-127
+    sentinels:
+      - SS-197
+      - SS-278
+      - SS-291
+      - SS-293
+      - SS-294
+      - SS-305
+      - SS-307
+
+  - name: "Scene-Level Plot Mechanics"
+    level: scene
+    context: [scene, chapter_plan, relevant_context]
+    criteria:
+      - ML-004
+      - ML-017
+      - ML-064
+    sentinels:
+      - ML-002
+      - ML-014
+      - ML-037
+      - ML-051
+      - ML-052
+      - ML-057
+      - ML-058
+      - ML-091
+      - ML-092
+
+  - name: "Scene-Level Character Dynamics"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - ML-068
+      - ML-078
+      - ML-084
+      - ML-088
+      - ML-050
+      - SC-196
+    sentinels:
+      - SS-321
+      - SS-328
+      - SS-186
+      - ML-094
+      - ML-095
+      - ML-097
+
+  - name: "Scene-Level Worldbuilding in Prose"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - ML-047
+    sentinels:
+      - ML-031
+      - ML-102
+      - ML-135
+      - ML-099
+      - ML-096
+      - ML-101
+      - SS-315
+
+  - name: "Worldbuilding in Setting Description"
+    level: scene
+    context: [scene]
+    criteria: []
+    sentinels:
+      - SS-036
+      - SS-054
+      - SS-323
+      - SS-304
+      - SS-303
+
+  # ============================================================
+  # Chapter-Plan-Level Auditors
+  # ============================================================
+
+  - name: "Plot Causality and Logical Structure"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-006
+      - CC-015
+      - CC-030
+      - CC-043
+      - CC-053
+      - CC-057
+      - CC-096
+      - CC-110
+      - CC-112
+      - CC-121
+      - CC-185
+      - ML-004
+    sentinels:
+      - ML-002
+      - CS-008
+      - CS-021
+      - CS-023
+      - CS-055
+      - CS-057
+
+  - name: "Protagonist Agency and Goal Pursuit"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-021
+      - CC-024
+      - CC-092
+      - CC-099
+      - CC-127
+      - CC-128
+      - CC-203
+      - CC-204
+      - ML-103
+      - CC-125
+    sentinels:
+      - ML-026
+      - CS-017
+      - CS-026
+      - CS-044
+      - CS-045
+      - CS-066
+      - CS-096
+
+  - name: "Conflict Quality and Escalation"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-016
+      - CC-032
+      - CC-035
+      - CC-038
+      - CC-039
+      - CC-040
+      - CC-071
+      - CC-097
+      - CC-107
+      - CC-113
+      - CC-184
+      - CC-205
+      - ML-105
+      - CC-079
+    sentinels:
+      - CS-005
+      - CS-007
+      - CS-032
+      - CS-036
+      - CS-083
+      - CS-097
+
+  - name: "Stakes and Consequences"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-041
+      - CC-042
+      - CC-048
+      - CC-174
+      - CC-175
+      - CC-176
+      - CC-207
+      - ML-082
+      - ML-088
+      - CC-195
+    sentinels:
+      - CS-018
+      - CS-030
+      - CS-038
+      - CS-062
+      - CS-078
+      - CS-079
+      - CS-085
+      - CS-086
+
+  - name: "Conflict Resolution and Climax Quality"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-027
+      - CC-036
+      - CC-054
+      - CC-137
+      - CC-138
+      - CC-140
+      - ML-129
+      - CC-037
+    sentinels:
+      - CS-002
+      - CS-014
+      - CS-015
+      - CS-027
+      - CS-072
+      - CS-095
+      - ML-092
+      - ML-118
+
+  - name: "Chapter and Act Structure"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-017
+      - CC-018
+      - CC-058
+      - CC-073
+      - CC-093
+      - CC-105
+      - CC-126
+      - CC-162
+      - CC-165
+      - CC-177
+      - CC-183
+      - ML-012
+      - ML-042
+    sentinels:
+      - CS-003
+      - CS-031
+      - CS-059
+      - CS-061
+      - CS-063
+      - CS-064
+      - CS-065
+
+  - name: "Pacing and Rhythm Across Chapters"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-028
+      - CC-116
+      - CC-142
+      - CC-152
+      - CC-161
+      - ML-020
+      - ML-043
+      - ML-083
+    sentinels:
+      - ML-033
+      - ML-058
+      - CS-020
+      - CS-034
+      - CS-067
+      - CS-071
+      - CS-074
+      - CS-080
+
+  - name: "Opening and Hook Quality"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan, premise]
+    criteria:
+      - CC-090
+      - CC-091
+      - CC-094
+      - CC-111
+      - CC-114
+      - CC-115
+      - CC-117
+      - CC-123
+      - CC-124
+      - CC-131
+      - CC-199
+      - ML-017
+    sentinels:
+      - CS-016
+      - CS-046
+      - CS-048
+      - ML-010
+
+  - name: "Setup-Payoff Architecture and Foreshadowing"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-078
+      - CC-078b
+      - CC-132
+      - CC-135
+      - CC-139
+      - CC-170
+      - CC-172
+      - ML-060
+    sentinels:
+      - CS-010
+      - CS-053
+      - ML-044
+      - ML-057
+      - CS-069
+
+  - name: "Subplot Management"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-178
+      - CC-180
+      - ML-049
+      - ML-128
+    sentinels:
+      - ML-052
+      - ML-130
+      - CS-081
+      - CS-084
+
+  - name: "Scene-Level Planning Quality"
+    level: chapter_plan
+    context: [chapter_plan]
+    criteria:
+      - CC-067
+      - CC-145
+      - CC-146
+      - CC-147
+      - CC-148
+      - CC-149
+      - CC-150
+      - CC-151
+      - CC-153
+      - CC-154
+      - CC-155
+      - CC-156
+      - CC-157
+      - ML-035
+      - ML-076
+    sentinels:
+      - CS-073
+      - CS-075
+      - CS-098
+
+  - name: "Scene-Sequel and Emotional Rhythm"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-159
+      - CC-160
+      - ML-016
+      - ML-108
+      - ML-075
+    sentinels:
+      - ML-037
+      - ML-090
+      - ML-091
+      - ML-094
+      - ML-099
+
+  - name: "Character Arc and Psychological Architecture"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan, completed_chapters_summary]
+    criteria:
+      - CC-002
+      - CC-004
+      - CC-005
+      - ML-066
+      - ML-067
+      - ML-068
+      - ML-069
+      - ML-079
+      - ML-104
+      - ML-111
+    sentinels:
+      - CS-004
+      - CS-009
+      - CS-012
+      - ML-093
+      - ML-098
+      - ML-120
+      - CS-101
+
+  - name: "Ensemble and Relationship Design"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-023
+      - CC-108
+      - CC-118
+      - ML-070
+      - ML-078
+      - ML-084
+      - ML-109
+      - ML-116
+    sentinels:
+      - ML-095
+      - ML-097
+
+  - name: "Thematic Integration and Development"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan, premise]
+    criteria:
+      - CC-059
+      - CC-120
+      - CC-158
+      - CC-188
+      - CC-189
+      - CC-191
+      - CC-192
+      - CC-194
+      - ML-048
+      - ML-050
+      - ML-061
+    sentinels:
+      - ML-045
+      - CS-033
+      - CS-092
+      - CS-099
+      - ML-023
+
+  - name: "Thematic Craft (Symbols, Motifs, Ambiguity)"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-190
+      - ML-087
+      - ML-112
+      - ML-113
+      - ML-114
+      - ML-115
+    sentinels:
+      - ML-121
+      - ML-122
+
+  - name: "Dramatic Irony and Reader Engagement"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-007
+      - CC-014
+      - CC-019
+      - CC-026
+      - CC-056
+      - CC-171
+      - ML-073
+      - ML-086
+      - ML-085
+      - ML-127
+    sentinels: []
+
+  - name: "Exposition and Information Architecture"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-010
+      - CC-011
+      - CC-095
+      - ML-072
+      - ML-077
+      - ML-133
+      - ML-132
+    sentinels: []
+
+  - name: "Worldbuilding Coherence and Depth"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan, premise]
+    criteria:
+      - CC-008
+      - CC-031
+      - CC-050
+      - CC-052
+      - CC-060
+      - CC-064
+      - CC-086
+      - CC-089
+      - CC-101
+      - CC-103
+      - CC-119
+      - CC-136
+      - CC-163
+      - CC-164
+    sentinels:
+      - CS-022
+      - CS-025
+      - CS-028
+      - CS-039
+      - CS-041
+      - CS-054
+      - CS-060
+
+  - name: "Worldbuilding Integration and Delivery"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-168
+      - CC-173
+      - CC-181
+      - CC-186
+      - CC-200
+      - CC-211
+      - CC-212
+      - CC-215
+      - ML-018
+    sentinels:
+      - CS-047
+      - CS-077
+      - CS-082
+      - CS-102
+
+  - name: "Worldbuilding Through Absence and Speculation"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-214
+      - ML-040
+      - ML-046
+      - ML-047
+      - ML-063
+    sentinels:
+      - ML-027
+      - ML-102
+
+  - name: "Continuity and Consistency (Chapter-Plan)"
+    level: chapter_plan
+    context: [chapter_plan, completed_chapters_summary]
+    criteria:
+      - CC-206
+      - ML-008
+      - ML-022
+      - ML-062
+      - ML-065
+      - ML-074
+      - ML-009
+      - ML-006
+    sentinels:
+      - CS-001
+
+  - name: "AI Structural Tells (Chapter-Plan Level)"
+    level: chapter_plan
+    context: [chapter_plan]
+    criteria:
+      - ML-053
+      - ML-064
+      - ML-080
+    sentinels:
+      - ML-055
+      - CS-037
+      - CS-070
+      - ML-003
+      - ML-005
+      - ML-014
+      - ML-015
+      - ML-025
+      - ML-051
+      - ML-096
+
+  - name: "Sycophantic and Sanitized Resolution Patterns"
+    level: chapter_plan
+    context: [chapter_plan]
+    criteria:
+      - ML-089
+      - ML-071
+      - ML-041
+    sentinels:
+      - ML-095
+      - ML-100
+      - ML-101
+      - ML-119
+
+  - name: "Scene Description and Planning Quality"
+    level: chapter_plan
+    context: [chapter_plan, premise]
+    criteria:
+      - ML-032
+      - ML-039
+      - ML-054
+      - ML-028
+      - ML-029
+      - ML-126
+    sentinels:
+      - ML-001
+
+  - name: "Thematic Safety and Moral Complexity (Chapter-Plan)"
+    level: chapter_plan
+    context: [chapter_plan, novel_plan, premise]
+    criteria:
+      - ML-110
+      - ML-106
+      - ML-107
+    sentinels:
+      - ML-117
+      - ML-124
+      - ML-125
+      - CS-058
+
+  # ============================================================
+  # Novel-Plan-Level Auditors
+  # ============================================================
+
+  - name: "Overall Arc and Structural Design"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - NC-004
+      - NC-007
+      - NC-008
+      - NC-010
+      - NC-012
+      - NC-016
+      - NC-018
+      - NC-019
+      - NC-027
+      - NC-028
+      - NC-030
+      - NC-031
+      - NC-035
+    sentinels:
+      - NS-021
+      - ML-056
+
+  - name: "Narrative Promise and Contract"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - NC-002
+      - NC-005
+      - NC-009
+      - NC-013
+      - NC-014
+      - NC-015
+      - NC-025
+      - NC-033
+      - NC-034
+    sentinels:
+      - NS-001
+      - NS-003
+      - NS-004
+      - NS-006
+      - NS-011
+      - NS-018
+
+  - name: "Character Arc Design (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - ML-065
+      - ML-067
+      - ML-068
+      - ML-069
+      - ML-070
+      - ML-078
+      - ML-079
+      - ML-084
+      - ML-104
+      - ML-109
+      - ML-110
+      - ML-111
+    sentinels:
+      - ML-093
+      - ML-095
+      - ML-100
+      - ML-120
+
+  - name: "Conflict and Stakes Architecture (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - ML-082
+      - ML-088
+      - ML-103
+      - ML-105
+      - ML-106
+      - ML-107
+      - ML-116
+      - ML-071
+    sentinels:
+      - ML-096
+      - ML-097
+      - ML-092
+      - ML-101
+      - ML-118
+
+  - name: "Pacing, Momentum, and Structural Rhythm (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan]
+    criteria:
+      - ML-020
+      - ML-011
+      - ML-012
+      - ML-042
+      - ML-060
+      - ML-077
+      - ML-064
+      - NC-029
+    sentinels:
+      - NS-010
+      - ML-119
+      - ML-130
+
+  - name: "Thematic Architecture (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - NC-006
+      - ML-048
+      - ML-050
+      - ML-061
+      - ML-087
+      - ML-112
+      - ML-113
+      - ML-114
+      - ML-115
+      - ML-081
+    sentinels:
+      - ML-117
+      - ML-121
+      - ML-122
+      - ML-124
+      - ML-125
+
+  - name: "Worldbuilding and Consistency (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - ML-062
+      - ML-074
+      - ML-046
+      - ML-073
+      - ML-072
+    sentinels:
+      - ML-044
+      - ML-052
+      - ML-094
+      - ML-090
+
+  - name: "AI Structural Tells and Originality (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - NC-001
+      - ML-003
+      - ML-005
+      - ML-025
+      - ML-028
+      - ML-080
+      - ML-089
+    sentinels:
+      - NS-002
+      - NS-012
+      - NS-013
+      - NS-014
+      - NS-015
+      - NS-016
+      - NS-017
+
+  - name: "Engagement and Reader Experience (Novel-Plan)"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - ML-041
+      - ML-075
+      - ML-085
+      - ML-086
+      - ML-108
+      - ML-127
+      - ML-129
+      - ML-134
+    sentinels:
+      - ML-131
+
+  - name: "Novel-Plan Genre Contract and Structure"
+    level: novel_plan
+    context: [novel_plan, premise]
+    criteria:
+      - ML-007
+      - ML-013
+      - ML-024
+      - ML-031
+      - ML-032
+      - ML-128
+      - ML-132
+    sentinels:
+      - ML-014
+
+  - name: "Novel-Plan Consistency"
+    level: novel_plan
+    context: [novel_plan]
+    criteria:
+      - ML-065
+      - ML-133
+      - ML-066
+      - ML-126
+    sentinels:
+      - ML-001
+      - ML-123
+
+  # ============================================================
+  # Genre-Specific Auditors
+  # ============================================================
+
+  - name: "Mystery/Detective: Fair Play and Clue Architecture"
+    level: chapter_plan
+    genre: detective_mystery
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-029
+      - CC-044
+      - CC-046
+      - CC-049
+      - CC-072
+      - CC-100
+      - CC-109
+      - CC-122
+      - CC-134
+      - CC-208
+    sentinels:
+      - CS-011
+      - CS-087
+      - CS-088
+      - CS-089
+      - CS-068
+
+  - name: "Space Opera: Scale, Technology, and Spectacle"
+    level: chapter_plan
+    genre: space_opera
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-001
+      - CC-047
+      - CC-070
+      - CC-085
+      - CC-144
+      - CC-167
+      - CC-182
+    sentinels:
+      - CS-019
+      - CS-073
+      - CS-076
+      - SS-184
+
+  - name: "High Fantasy: Quest, Magic, and Sub-Creation"
+    level: chapter_plan
+    genre: high_fantasy
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-025
+      - CC-045
+      - CC-084
+      - CC-088
+      - CC-102
+      - CC-198
+      - CC-187
+    sentinels:
+      - CS-040
+      - CS-050
+      - CS-051
+
+  - name: "Fantasy/SF: Quest Structure"
+    level: novel_plan
+    genre: high_fantasy
+    context: [novel_plan, premise]
+    criteria:
+      - NC-026
+    sentinels:
+      - NS-019
+      - NS-020
+
+  - name: "General Genre: Convention and Trope Management"
+    level: chapter_plan
+    genre: general
+    context: [chapter_plan, novel_plan]
+    criteria:
+      - CC-051
+      - CC-062
+      - CC-080
+      - CC-081
+      - CC-082
+      - CC-083
+      - CC-130
+      - CC-141
+      - CC-143
+      - CC-201
+      - CC-202
+      - CC-209
+      - CC-213
+    sentinels:
+      - CS-043
+      - CS-094
+      - CS-103
+      - NS-007
+
+  - name: "General Genre: Novel-Plan Genre Delivery"
+    level: novel_plan
+    genre: general
+    context: [novel_plan, premise]
+    criteria:
+      - ML-007
+      - ML-013
+      - ML-024
+    sentinels: []
