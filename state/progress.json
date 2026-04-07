@@ -1,8 +1,0 @@
-{
-  "phase": "novel_planning",
-  "chapter": 0,
-  "scene": 0,
-  "refinement_round": 1,
-  "status": "auditing",
-  "audit_target": "novel-plan"
-}
