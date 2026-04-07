@@ -1,60 +1,118 @@
 #!/bin/bash
 # Audit/refine loop for the fiction pipeline.
-# Requires: claude CLI, lib/config.sh, lib/state.sh, lib/scoring.sh
+# Requires: claude CLI, assemble_auditor.py, fill_template.py,
+#           lib/config.sh, lib/state.sh, lib/scoring.sh
 #
 # PROJECT_DIR must be set before sourcing.
 
 PROJECT_DIR="${PROJECT_DIR:-$(pwd)}"
 
-# Run all active auditors for a level.
+# Get list of auditor names for a given pipeline level from auditor-config.yaml
+get_auditors_for_level() {
+    local level="$1"
+    yq -r ".auditors[] | select(.level == \"$level\") | .name" \
+        "$PROJECT_DIR/auditor-config.yaml"
+}
+
+# Run all auditors for a level using dynamic prompt assembly.
 # Sets: COMBINED_FEEDBACK (file path), COMBINED_SCORES (JSON string)
 #
 # Args: $1 = level (novel_plan|chapter_plan|scene)
-#        remaining args = KEY=FILE pairs for context assembly
+#        $2 = content file being audited
+#        remaining args = KEY=FILE pairs for context (all available context for this level)
 run_auditors() {
     local level="$1"
     local content_file="$2"
     shift 2
     local context_args=("$@" "content=$content_file")
 
-    local auditors
-    auditors=$(get_active_auditors "$level")
+    local auditor_names
+    auditor_names=$(get_auditors_for_level "$level")
 
     COMBINED_FEEDBACK="$STATE_DIR/current-feedback.txt"
     COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
     > "$COMBINED_FEEDBACK"
 
-    while IFS= read -r auditor; do
-        [[ -z "$auditor" ]] && continue
-        local auditor_file="$PROJECT_DIR/auditors/${auditor}.md"
+    local auditor_prompt_file="$STATE_DIR/current-auditor-prompt.md"
 
-        if [[ ! -f "$auditor_file" ]]; then
-            echo "FATAL: Auditor prompt not found: $auditor_file" >&2
-            exit 1
+    while IFS= read -r auditor_name; do
+        [[ -z "$auditor_name" ]] && continue
+
+        # Assemble the auditor prompt dynamically
+        # assemble_auditor.py reads auditor-config.yaml + criteria-definitions.yaml + criteria-settings.yaml
+        # and outputs a prompt with context placeholders ({scene}, {chapter_plan}, etc.)
+        if ! python3 "$PROJECT_DIR/assemble_auditor.py" "$auditor_name" \
+                > "$auditor_prompt_file" 2>/dev/null; then
+            echo "WARNING: Could not assemble auditor '$auditor_name'" >&2
+            continue
         fi
 
-        echo "  Auditing: $auditor" >&2
+        # Check if auditor has any active criteria/sentinels
+        if grep -q "No active criteria" "$auditor_prompt_file" && \
+           grep -q "No active sentinels" "$auditor_prompt_file"; then
+            continue  # Skip empty auditors (all criteria toggled off)
+        fi
 
-        # Assemble prompt with context
-        local assembled
-        assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$auditor_file" "${context_args[@]}")
+        echo "  Auditing: $auditor_name" >&2
+
+        # Fill context placeholders with actual content
+        local filled
+        filled=$(python3 "$PROJECT_DIR/fill_template.py" "$auditor_prompt_file" \
+            "${context_args[@]}")
 
         # Call claude
         local output
-        output=$(echo "$assembled" | claude -p - --output-format text)
+        output=$(echo "$filled" | claude -p - --output-format text)
 
         # Append to combined feedback
-        printf '\n\n--- Auditor: %s ---\n%s' "$auditor" "$output" >> "$COMBINED_FEEDBACK"
+        printf '\n\n--- Auditor: %s ---\n%s' "$auditor_name" "$output" >> "$COMBINED_FEEDBACK"
 
         # Extract and merge scores
         local scores
         scores=$(echo "$output" | extract_scores) || {
-            echo "WARNING: Could not extract scores from auditor $auditor" >&2
+            echo "WARNING: Could not extract scores from auditor '$auditor_name'" >&2
             continue
         }
         COMBINED_SCORES=$(merge_scores "$COMBINED_SCORES" "$scores")
 
-    done <<< "$auditors"
+    done <<< "$auditor_names"
+}
+
+# Run the enhancement agent for a level.
+# Appends enhancement suggestions to $COMBINED_FEEDBACK.
+#
+# Args: $1 = level (novel_plan|chapter_plan|scene)
+#        remaining args = KEY=FILE pairs for context
+run_enhancement() {
+    local level="$1"
+    shift
+    local context_args=("$@")
+
+    local enhance_prompt
+    case "$level" in
+        novel_plan)   enhance_prompt="$PROJECT_DIR/prompts/enhance-novel-plan.md" ;;
+        chapter_plan) enhance_prompt="$PROJECT_DIR/prompts/enhance-chapter-plan.md" ;;
+        scene)        enhance_prompt="$PROJECT_DIR/prompts/enhance-scene.md" ;;
+        *)
+            echo "WARNING: No enhancement prompt for level '$level'" >&2
+            return
+            ;;
+    esac
+
+    echo "  Brainstorming enhancements..." >&2
+
+    local filled
+    filled=$(python3 "$PROJECT_DIR/fill_template.py" "$enhance_prompt" \
+        "${context_args[@]}")
+
+    local enhancements
+    enhancements=$(echo "$filled" | claude -p - --output-format text)
+
+    # Append to combined feedback with clear header
+    printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$COMBINED_FEEDBACK"
+    printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$COMBINED_FEEDBACK"
+    printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$COMBINED_FEEDBACK"
+    printf '%s' "$enhancements" >> "$COMBINED_FEEDBACK"
 }
 
 # The main audit/refine loop.
@@ -64,7 +122,7 @@ run_auditors() {
 #        $2 = content file being refined
 #        $3 = fixer prompt file
 #        $4 = log prefix for audit logs
-#        remaining args = KEY=FILE pairs for context assembly
+#        remaining args = KEY=FILE pairs for context
 audit_refine_loop() {
     local level="$1"
     local content_file="$2"
@@ -105,7 +163,10 @@ audit_refine_loop() {
             return 1
         fi
 
-        # Run fixer
+        # Run enhancement brainstorming (appends to COMBINED_FEEDBACK)
+        run_enhancement "$level" "${context_args[@]}"
+
+        # Run fixer with audit feedback + enhancement suggestions
         echo "Fixing (round $round)..." >&2
         update_state "status" '"fixing"'
 
