@@ -228,10 +228,8 @@ auditors:
       - SC-149
       - SC-243
       - ML-032
-      - ML-028
     sentinels:
       - ML-001
-      - ML-030
       - SS-089
       - SS-092
       - SS-097
@@ -247,7 +245,6 @@ auditors:
       - SC-054
       - SC-055
       - SC-114
-      - ML-003
     sentinels:
       - SS-057
       - SS-076
@@ -602,9 +599,7 @@ auditors:
       - SC-130
       - SC-197
       - ML-066
-      - ML-067
       - ML-069
-      - ML-070
       - ML-079
       - ML-103
     sentinels:
@@ -629,7 +624,6 @@ auditors:
       - SC-286
       - SC-290
       - ML-046
-      - ML-075
     sentinels:
       - SS-031
       - SS-074
@@ -696,12 +690,8 @@ auditors:
     level: scene
     context: [scene, chapter_plan]
     criteria:
-      - SC-285
-      - ML-016
       - ML-083
-      - ML-060
     sentinels:
-      - ML-026
       - SS-147
       - SS-190
       - SS-200
@@ -718,9 +708,6 @@ auditors:
       - SC-262
       - SC-276
       - SC-278
-      - ML-049
-      - ML-061
-      - ML-114
     sentinels:
       - ML-023
       - ML-045
@@ -736,18 +723,11 @@ auditors:
     criteria:
       - SC-001
       - SC-014
-      - SC-026
       - SC-115
-      - SC-120
       - SC-126
-      - SC-168
       - SC-170
-      - SC-205
       - SC-218
       - SC-269
-      - SC-294
-      - ML-020
-      - ML-043
     sentinels:
       - SS-071
       - SS-072
@@ -770,7 +750,6 @@ auditors:
     sentinels:
       - SS-047
       - SS-166
-      - ML-010
 
   - name: "Continuity — Factual Details and Physical Logic"
     level: scene
@@ -784,7 +763,6 @@ auditors:
       - SC-123
       - SC-248
       - SC-282
-      - ML-062
     sentinels:
       - SS-049
       - SS-060
@@ -820,7 +798,6 @@ auditors:
     context: [scene]
     criteria:
       - SC-135
-      - ML-005
       - ML-025
     sentinels:
       - SS-061
@@ -844,9 +821,7 @@ auditors:
     criteria:
       - ML-080
       - ML-089
-      - ML-081
     sentinels:
-      - ML-033
       - SS-039
       - SS-218
       - SS-261
@@ -866,7 +841,6 @@ auditors:
       - ML-073
       - ML-085
       - ML-086
-      - ML-087
       - ML-127
     sentinels:
       - SS-197
@@ -882,28 +856,16 @@ auditors:
     context: [scene, chapter_plan, relevant_context]
     criteria:
       - ML-004
-      - ML-017
-      - ML-064
     sentinels:
-      - ML-002
-      - ML-014
       - ML-037
-      - ML-051
-      - ML-052
-      - ML-057
-      - ML-058
-      - ML-091
-      - ML-092
 
   - name: "Scene-Level Character Dynamics"
     level: scene
     context: [scene, relevant_context]
     criteria:
       - ML-068
-      - ML-078
       - ML-084
       - ML-088
-      - ML-050
       - SC-196
     sentinels:
       - SS-321
@@ -919,12 +881,9 @@ auditors:
     criteria:
       - ML-047
     sentinels:
-      - ML-031
       - ML-102
       - ML-135
       - ML-099
-      - ML-096
-      - ML-101
       - SS-315
 
   - name: "Worldbuilding in Setting Description"
@@ -1373,12 +1332,9 @@ auditors:
     criteria:
       - CC-206
       - ML-008
-      - ML-022
       - ML-062
       - ML-065
       - ML-074
-      - ML-009
-      - ML-006
     sentinels:
       - CS-001
 
@@ -1397,7 +1353,6 @@ auditors:
       - ML-005
       - ML-014
       - ML-015
-      - ML-025
       - ML-051
       - ML-096
 
@@ -1407,7 +1362,6 @@ auditors:
     criteria:
       - ML-089
       - ML-071
-      - ML-041
     sentinels:
       - ML-095
       - ML-100
@@ -1418,9 +1372,6 @@ auditors:
     level: chapter_plan
     context: [chapter_plan, premise]
     criteria:
-      - ML-032
-      - ML-039
-      - ML-054
       - ML-028
       - ML-029
       - ML-126
@@ -1536,9 +1487,7 @@ auditors:
       - ML-012
       - ML-042
       - ML-060
-      - ML-077
       - ML-064
-      - NC-029
     sentinels:
       - NS-010
       - ML-119
@@ -1604,7 +1553,6 @@ auditors:
     level: novel_plan
     context: [novel_plan, premise]
     criteria:
-      - ML-041
       - ML-075
       - ML-085
       - ML-086
@@ -1623,7 +1571,6 @@ auditors:
       - ML-013
       - ML-024
       - ML-031
-      - ML-032
       - ML-128
       - ML-132
     sentinels:
@@ -1683,7 +1630,6 @@ auditors:
       - CS-019
       - CS-073
       - CS-076
-      - SS-184
 
   - name: "High Fantasy: Quest, Magic, and Sub-Creation"
     level: chapter_plan

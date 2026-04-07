@@ -43,13 +43,13 @@ criteria:
 
   CC-010:
     name: "Backstory Distribution"
-    measures: "Whether background information and world-building are delivered in appropriate doses at appropriate times"
+    measures: "Whether background information and world-building are delivered in appropriate doses at appropriate times. At chapter_plan: whether the plan distributes backstory and exposition across scenes strategically rather than front-loading it, and whether scenes are designed so that background information arrives when dramatically relevant."
     score_0: "Large exposition dumps front-load all background information; \"as you know, Bob\" dialogue delivers information unnaturally; backstory chapters halt the narrative; or critical information is never provided, leaving readers confused; exposition is delivered when convenient for the author rather than when the reader needs it"
     score_5: "Background is delivered in \"bite sizes when stakes rise, not chapters early\"; exposition is woven into action and dialogue through fact-dependent choices; no paragraph contains more than three sentences of pure information without dramatic context; critical world-building is revealed through character experience rather than narration; the reader learns what they need exactly when they need it"
 
   CC-011:
     name: "Backstory-Tension Balance"
-    measures: "Whether backstory and exposition are distributed so as not to interrupt or deflate moments of tension."
+    measures: "Whether backstory and exposition are distributed so as not to interrupt or deflate moments of tension. At chapter_plan: whether the plan positions flashbacks, exposition, and backstory reveals away from high-tension scenes, and whether scene descriptions avoid specifying exposition delivery during climactic or turning-point moments."
     score_0: "Backstory dumps interrupt tense sequences; exposition arrives at the worst possible moments; flashbacks or info-dumps kill momentum at critical junctures; the reader is pulled out of engagement by untimely context."
     score_5: "Backstory is woven into the narrative without breaking tension; exposition arrives when the reader needs it, not when it's convenient for the author; tense moments are never interrupted by flashbacks or information delivery; context enriches rather than deflates engagement."
 
@@ -211,7 +211,7 @@ criteria:
 
   CC-044:
     name: "Convention Delivery — Hardboiled/Noir"
-    measures: "Whether a hardboiled or noir detective story delivers the specific conventions of that tradition"
+    measures: "Whether a hardboiled or noir detective story delivers the specific conventions of that tradition. At chapter_plan: whether the plan establishes systemic corruption, a morally tested detective with a personal code, consequence-laden violence, and noir-appropriate tone and atmosphere across scenes."
     score_0: "Claims noir/hardboiled aesthetics but is actually a cozy mystery with cynical narration bolted on. No moral complexity. The world is not corrupt — it is merely inconvenient. The detective has no inner life or moral code. Violence is consequence-free."
     score_5: "The detective embodies Chandler's ideal: \"a man who is not himself mean\" walking \"mean streets.\" The world is recognizably corrupt in ways that feel systemic rather than plot-convenient. The detective's moral code is tested by the case. The prose has the clipped, ironic quality that both reveals and conceals. Murder has been given \"back to the kind of people that commit it for reasons.\""
 
@@ -451,7 +451,7 @@ criteria:
 
   CC-095:
     name: "Incluing and Worldbuilding Integration"
-    measures: "Whether unfamiliar world elements (technology, magic systems, social structures, terminology) are integrated seamlessly through contextual clues, or explained through direct exposition blocks."
+    measures: "Whether unfamiliar world elements (technology, magic systems, social structures, terminology) are integrated seamlessly through contextual clues, or explained through direct exposition blocks. At chapter_plan: whether scene descriptions specify worldbuilding delivery through character action and discovery rather than through planned exposition blocks, and whether the plan avoids front-loading world mechanics."
     score_0: "World mechanics are explained in lecture-format passages. Invented terminology is defined in parenthetical asides or footnotes that break narrative flow. Characters explain their own world as if they are strangers to it. The narrative stops to teach the reader about the setting."
     score_5: "World elements emerge through character interaction with them. Invented terms are contextualized by usage, allowing readers to infer meaning. Characters demonstrate familiarity with their world rather than explaining it. Information about world mechanics appears at the moment of narrative relevance. Readers build their understanding incrementally from scattered clues, and the gap between knowing and not-knowing creates engagement rather than confusion."
 
@@ -799,7 +799,7 @@ criteria:
 
   CC-158:
     name: "Scene-Level Thematic Integration"
-    measures: "Whether each individual scene advances or challenges the theme, rather than theme existing only at the macro level."
+    measures: "Whether each individual scene advances or challenges the theme, rather than theme existing only at the macro level. At chapter_plan: whether each scene's stated purpose, character choices, and dramatic beats connect to the thematic argument, and whether scene descriptions indicate how the theme will be tested or advanced."
     score_0: "Individual scenes have no connection to theme. Scenes serve only plot mechanics without thematic weight. A scene's emotional arc and lesson do not relate to the broader thematic premise."
     score_5: "Every scene tests, challenges, or advances the thematic argument. Scene goals connect to the overarching theme. Character emotional arcs within scenes reflect the broader thematic journey. Even action-oriented scenes carry thematic weight through character choices and consequences. \"Every single sentence, paragraph, and scene in your story can and should be put to the same test: Does this support my theme in some way?\""
 
@@ -1081,13 +1081,13 @@ criteria:
 
   CC-212:
     name: "Worldbuilding Delivery (Content vs. Exposition)"
-    measures: "How world information is conveyed to the reader -- whether it is integrated naturally through character experience or delivered through exposition dumps."
+    measures: "How world information is conveyed to the reader -- whether it is integrated naturally through character experience or delivered through exposition dumps. At chapter_plan: whether scenes are designed so that world information emerges through character action and plot events rather than through planned exposition blocks, and whether the plan avoids dedicating entire scenes or scene openings to worldbuilding lectures."
     score_0: "World information arrives in large blocks of exposition, \"As You Know Bob\" dialogue, prologues that are history lectures, or narrator asides that halt the story. Characters explain things they already know for the reader's benefit. The world is told to the reader rather than experienced."
     score_5: "World rules, history, and culture emerge organically through character action, sensory detail, dialogue that serves character purposes, and environmental storytelling. The reader learns about the world by watching characters live in it. Information arrives precisely when the reader needs it and in a form that serves the scene."
 
   CC-213:
     name: "Worldbuilding Integration (Fantasy/SF)"
-    measures: "Whether worldbuilding serves the story rather than existing as exposition for its own sake"
+    measures: "Whether worldbuilding serves the story rather than existing as exposition for its own sake. At chapter_plan: whether scene purposes integrate worldbuilding with dramatic action rather than dedicating scenes or scene segments to pure worldbuilding exposition."
     score_0: "Worldbuilding is delivered through extended exposition dumps, \"As you know, Bob\" dialogue, or chapter-long history lessons. The story stops for worldbuilding and worldbuilding stops for story. Information is front-loaded rather than distributed. Characters explain things they would already know for the reader's benefit."
     score_5: "Worldbuilding is invisible — the reader absorbs it through character action, dialogue, and sensory experience without ever feeling lectured. Sanderson's Mistborn approach: instead of explaining allomancy in a textbook, readers watch Vin test metals, fail, and slowly figure out the rules during rooftop chases. Only the tip of the iceberg appears on page; the rest is implied. The world feels discovered."
 
@@ -1267,7 +1267,7 @@ criteria:
 
   ML-025:
     name: "Originality of Execution"
-    measures: "Whether the story finds fresh, non-default ways to handle scenes, transitions, character introductions, dialogue, revelations, and other narrative mechanics — distinct from whether the premise itself is original."
+    measures: "Whether the story finds fresh, non-default ways to handle scenes, transitions, character introductions, dialogue, revelations, and other narrative mechanics — distinct from whether the premise itself is original. At novel_plan: whether the planned chapter structure, revelation sequencing, and narrative arc take non-default paths rather than following the most predictable template for the genre."
     score_0: "Every scene plays out in the most default, expected way. Character introductions use stock patterns (mirror description, \"Let me tell you about myself\" internal monologue). Revelations are delivered through exposition dumps. Transitions follow the most obvious sequence. A writing workshop instructor would call it \"competent but unsurprising.\""
     score_5: "Scenes consistently surprise in how they unfold while remaining coherent. Character introductions reveal personality through unexpected means (action, dialogue, what they notice). Revelations emerge through dramatic situations rather than being stated. Transitions create unexpected juxtapositions. The reader repeatedly encounters moments where the execution itself is the pleasure."
 
@@ -1489,7 +1489,7 @@ criteria:
 
   ML-063:
     name: "Atmosphere and Mood Creation"
-    measures: "Whether descriptive choices create a coherent emotional atmosphere that pervades the scene or work."
+    measures: "Whether descriptive choices create a coherent emotional atmosphere that pervades the scene or work. At chapter_plan: whether scene descriptions specify coherent atmospheric intent, whether settings and environmental elements are chosen to support emotional tone, and whether the planned mood across scenes serves the chapter's dramatic arc."
     score_0: "No discernible mood or atmosphere emerges from the description. Descriptive details are chosen randomly without emotional coherence, or the description is too sparse to create any atmospheric effect. The scene has no emotional texture."
     score_5: "Description creates a unified, palpable atmosphere through coordinated choices of detail, diction, rhythm, and sensory emphasis. The reader feels immersed in a specific emotional environment. Mood is created through accumulation of carefully chosen concrete details rather than through direct statement (\"it was eerie\")."
 
@@ -1555,7 +1555,7 @@ criteria:
 
   ML-074:
     name: "Emotional Continuity"
-    measures: "Whether characters carry appropriate emotional states between scenes, with emotions flowing logically from what has happened to them rather than resetting to a neutral baseline at each scene boundary."
+    measures: "Whether characters carry appropriate emotional states between scenes, with emotions flowing logically from what has happened to them rather than resetting to a neutral baseline at each scene boundary. At novel_plan: whether chapter descriptions account for emotional carry-over from preceding chapters rather than treating each chapter's emotional state as independent."
     score_0: "Characters experience traumatic events in one scene and appear completely unaffected in the next. Emotional states reset to neutral at every scene break. Characters who were grieving, furious, or terrified show no residue of those emotions in subsequent scenes. Relationships between characters fluctuate wildly (hostile in one scene, casually friendly in the next) with no transition or explanation."
     score_5: "Each scene's opening emotional state flows logically from the preceding scene's events. Characters carry emotional residue — grief lingers, anger simmers, joy colors subsequent interactions. Emotional shifts between scenes are either explicitly dramatized or occur over plausible timeframes. A character's emotional state at the beginning of a scene is informed by what happened \"the moment before.\""
 
@@ -1591,7 +1591,7 @@ criteria:
 
   ML-080:
     name: "Non-Default Narrative Choices"
-    measures: "Whether the writer makes deliberate, surprising choices at each decision point in the narrative (structure, POV, scene selection, character actions, resolutions) rather than defaulting to the most statistically common or expected option."
+    measures: "Whether the writer makes deliberate, surprising choices at each decision point in the narrative (structure, POV, scene selection, character actions, resolutions) rather than defaulting to the most statistically common or expected option. At novel_plan: whether the planned chapter structure, POV assignments, arc shape, and resolution strategy show non-default choices rather than following the most predictable genre template."
     score_0: "Every structural choice, character action, and plot resolution follows the most predictable path. If a writing workshop instructor could guess the next scene from the current one, the story is on autopilot. POV is third-person limited past tense without justification. Conflict resolves through the most obvious mechanism. Characters make the decision the reader expects. The story never deviates from the center of its genre's probability distribution."
     score_5: "The story consistently surprises at the level of craft choices. K.M. Weiland's test: the writer has examined and rejected the first automatic instinct at every juncture. POV, tense, structure, scene selection, and character decisions all show evidence of deliberate choice rather than default. The narrative is \"a perfectly valid, rational story told in parallel to a consistently surprising one.\" Choices feel purposeful rather than arbitrary — surprise with coherence."
 
@@ -1615,7 +1615,7 @@ criteria:
 
   ML-084:
     name: "Relationship Dynamics"
-    measures: "Whether character relationships are varied, evolving, and revelatory -- each relationship drawing out different facets of the characters involved."
+    measures: "Whether character relationships are varied, evolving, and revelatory -- each relationship drawing out different facets of the characters involved. At novel_plan: whether the planned character pairings are distinct, with different dynamics and planned evolution across the chapter arc."
     score_0: "All relationships feel the same; characters interact identically with everyone; no power dynamics, history, or tension between characters; relationships are static and do not evolve; the protagonist shows the same face to all characters."
     score_5: "Every relationship dynamic is distinct; characters show different facets depending on who they're with; relationships have their own arcs with evolution over time; power dynamics are present and shift; characters bring out contradictions in each other; conflict exists (large or small) in every pairing; the protagonist's behavior changes depending on the relationship context."
 
@@ -1687,7 +1687,7 @@ criteria:
 
   ML-109:
     name: "Ensemble Differentiation"
-    measures: "Whether each member of a multi-character cast is psychologically distinct, functionally non-redundant, and individually indispensable to the narrative."
+    measures: "Whether each member of a multi-character cast is psychologically distinct, functionally non-redundant, and individually indispensable to the narrative. At novel_plan: whether the character roster contains distinct roles, goals, and thematic perspectives with no redundant characters."
     score_0: "Characters are interchangeable; multiple characters serve the same function; all characters sound alike in dialogue; removing a character would not change the story; cast is too large for the story's length."
     score_5: "Each character has a unique psychology, voice, goal, and thematic perspective; no two characters could swap roles; each character's presence is justified by a contribution only they can make; the cast creates a web of distinct, conflicting perspectives that illuminates the central conflict from multiple angles."
 
@@ -1802,8 +1802,8 @@ criteria:
   NC-006:
     name: "Controlling Idea Coherence (McKee)"
     measures: "Whether the story conveys a single, unified controlling idea expressed through the relationship between value change and cause across the entire narrative."
-    score_0: "The story has no unified controlling idea. Scenes convey contradictory meanings without purpose. The value changes at the climax are arbitrary and disconnected from the rest of the story. The reader carries away no coherent vision of life."
-    score_5: "Every scene's climactic value change either proves the truth of the theme or its opposite, creating a dialectical tension that resolves at the climax. The controlling idea can be expressed as a single sentence with both a value statement and a cause: e.g., \"Children live fulfilling lives when parents allow them to take risks.\" The entire story feels like it conveys the same meaning."
+    score_0: "The story has no unified controlling idea. Chapters convey contradictory meanings without purpose. The value changes at the climax are arbitrary and disconnected from the rest of the story. The reader carries away no coherent vision of life."
+    score_5: "Every chapter's value change either proves the truth of the theme or its opposite, creating a dialectical tension that resolves at the climax. The controlling idea can be expressed as a single sentence with both a value statement and a cause: e.g., \"Children live fulfilling lives when parents allow them to take risks.\" The entire story feels like it conveys the same meaning."
 
   NC-007:
     name: "Dan Harmon Story Circle Completeness"
@@ -1886,8 +1886,8 @@ criteria:
   NC-027:
     name: "Redundancy and Structural Efficiency"
     measures: "Whether the story avoids repeating the same structural beat or delivering the same information multiple times"
-    score_0: "Multiple scenes pursue the same goal with the same type of obstacle; information is delivered multiple times through different characters or scenes; chapters chase the same outcome; emotional beats repeat without escalation; the story could be significantly compressed without losing anything"
-    score_5: "Every scene has a unique five-word purpose statement; no two scenes repeat the same structural function; when similar situations recur, they escalate or transform; redundant beats have been merged or cut; the story achieves its narrative goals with maximum efficiency"
+    score_0: "Multiple chapters pursue the same goal with the same type of obstacle; information is delivered multiple times through different characters or chapters; chapters chase the same outcome; emotional beats repeat without escalation; the story could be significantly compressed without losing anything"
+    score_5: "Every chapter has a unique purpose statement; no two chapters repeat the same structural function; when similar situations recur, they escalate or transform; redundant beats have been merged or cut; the story achieves its narrative goals with maximum efficiency"
 
   NC-028:
     name: "Save the Cat Beat Completeness"
@@ -3924,7 +3924,7 @@ sentinels:
 
   ML-090:
     name: "All Scenes End with Clean Resolution (sentinel)"
-    detection: "Every scene concludes with the character's goal achieved, complications resolved, and no unfinished business -- \"Yes\" endings throughout."
+    detection: "Every scene concludes with the character's goal achieved, complications resolved, and no unfinished business -- \"Yes\" endings throughout. At novel_plan: every chapter description ends with its conflicts resolved and no threads carrying forward to the next chapter."
     why_autocomplete: "LLMs are trained to produce complete, coherent text units. Each scene generation tends toward closure because the model treats the scene as a self-contained completion task. The \"Yes, But\" and \"No, And Furthermore\" outcomes that drive narrative forward require deliberate structural planning that token prediction doesn't perform."
 
   ML-091:
@@ -3944,12 +3944,12 @@ sentinels:
 
   ML-094:
     name: "Episodic Scene Sequence (sentinel)"
-    detection: "Consecutive scenes are connected only by featuring the same characters. No scene's outcome drives the next scene's situation. Scenes could be reordered without creating logical problems."
+    detection: "Consecutive scenes are connected only by featuring the same characters. No scene's outcome drives the next scene's situation. Scenes could be reordered without creating logical problems. At novel_plan: consecutive chapters are connected only by featuring the same characters; no chapter's outcome drives the next chapter's situation; chapters could be reordered without creating logical problems."
     why_autocomplete: "LLMs generate each scene as an independent unit. Maintaining causal state across scenes (what happened in scene 3 must affect scene 4's opening conditions) requires long-range state tracking that token prediction handles poorly. The result is \"and then\" sequencing rather than \"because of that\" causality."
 
   ML-095:
     name: "Homogeneous Ensemble (sentinel)"
-    detection: "In a multi-character narrative, apply differentiation checks: (1) dialogue voice is interchangeable between characters, (2) characters react to the same event in the same way, (3) characters share the same emotional register, (4) characters have similar backgrounds or perspectives, (5) removing any one character would not change the thematic landscape."
+    detection: "In a multi-character narrative, apply differentiation checks: (1) dialogue voice is interchangeable between characters, (2) characters react to the same event in the same way, (3) characters share the same emotional register, (4) characters have similar backgrounds or perspectives, (5) removing any one character would not change the thematic landscape. At novel_plan: check whether the character roster defines distinct goals, perspectives, and thematic roles for each character, or whether multiple characters serve interchangeable functions."
     why_autocomplete: "The LLM has one voice model, not multiple. When generating ensemble fiction, all characters converge on the same linguistic patterns, emotional responses, and decision-making frameworks. \"AI Dungeon outputs drift toward a neutral voice despite customization options\"; \"different characters feel less distinct due to similar phrasing and roleplay tropes.\" The model cannot maintain multiple simultaneous character models because it doesn't have separate representations for different characters."
 
   ML-096:
@@ -4069,7 +4069,7 @@ sentinels:
 
   NS-004:
     name: "False Hook (Opening Action Disconnected from Story)"
-    detection: "The opening scene's primary tension or action (first 1-3 pages) has no causal, thematic, or character connection to the story's actual central conflict."
+    detection: "The opening scene's primary tension or action (first 1-3 pages) has no causal, thematic, or character connection to the story's actual central conflict. At novel_plan: the first chapter's described purpose or content has no connection to the story's central conflict or thematic concerns."
     why_autocomplete: "LLMs frequently generate exciting openings because they are statistically common in training data, then shift to an unrelated story because they lack global narrative planning. The hook and the story are generated as separate probability streams."
 
   NS-006:
