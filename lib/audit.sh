@@ -177,6 +177,7 @@ run_auditors() {
         local scores_file="$auditor_out_dir/${safe_name}.scores.json"
         local status_file="$auditor_out_dir/${safe_name}.status"
 
+        echo "    Launched: $auditor_name" >&2
         (
             # Write status on exit (success or failure)
             trap 'if [[ ! -f "$status_file" ]]; then echo "CRASHED: unexpected exit" > "$status_file"; fi' EXIT
@@ -199,6 +200,7 @@ Do not write any other files. Do not use any other tools."
 
             if [[ ! -f "$feedback_file" || ! -s "$feedback_file" ]]; then
                 echo "FAILED: output file not written" > "$status_file"
+                echo "    FAILED: $auditor_name — no output" >&2
                 step_failed "audit-${safe_name}" "output file not written"
                 exit 1
             fi
@@ -220,6 +222,7 @@ Do not write any other files. Do not use any other tools."
             echo "$scores" > "$scores_file"
 
             echo "OK" > "$status_file"
+            echo "    Done: $auditor_name" >&2
             step_done "audit-${safe_name}" "$(echo "$scores" | python3 -c "
 import json,sys
 d=json.load(sys.stdin)
