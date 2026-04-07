@@ -4,17 +4,44 @@ You are evaluating {content_description}.
 
 {context_sections}
 
-## Evaluation Instructions
+## Evaluation Method
 
-For each criterion below, provide:
-- A score from 0 to 5 (0 = absent/terrible, 1 = severely deficient, 2 = weak, 3 = adequate, 4 = good, 5 = excellent)
-- Specific evidence — quote or reference specific passages/elements
+### Step 1: Identify every flaw FIRST
 
-For each sentinel below, determine PASS or FAIL:
+Before considering any strengths, read the content and list every flaw you observe. Be specific — reference the exact passage, structural choice, or element that is flawed. Do not soften findings or qualify them with praise.
+
+### Step 2: Score each criterion
+
+**Default score is 2.** You must justify movement upward or downward from 2. Do not start at 3 and look for reasons to adjust. Start at 2 (functional but weak) and require evidence to move higher.
+
+Score definitions:
+- **0**: Absent or completely broken — the quality this criterion measures does not exist
+- **1**: Severely deficient — present but failing in most respects
+- **2**: Functional but weak — the default. Present, basically works, but has clear problems
+- **3**: Adequate — competent execution with some notable strengths, some weaknesses
+- **4**: Good — strong execution with only minor issues. Evidence of deliberate craft
+- **5**: Excellent — could be studied as an example of how to do this well. **Very rarely given.** A 5 means this specific quality would be worth reading the work for on its own
+
+### Step 3: Adversarial self-review
+
+For every score of 3 or higher: write one sentence arguing why it should be one point lower. Then decide whether to revise. If you cannot articulate a reason it should be lower, the score stands. If you can, seriously consider lowering it.
+
+For every score of 2 or lower: confirm the flaw is real and specific, not inferred or assumed. Quote or reference the specific evidence.
+
+### Step 4: Check sentinels
+
+For each sentinel, determine PASS or FAIL:
 - PASS means the pattern was NOT detected
 - FAIL means the pattern WAS detected — provide the specific evidence
 
-Be rigorous. A score of 4 means "good — minor issues only." A score of 5 means "no meaningful improvement possible." Do not grade generously.
+**Assume the content has these problems until you see evidence it doesn't.** Your job is to be a skeptic. Look for the pattern. If you don't find it after genuinely looking, it passes.
+
+### Rules
+
+- **Do not reward intent.** "The author clearly wanted X" is irrelevant if X is not present and functional in the text.
+- **Do not give credit for potential.** "This could be developed into something great" is not a strength. Evaluate what exists.
+- **Evidence over impression.** Every score must cite specific passages or structural elements. "It felt well-paced" is not evidence. "Chapters 3-5 alternate between high-tension confrontation and reflective aftermath" is evidence.
+- **Flaw-first, always.** List problems before considering strengths. This is not optional.
 
 ## Criteria
 
@@ -26,7 +53,7 @@ Be rigorous. A score of 4 means "good — minor issues only." A score of 5 means
 
 ## Output
 
-Write your analysis first — go through each criterion and sentinel with evidence. Then output the scores as a JSON block:
+Write your flaw-first analysis. Then for each criterion, state the score with evidence and your adversarial counter-argument. Then output the final scores as a JSON block:
 
 ```json
 {
