@@ -142,8 +142,8 @@ run_claude() {
 # ── Phase 0: Premise Brainstorming ────────────────────────────
 
 phase_premise_brainstorm() {
-    if [[ -f "$PREMISE_FILE" ]]; then
-        echo "Synthesized premise exists, skipping brainstorming." >&2
+    if [[ -f "$PREMISE_FILE" && -s "$PREMISE_FILE" ]]; then
+        echo "Synthesized premise exists ($(wc -c < "$PREMISE_FILE") bytes), skipping." >&2
         return
     fi
 
@@ -155,49 +155,75 @@ phase_premise_brainstorm() {
     # Generate ideation guidance
     python3 generate_ideation_guidance.py premise > "$STATE_DIR/ideation-guidance-premise.txt"
 
-    # Launch 10 ideation agents in batches
+    # Launch ideation agents ONLY for ideas that don't exist yet
     local total=10
-    echo "Launching $total ideation agents..." >&2
+    local needed=0
+    local needed_ids=()
 
     for ((i=1; i<=total; i++)); do
-        (
-            idx=$(printf '%02d' "$i")
-            step_id="ideate-premise-$idx"
-            idea_dir="$LOG_DIR/$step_id"
-            mkdir -p "$idea_dir"
-
-            step_start "$step_id" "Premise ideation agent $i"
-
-            words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
-            prompt=$(python3 fill_template.py prompts/ideate-premise.md \
-                "premise=premise.md" \
-                "random_words=$words" \
-                "ideation_guidance=$STATE_DIR/ideation-guidance-premise.txt")
-
-            echo "$prompt" > "$idea_dir/prompt.md"
-            step_heartbeat "$step_id"
-
-            if echo "$prompt" | claude -p - --output-format text \
-                > "output/brainstorm/premise/idea-${idx}.md"; then
-                cp "output/brainstorm/premise/idea-${idx}.md" "$idea_dir/response.md"
-                step_done "$step_id" "$(wc -c < "output/brainstorm/premise/idea-${idx}.md") bytes"
-            else
-                step_failed "$step_id" "claude -p exited $?"
-            fi
-        ) &
-
-        # Batch control
-        if (( i % BRAINSTORM_BATCH_SIZE == 0 )); then
-            wait
-            echo "  Batch $((i / BRAINSTORM_BATCH_SIZE)) complete" >&2
+        local idx
+        idx=$(printf '%02d' "$i")
+        local idea_file="output/brainstorm/premise/idea-${idx}.md"
+        if [[ -f "$idea_file" && -s "$idea_file" ]]; then
+            echo "  Idea $i already exists ($(wc -c < "$idea_file") bytes), skipping." >&2
+        else
+            needed=$((needed + 1))
+            needed_ids+=("$i")
         fi
     done
-    wait
 
-    # Verify all ideas were generated
-    local idea_count
-    idea_count=$(ls output/brainstorm/premise/idea-*.md 2>/dev/null | wc -l)
-    echo "$idea_count of $total ideation results collected." >&2
+    if [[ "$needed" -gt 0 ]]; then
+        echo "Generating $needed missing premise ideas..." >&2
+
+        local batch_count=0
+        for i in "${needed_ids[@]}"; do
+            (
+                idx=$(printf '%02d' "$i")
+                step_id="ideate-premise-$idx"
+                idea_dir="$LOG_DIR/$step_id"
+                mkdir -p "$idea_dir"
+
+                step_start "$step_id" "Premise ideation agent $i"
+
+                words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
+                prompt=$(python3 fill_template.py prompts/ideate-premise.md \
+                    "premise=premise.md" \
+                    "random_words=$words" \
+                    "ideation_guidance=$STATE_DIR/ideation-guidance-premise.txt")
+
+                echo "$prompt" > "$idea_dir/prompt.md"
+                step_heartbeat "$step_id"
+
+                if echo "$prompt" | claude -p - --output-format text \
+                    > "output/brainstorm/premise/idea-${idx}.md"; then
+                    cp "output/brainstorm/premise/idea-${idx}.md" "$idea_dir/response.md"
+                    step_done "$step_id" "$(wc -c < "output/brainstorm/premise/idea-${idx}.md") bytes"
+                else
+                    step_failed "$step_id" "claude -p exited $?"
+                fi
+            ) &
+
+            batch_count=$((batch_count + 1))
+            if (( batch_count % BRAINSTORM_BATCH_SIZE == 0 )); then
+                wait
+            fi
+        done
+        wait
+    fi
+
+    # Verify all ideas exist and have content
+    local idea_count=0
+    for ((i=1; i<=total; i++)); do
+        local idx
+        idx=$(printf '%02d' "$i")
+        local idea_file="output/brainstorm/premise/idea-${idx}.md"
+        if [[ -f "$idea_file" && -s "$idea_file" ]]; then
+            idea_count=$((idea_count + 1))
+        else
+            echo "WARNING: idea-${idx}.md missing or empty after generation" >&2
+        fi
+    done
+    echo "$idea_count of $total premise ideas ready." >&2
 
     # Concatenate all ideas
     cat output/brainstorm/premise/idea-*.md > "$STATE_DIR/all-premise-ideas.txt"
@@ -219,7 +245,7 @@ phase_novel_planning() {
     echo "=== Phase 1: Novel Planning ===" >&2
     update_state "phase" '"novel_planning"'
 
-    if [[ ! -f "output/novel-plan.md" ]]; then
+    if [[ ! -f "output/novel-plan.md" || ! -s "output/novel-plan.md" ]]; then
         echo "Creating novel plan..." >&2
         local assembled
         assembled=$(python3 fill_template.py prompts/plan-novel.md \
@@ -244,8 +270,9 @@ phase_chapter_brainstorm() {
     local ch_dir="$2"
     local concept_file="$ch_dir/chapter-concept.md"
 
-    if [[ -f "$concept_file" ]]; then
-        return  # Already brainstormed
+    if [[ -f "$concept_file" && -s "$concept_file" ]]; then
+        echo "  Chapter $ch concept exists ($(wc -c < "$concept_file") bytes), skipping." >&2
+        return
     fi
 
     echo "  Brainstorming chapter $ch concepts..." >&2
@@ -268,38 +295,54 @@ phase_chapter_brainstorm() {
     # Generate ideation guidance
     python3 generate_ideation_guidance.py chapter > "$STATE_DIR/ideation-guidance-chapter.txt"
 
-    # Launch 5 ideation agents
+    # Launch ideation agents ONLY for ideas that don't exist yet
     local total=5
+    local needed_ids=()
+
     for ((i=1; i<=total; i++)); do
-        (
-            idx=$(printf '%02d' "$i")
-            step_id="ideate-chapter-$(printf '%02d' "$ch")-$idx"
-            idea_log_dir="$LOG_DIR/$step_id"
-            mkdir -p "$idea_log_dir"
-
-            step_start "$step_id" "Chapter $ch ideation agent $i"
-
-            words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
-            prompt=$(python3 fill_template.py prompts/ideate-chapter.md \
-                "synthesized_premise=$PREMISE_FILE" \
-                "novel_plan=output/novel-plan.md" \
-                "chapter_description=$ch_desc_file" \
-                "completed_chapters_summary=$summary_file" \
-                "random_words=$words")
-
-            echo "$prompt" > "$idea_log_dir/prompt.md"
-            step_heartbeat "$step_id"
-
-            if echo "$prompt" | claude -p - --output-format text \
-                > "$brainstorm_dir/idea-${idx}.md"; then
-                cp "$brainstorm_dir/idea-${idx}.md" "$idea_log_dir/response.md"
-                step_done "$step_id" "$(wc -c < "$brainstorm_dir/idea-${idx}.md") bytes"
-            else
-                step_failed "$step_id" "claude -p exited $?"
-            fi
-        ) &
+        local idx
+        idx=$(printf '%02d' "$i")
+        local idea_file="$brainstorm_dir/idea-${idx}.md"
+        if [[ -f "$idea_file" && -s "$idea_file" ]]; then
+            echo "    Chapter $ch idea $i already exists, skipping." >&2
+        else
+            needed_ids+=("$i")
+        fi
     done
-    wait
+
+    if [[ "${#needed_ids[@]}" -gt 0 ]]; then
+        echo "    Generating ${#needed_ids[@]} missing chapter ideas..." >&2
+        for i in "${needed_ids[@]}"; do
+            (
+                idx=$(printf '%02d' "$i")
+                step_id="ideate-chapter-$(printf '%02d' "$ch")-$idx"
+                idea_log_dir="$LOG_DIR/$step_id"
+                mkdir -p "$idea_log_dir"
+
+                step_start "$step_id" "Chapter $ch ideation agent $i"
+
+                words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
+                prompt=$(python3 fill_template.py prompts/ideate-chapter.md \
+                    "synthesized_premise=$PREMISE_FILE" \
+                    "novel_plan=output/novel-plan.md" \
+                    "chapter_description=$ch_desc_file" \
+                    "completed_chapters_summary=$summary_file" \
+                    "random_words=$words")
+
+                echo "$prompt" > "$idea_log_dir/prompt.md"
+                step_heartbeat "$step_id"
+
+                if echo "$prompt" | claude -p - --output-format text \
+                    > "$brainstorm_dir/idea-${idx}.md"; then
+                    cp "$brainstorm_dir/idea-${idx}.md" "$idea_log_dir/response.md"
+                    step_done "$step_id" "$(wc -c < "$brainstorm_dir/idea-${idx}.md") bytes"
+                else
+                    step_failed "$step_id" "claude -p exited $?"
+                fi
+            ) &
+        done
+        wait
+    fi
 
     # Concatenate all approaches
     cat "$brainstorm_dir"/idea-*.md > "$STATE_DIR/all-chapter-ideas.txt"
@@ -362,7 +405,7 @@ plan_one_chapter() {
     update_state "phase" '"chapter_planning"'
     update_state "scene" "0"
 
-    if [[ ! -f "$plan_file" ]]; then
+    if [[ ! -f "$plan_file" || ! -s "$plan_file" ]]; then
         echo "  Planning chapter $ch..." >&2
 
         local summary_file="$STATE_DIR/completed-summary.txt"
@@ -414,7 +457,7 @@ author_chapter_scenes() {
         local context_file="$ch_dir/scene-$(printf '%02d' "$sc")-context.md"
 
         # Collect context from prior chapters
-        if [[ ! -f "$context_file" ]]; then
+        if [[ ! -f "$context_file" || ! -s "$context_file" ]]; then
             collect_scene_context "$ch" "$sc" "$ch_dir" "$context_file" "$plan_file"
         fi
 
@@ -427,7 +470,7 @@ author_chapter_scenes() {
         extract_scene_plan "$plan_file" "$sc" > "$scene_plan_file"
 
         # Author scene
-        if [[ ! -f "$scene_file" ]]; then
+        if [[ ! -f "$scene_file" || ! -s "$scene_file" ]]; then
             echo "    Writing scene $sc..." >&2
             local assembled
             assembled=$(python3 fill_template.py prompts/author-scene.md \
