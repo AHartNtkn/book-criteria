@@ -51,6 +51,7 @@ done
 
 echo ""
 echo "=== Step Status ==="
+STEP_DIR="$STATE_DIR/steps"
 init_progress
 show_progress
 
