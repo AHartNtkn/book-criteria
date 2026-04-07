@@ -80,48 +80,102 @@ Auditors are grouped by pipeline level. Some auditors only apply to novel plans,
 
 The actual criteria and sentinel catalogs require dedicated research. The starting genre set is space opera, detective/mystery, and high fantasy.
 
-## Auditor Settings & Genre Templates
+## Style Questionnaire & Criteria Toggles
 
-### Settings File
+Quality evaluation is configured through a two-layer system:
 
-`auditor-settings.yaml` lists every auditor with an on/off toggle, grouped by pipeline level:
+### Layer 1: Style Questionnaire
+
+A set of questions about the user's priorities and the kind of fiction being produced. Each answer maps to toggling specific criteria and sentinels on or off. This resolves contradictions — an auditor can contain criteria that contradict each other (e.g., "tight commercial pacing" vs "literary deliberate slowness") because the questionnaire ensures only the applicable ones are active for a given project.
+
+Questions cover meta-priorities like:
+- Commercial vs literary fiction standards
+- Genre-specific conventions (which genre contract to honor)
+- Prose style preferences (transparent vs opaque, minimalist vs maximalist)
+- Structural preferences (tight three-act vs experimental/non-linear)
+- Thematic approach (emergent vs didactic vs absent)
+
+The questionnaire lives in `questionnaire.yaml`. Genre presets are pre-filled answer sets.
 
 ```yaml
-iteration_cap: 0            # 0 = no limit, N = move on after N rounds
+# questionnaire.yaml
+questions:
+  - id: fiction_tradition
+    text: "What fiction tradition are you targeting?"
+    options:
+      - id: commercial
+        label: "Commercial/genre fiction (prioritize reader compulsion, genre satisfaction)"
+        enables: [hook-effectiveness, stakes-escalation, chapter-hooks, page-turn-compulsion]
+        disables: [deliberate-pacing-disruption, productive-discomfort]
+      - id: literary
+        label: "Literary fiction (prioritize artistic ambition, thematic depth)"
+        enables: [thematic-depth, prose-as-content, deliberate-pacing-disruption]
+        disables: [every-scene-must-advance-plot]
+      - id: hybrid
+        label: "Literary genre fiction (genre structure with literary ambition)"
+        enables: [hook-effectiveness, thematic-depth, genre-contract]
+        disables: []
 
-novel_plan:
-  - auditor: arc-structure
-    enabled: true
-  - auditor: premise-alignment
-    enabled: true
+  - id: prose_style
+    text: "What prose tradition?"
+    options:
+      - id: transparent
+        label: "Transparent (Orwell's windowpane — style doesn't draw attention)"
+        enables: [filter-word-control, sentence-clarity, economy-of-language]
+        disables: []
+      - id: opaque
+        label: "Opaque/stylized (Joyce, Nabokov — style IS the content)"
+        enables: [prose-density, defamiliarization, verbal-personality]
+        disables: [filter-word-control]
+  # ... more questions
 
-chapter_plan:
-  - auditor: scene-coherence
-    enabled: true
-  - auditor: tension-progression
-    enabled: true
-
-scene:
-  - auditor: prose-quality
-    enabled: true
-  - auditor: dialogue
-    enabled: true
-  - auditor: pacing
-    enabled: true
+# Answers are stored in:
+answers:
+  fiction_tradition: commercial
+  prose_style: transparent
+  # ...
 ```
 
-### Genre Templates
+### Layer 2: Criteria Settings (Generated from Questionnaire)
 
-Genre templates are complete copies of the settings file with genre-appropriate presets:
+The questionnaire answers produce `criteria-settings.yaml`, which has per-criterion and per-sentinel toggles:
+
+```yaml
+# criteria-settings.yaml (generated from questionnaire answers)
+iteration_cap: 5
+
+criteria:
+  hook-effectiveness: true
+  stakes-escalation: true
+  thematic-depth: false
+  deliberate-pacing-disruption: false
+  # ... every criterion listed with true/false
+
+sentinels:
+  flat-escalation: true
+  slow-opening: true
+  llm-stock-phrases: true
+  # ... every sentinel listed with true/false
+```
+
+Users can also edit `criteria-settings.yaml` directly for fine-grained control after the questionnaire generates the initial version.
+
+### Genre Presets
+
+Genre presets are pre-filled questionnaire answer sets:
 
 ```
-genre-templates/
-├── space-opera.yaml
-├── detective-mystery.yaml
-└── high-fantasy.yaml
+genre-presets/
+├── space-opera.yaml        # Questionnaire answers for space opera
+├── detective-mystery.yaml  # Questionnaire answers for detective/mystery
+└── high-fantasy.yaml       # Questionnaire answers for high fantasy
 ```
 
-To use a genre: copy the template contents into `auditor-settings.yaml` and adjust if desired. Some auditors are universal (generic writing standards, always on); others are genre-specific (e.g., "clue-planting" for detective/mystery, "magic-system-consistency" for high fantasy).
+To use a genre: copy the preset to `questionnaire.yaml`'s answers section, then run the questionnaire processor to generate `criteria-settings.yaml`.
+
+### Auditor Grouping
+
+Auditors are grouped by **evidentiary overlap** — criteria and sentinels that share the same evidence (what the auditor needs to read to evaluate them) belong in the same auditor. An auditor's criteria list is NOT fixed — it receives only the criteria/sentinels that are currently toggled ON from `criteria-settings.yaml`. This means the same auditor template can evaluate different criteria for different projects.
 
 ## Fixers
 

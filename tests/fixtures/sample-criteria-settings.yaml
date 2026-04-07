@@ -1,0 +1,14 @@
+iteration_cap: 3
+
+criteria:
+  hook-effectiveness: true
+  stakes-escalation: true
+  thematic-depth: false
+  deliberate-pacing-disruption: false
+  prose-density: true
+
+sentinels:
+  flat-escalation: true
+  slow-opening: false
+  llm-stock-phrases: true
+  purple-prose: false
