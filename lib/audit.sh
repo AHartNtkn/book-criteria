@@ -208,7 +208,7 @@ Do not write any other files. Do not use any other tools."
             # Prepend auditor name to feedback
             local tmp_feedback
             tmp_feedback=$(mktemp)
-            printf '--- Auditor: %s ---\n' "$auditor_name" > "$tmp_feedback"
+            echo "--- Auditor: ${auditor_name} ---" > "$tmp_feedback"
             cat "$feedback_file" >> "$tmp_feedback"
             mv "$tmp_feedback" "$feedback_file"
 
