@@ -1,0 +1,664 @@
+# Fiction Style Questionnaire
+# Answers determine which criteria and sentinels are active.
+# Default: everything ON except genre-specific items.
+# Each answer DISABLES items that don't apply to the chosen approach.
+# Genre answers ENABLE items that default to OFF.
+
+questions:
+
+  # ============================================================
+  # Q1: Fiction Tradition
+  # ============================================================
+  # The primary axis. Commercial fiction prioritizes forward momentum,
+  # reader compulsion, structural precision, and genre satisfaction.
+  # Literary fiction prioritizes artistic ambition, thematic depth,
+  # prose as art, and interpretive richness. This question affects
+  # pacing expectations, structural model strictness, thematic
+  # requirements, and hook/engagement mechanics.
+
+  - id: fiction_tradition
+    text: "What fiction tradition is this project targeting?"
+    options:
+      - id: commercial
+        label: "Commercial/genre fiction -- prioritize reader compulsion, genre satisfaction, forward momentum"
+        disables:
+          # --- Literary prose criteria ---
+          # Prose stress pattern awareness -- primarily valued in literary/poetic prose
+          - SC-185
+          # Sound and Euphony -- primarily valued in literary prose
+          - SC-247
+          # Defamiliarization -- literary technique
+          - SC-054
+          - SC-055
+          # Maximalist Density and Accumulation -- literary description technique
+          - SC-137
+          # Temporal Complexity -- literary structural technique
+          - SC-024
+          # Synesthesia and Cross-Sensory Imagery -- literary technique
+          - SC-267
+          # Extended/Controlling Metaphor Craft -- literary technique
+          - SC-097
+          # --- Literary thematic criteria ---
+          # Theme as Question vs Theme as Answer -- literary tradition
+          - CC-192
+          # Interpretive Richness and Ambiguity -- literary tradition
+          - ML-112
+          # Meaning Inseparable from Form -- O'Connor/New Critical tradition
+          - ML-113
+          # Reader Agency in Meaning-Making -- Chekhov tradition
+          - ML-115
+          # Philosophical Depth Without Didacticism -- literary tradition
+          - CC-120
+          # Thematic Complexity (Multiple/Competing Themes) -- literary tradition
+          - CC-188
+          # --- Literary structural criteria ---
+          # Kishotenketsu Structural Awareness -- non-Western/literary structure
+          - NC-016
+          # Circular/Chiastic Structural Resonance -- literary structure
+          - NC-004
+          # Dramatica Completeness of Argument -- literary/analytical framework
+          - NC-010
+          # Frame Narrative and Nested Structure Coherence -- literary technique
+          - NC-012
+          # --- Specialized narration modes less common in commercial ---
+          # Second Person Narration Craft
+          - SC-222
+          # Stream of Consciousness Craft
+          - SC-252
+          # Epistolary/Document Narration Craft
+          - SC-092
+          # Unreliable Narrator Cognitive Engagement
+          - SC-286
+
+      - id: literary
+        label: "Literary fiction -- prioritize artistic ambition, thematic depth, prose as art"
+        disables:
+          # --- Commercial structural models ---
+          # Save the Cat Beat Completeness -- commercial structural template
+          - NC-028
+          # Dan Harmon Story Circle Completeness -- commercial template
+          - NC-007
+          # Story Grid Five Commandments Per Unit -- commercial analytical model
+          - CC-177
+          # Five Commandments Completeness -- commercial structural model
+          - CC-073
+          # Scene-Level Causal Structure (Swain/Bickham rigid model)
+          - CC-153
+          # Pixar Causal Spine -- commercial template
+          - CC-121
+          # The But/Therefore Test -- commercial diagnostic
+          - CC-185
+          # Scene-Sequel Structure (rigid Swain/Bickham alternation)
+          - CC-160
+          # Four Throughline Completeness -- commercial analytical model
+          - CC-079
+          # Seven-Point Symmetry -- commercial template
+          - NC-030
+          # Three-Act Proportional Balance -- rigid structural proportions
+          - NC-035
+          # --- Commercial pacing criteria ---
+          # Hook Placement and Density -- commercial pacing mechanic
+          - SC-120
+          # Every Chapter Ends with a Cliffhanger sentinel -- still relevant but
+          # hooks-as-primary-mechanism less applicable
+          # Ticking Clock / Narrative Urgency -- thriller/commercial pacing
+          - SC-280
+          # Boredom Prevention (maximizing interaction/discovery) -- commercial framing
+          - SC-014
+          # POV Switch Pacing as Hook -- commercial multi-POV technique
+          - SC-168
+          # --- Commercial engagement framing ---
+          # High-Concept Pitchability -- commercial premise criterion
+          - IC-005
+          # Cliffhanger Distribution and Trust -- commercial chapter craft
+          - CC-026
+
+      - id: hybrid
+        label: "Literary genre fiction -- genre structure with literary ambition"
+        disables: []
+
+  # ============================================================
+  # Q2: Genre
+  # ============================================================
+  # Genre-specific auditors default to OFF. Selecting a genre
+  # ENABLES the corresponding auditor cluster(s). Selecting "none"
+  # keeps them all off. Multiple genres can be enabled by running
+  # the questionnaire multiple times or editing the config.
+
+  - id: genre
+    text: "Which genre contract should be honored? (Select the primary genre.)"
+    options:
+      - id: detective_mystery
+        label: "Detective/mystery -- fair play, clue architecture, investigation"
+        enables:
+          # Mystery/Detective: Fair Play and Clue Architecture auditor
+          - CC-029
+          - CC-044
+          - CC-046
+          - CC-049
+          - CC-072
+          - CC-100
+          - CC-109
+          - CC-122
+          - CC-134
+          - CC-208
+          - CS-011
+          - CS-087
+          - CS-088
+          - CS-089
+          - CS-068
+          # General Genre: Convention and Trope Management auditor
+          - CC-051
+          - CC-062
+          - CC-080
+          - CC-081
+          - CC-082
+          - CC-083
+          - CC-130
+          - CC-141
+          - CC-143
+          - CC-201
+          - CC-202
+          - CC-209
+          - CC-213
+          - CS-043
+          - CS-094
+          - CS-103
+          - NS-007
+          # General Genre: Novel-Plan Genre Delivery
+          - ML-007
+          - ML-013
+          - ML-024
+
+      - id: space_opera
+        label: "Space opera -- scale, technology, sense of wonder"
+        enables:
+          # Space Opera: Scale, Technology, and Spectacle auditor
+          - CC-001
+          - CC-047
+          - CC-070
+          - CC-085
+          - CC-144
+          - CC-167
+          - CC-182
+          - CS-019
+          - CS-073
+          - CS-076
+          - SS-184
+          # General Genre: Convention and Trope Management auditor
+          - CC-051
+          - CC-062
+          - CC-080
+          - CC-081
+          - CC-082
+          - CC-083
+          - CC-130
+          - CC-141
+          - CC-143
+          - CC-201
+          - CC-202
+          - CC-209
+          - CC-213
+          - CS-043
+          - CS-094
+          - CS-103
+          - NS-007
+          # General Genre: Novel-Plan Genre Delivery
+          - ML-007
+          - ML-013
+          - ML-024
+
+      - id: high_fantasy
+        label: "High fantasy -- quest, magic systems, sub-creation"
+        enables:
+          # High Fantasy: Quest, Magic, and Sub-Creation auditor
+          - CC-025
+          - CC-045
+          - CC-084
+          - CC-088
+          - CC-102
+          - CC-198
+          - CC-187
+          - CS-040
+          - CS-050
+          - CS-051
+          # Fantasy/SF: Quest Structure (novel-plan level)
+          - NC-026
+          - NS-019
+          - NS-020
+          # General Genre: Convention and Trope Management auditor
+          - CC-051
+          - CC-062
+          - CC-080
+          - CC-081
+          - CC-082
+          - CC-083
+          - CC-130
+          - CC-141
+          - CC-143
+          - CC-201
+          - CC-202
+          - CC-209
+          - CC-213
+          - CS-043
+          - CS-094
+          - CS-103
+          - NS-007
+          # General Genre: Novel-Plan Genre Delivery
+          - ML-007
+          - ML-013
+          - ML-024
+
+      - id: none
+        label: "No specific genre / general fiction"
+        enables: []
+
+  # ============================================================
+  # Q3: Prose Style
+  # ============================================================
+  # Where the prose sits on the Orwell windowpane to Joyce stained-glass
+  # spectrum. Transparent prose aims to be invisible -- the reader sees
+  # through the prose to the story. Opaque prose calls attention to
+  # itself as art. This affects which prose criteria are applied and
+  # how strictly ornament is policed.
+
+  - id: prose_style
+    text: "Where should the prose sit on the transparency-opacity spectrum?"
+    options:
+      - id: transparent
+        label: "Transparent (Orwell windowpane) -- prose should be invisible, serving the story"
+        disables:
+          # Prose criteria that expect/reward stylistic foregrounding
+          # Syntactic Sophistication (Hypotaxis vs Parataxis) -- rewards complex syntax
+          - SC-268
+          # Prose Stress Pattern Awareness -- rewards sonic craft
+          - SC-185
+          # Sound and Euphony -- rewards sonic craft
+          - SC-247
+          # Maximalist Density and Accumulation -- rewards dense description
+          - SC-137
+          # Extended/Controlling Metaphor Craft -- rewards extended figurative structures
+          - SC-097
+          # Synesthesia and Cross-Sensory Imagery -- rewards experimental imagery
+          - SC-267
+          # Defamiliarization -- rewards making-strange technique
+          - SC-054
+          - SC-055
+
+      - id: opaque
+        label: "Opaque/stylized (Joyce, Nabokov, Morrison) -- prose as art, language foregrounded"
+        disables:
+          # Criteria that police ornament and reward spareness
+          # Purple Prose Avoidance -- opaque prose deliberately uses lush language
+          - SC-190
+          # Purple Prose vs. Purposeful Lushness -- the threshold shifts for opaque style
+          - SC-191
+          # Adverb Control -- opaque prose may use adverbs deliberately
+          - SC-002
+          # Concision and Filler Word Control -- opaque prose values density over economy
+          - SC-044
+          # Economy of Description -- opaque prose values richness over economy
+          - SC-076
+          # Economy of Language -- same
+          - SC-077
+          # Strong Nouns Over Adjective Padding -- opaque prose uses adjectives intentionally
+          - SC-253
+          # Purple prose sentinels that would false-positive on intentionally lush prose
+          - SS-168
+          - SS-182
+          - SS-243
+
+      - id: balanced
+        label: "Balanced / varies by scene -- transparent for action, richer for key moments"
+        disables: []
+
+  # ============================================================
+  # Q4: Structural Approach
+  # ============================================================
+  # Whether the work follows traditional Western narrative structure
+  # (three-act, rising action, climax) or uses experimental/non-linear
+  # approaches. This affects which structural models are applied as
+  # criteria vs. which are relaxed.
+
+  - id: structural_approach
+    text: "What structural approach does this project use?"
+    options:
+      - id: traditional
+        label: "Traditional (three-act, rising action, clear turning points)"
+        disables:
+          # Experimental/non-traditional structural criteria
+          # Kishotenketsu -- non-Western structure
+          - NC-016
+          # Temporal Complexity -- experimental temporal technique
+          - SC-024
+          # Frame Narrative and Nested Structure Coherence
+          - NC-012
+
+      - id: experimental
+        label: "Experimental/non-linear (fragmented, non-chronological, unconventional structure)"
+        disables:
+          # Rigid traditional structural models
+          # Three-Act Proportional Balance
+          - NC-035
+          # Save the Cat Beat Completeness
+          - NC-028
+          # Dan Harmon Story Circle Completeness
+          - NC-007
+          # Seven-Point Symmetry
+          - NC-030
+          # Five Commandments Completeness
+          - CC-073
+          # Story Grid Five Commandments Per Unit
+          - CC-177
+          # Scene-Sequel Structure (rigid alternation)
+          - CC-160
+          # Scene-Level Causal Structure (Swain/Bickham)
+          - CC-153
+          # Pixar Causal Spine
+          - CC-121
+          # The But/Therefore Test
+          - CC-185
+          # Four Throughline Completeness
+          - CC-079
+          # Structural Beat Placement at expected positions
+          - ML-042
+          # Five Turning Points Presence
+          - ML-012
+          # Turning Points at Default Intervals sentinel (no longer a false positive)
+          - ML-056
+          # Inciting Incident Placement (rigid timing)
+          - CC-094
+          # Inciting Incident Buried Past 15% Mark (relaxed for experimental)
+          - CS-046
+          # Midpoint Effectiveness (assumes traditional midpoint)
+          - CC-105
+          # Second Act Structural Integrity (assumes three-act)
+          - CC-162
+
+      - id: hybrid_structure
+        label: "Genre structure with some non-linear elements (flashbacks, dual timelines)"
+        disables: []
+
+  # ============================================================
+  # Q5: Thematic Ambition
+  # ============================================================
+  # How central theme is to the work. In literary fiction, theme
+  # pervades every element. In commercial fiction, theme may be
+  # secondary to plot and character engagement. In pure entertainment,
+  # thematic apparatus is minimal.
+
+  - id: thematic_ambition
+    text: "How central is thematic content to this project?"
+    options:
+      - id: central
+        label: "Theme is the central concern -- every element should serve thematic exploration"
+        disables: []
+        # All thematic criteria remain ON -- this is the default-everything-on state
+
+      - id: secondary
+        label: "Theme is present but secondary to plot and character engagement"
+        disables:
+          # Heavyweight thematic criteria that assume theme-as-primary-concern
+          # Theme as Question vs Theme as Answer -- literary thematic tradition
+          - CC-192
+          # Meaning Inseparable from Form -- O'Connor tradition
+          - ML-113
+          # Reader Agency in Meaning-Making -- Chekhov tradition
+          - ML-115
+          # Interpretive Richness and Ambiguity
+          - ML-112
+          # Philosophical Depth Without Didacticism
+          - CC-120
+          # Thematic Complexity (Multiple/Competing Themes)
+          - CC-188
+          # Controlling Idea Coherence (McKee) -- formal thematic apparatus
+          - NC-006
+          # Dramatica Completeness of Argument
+          - NC-010
+          # Scene-Level Thematic Integration -- demanding per-scene thematic content
+          - CC-158
+          # Thematic Premise as Dramatic Argument
+          - ML-048
+
+      - id: minimal
+        label: "Minimal -- entertainment-first, theme emerges naturally if at all"
+        disables:
+          # All the above plus additional thematic criteria
+          - CC-192
+          - ML-113
+          - ML-115
+          - ML-112
+          - CC-120
+          - CC-188
+          - NC-006
+          - NC-010
+          - CC-158
+          - ML-048
+          # Additional thematic criteria disabled for minimal
+          # Thematic Presence and Identifiability
+          - CC-189
+          # Thematic Subtlety
+          - CC-191
+          # Theme-Plot Integration
+          - SC-278
+          # Theme-Character Arc Integration
+          - CC-194
+          # Earned Thematic Resolution
+          - CC-059
+          # Thematic Freshness and Originality
+          - SC-276
+          # Subtext as Thematic Vehicle
+          - SC-262
+          # Symbolism and Image System Effectiveness
+          - ML-087
+          # Motif Development and Evolution
+          - ML-114
+          # Thematic Unity Across Story Elements
+          - ML-050
+          # Character-as-Theme
+          - ML-070
+          # Moral and Thematic Complexity
+          - ML-061
+          # No Thematic Counter-Argument Present sentinel (less relevant)
+          - ML-023
+          # Subplot as Thematic Mirror
+          - CC-180
+          # Thematic sentinels less relevant when theme is minimal
+          - SS-033
+          - SS-056
+          - SS-096
+          - SS-306
+          - SS-067
+          - SS-305
+          - CS-033
+          - CS-092
+          - CS-099
+          - ML-117
+          - ML-121
+          - ML-122
+          - ML-124
+          - ML-125
+          - ML-045
+
+  # ============================================================
+  # Q6: POV Strictness
+  # ============================================================
+  # Whether the work follows strict single-POV-per-scene immersion
+  # (dominant in contemporary commercial fiction) or uses flexible/
+  # omniscient narration. This affects how strictly head-hopping
+  # and POV boundary violations are policed.
+
+  - id: pov_approach
+    text: "What point-of-view approach does this project use?"
+    options:
+      - id: strict_limited
+        label: "Strict limited POV -- one character's head per scene, no head-hopping"
+        disables:
+          # Omniscient-specific criteria
+          # Omniscient Narrator Voice Distinctiveness -- not applicable
+          - SC-160
+
+      - id: omniscient
+        label: "Omniscient -- narrator knows all, can dip into any character's consciousness"
+        disables:
+          # Strict-limited-POV criteria that would false-positive on omniscient
+          # Head-Hopping Control -- omniscient deliberately accesses multiple minds
+          - SC-119
+          # Head-Hopping Within Scene sentinel -- not a defect in omniscient
+          - SS-120
+          # POV Discipline Within Scenes -- relaxed for omniscient
+          - SC-165
+          # Filter Word Control -- less applicable when narrator is separate entity
+          - SC-104
+          - SC-105
+          # Filter Word Saturation sentinel
+          - SS-099
+          # POV Character Selection Per Scene -- omniscient isn't bound to one
+          - SC-162
+          # Free Indirect Discourse Skill -- different technique in omniscient
+          - SC-112
+          # Description Filtered Through POV -- omniscient can describe objectively
+          - SC-056
+          # Sensory Detail Without POV Integration sentinel
+          - SS-282
+
+      - id: mixed
+        label: "Mixed / multiple limited POVs with clear transitions"
+        disables: []
+
+  # ============================================================
+  # Q7: Tonal Register
+  # ============================================================
+  # Whether the work aims for a serious/dark tone, a lighter/humorous
+  # tone, or a mixed tone. This affects which emotional-palette
+  # sentinels fire -- an all-dark work shouldn't be flagged for
+  # lacking lightness, and a comedic work shouldn't be flagged for
+  # lacking darkness.
+
+  - id: tone
+    text: "What is the dominant tonal register?"
+    options:
+      - id: serious
+        label: "Serious/dark -- literary gravitas, tragedy, psychological weight"
+        disables:
+          # Sentinels that flag uniform darkness/seriousness
+          # (None currently -- the sentinels flag uniform positivity, not darkness)
+          # Near-Uniform Earnestness sentinel -- serious work IS earnest
+          - SS-254
+          # S62: Near-Uniform Earnestness
+          # (already captured above)
+
+      - id: light
+        label: "Light/humorous -- comedy, satire, playful tone"
+        disables:
+          # Sentinels that would false-positive on intentionally light work
+          # All-Positive Emotional Palette -- comedic work can be positive
+          - SS-040
+          # Homogeneous Emotional Positivity
+          - SS-123
+          # Homogeneously Positive Emotional Register
+          - SS-126
+          # Nauseatingly Upbeat Scene Endings
+          - SS-152
+          # Positive-Outcome Bias in Narrative Trajectory
+          - SS-177
+          # Every Scene/Chapter Ends Positively
+          - SS-206
+          # Homogeneously Positive Emotional Valence
+          - SS-253
+          # Every Chapter Ends on Upbeat Forward-Looking Note
+          - NS-003
+          # Tidy Resolution / Positive Ending Default
+          - SS-310
+          # Emotional Architecture Collapse / Homogeneously Positive Arc
+          - ML-119
+          # Sanitized Villain Behavior -- comedy may have non-threatening antagonists
+          - SS-219
+          # S29: Sanitized Villain Behavior
+          # (already captured above)
+          # Conflict Avoidance / Characters Too Nice
+          - SS-266
+          # Sanitized Conflict / Conflict Avoidance sentinel
+          - CS-072
+          # Sycophantic Resolution -- comedy may resolve through understanding
+          - ML-101
+          # Therapy-Speak Resolution -- comedy may use explicit emotional dialogue
+          - SS-307
+
+      - id: mixed_tone
+        label: "Mixed -- varies across the work, uses tonal contrast deliberately"
+        disables: []
+
+  # ============================================================
+  # Q8: Character Arc Model
+  # ============================================================
+  # Whether characters undergo transformation arcs (Lie to Truth),
+  # operate as flat-arc protagonists who test the world (Bond,
+  # Holmes), or use anti-arcs/stasis. Affects which arc-related
+  # criteria apply.
+
+  - id: character_arc
+    text: "What character arc model does the protagonist follow?"
+    options:
+      - id: transformative
+        label: "Transformative arc -- protagonist changes internally through the story"
+        disables: []
+        # All character arc criteria apply -- this is the default assumption
+
+      - id: flat_arc
+        label: "Flat arc -- protagonist tests the world rather than being transformed (Bond, Holmes)"
+        disables:
+          # Criteria that assume transformation is required
+          # Ghost/Wound/Lie/Weakness Architecture -- flat-arc protags don't need this
+          - ML-111
+          # Want/Need Tension -- flat-arc protags' want and need are aligned
+          - ML-116
+          # Character Arc Execution -- no transformation to track
+          - ML-104
+          # Theme-Character Arc Integration -- theme works differently in flat arcs
+          - CC-194
+          # Flat Character Arc sentinel -- this IS the intended arc type
+          - ML-120
+          # Missing Character Wound sentinel -- flat arcs may lack wounds
+          - ML-098
+          # Absence of Want/Need Tension sentinel
+          - CS-004
+          # Character Wound Never Activated sentinel
+          - CS-009
+
+      - id: anti_arc
+        label: "Anti-arc/stasis -- protagonist resists or fails to change (tragedy, literary)"
+        disables:
+          # Same as flat arc plus costless victory sentinel relaxed
+          - ML-111
+          - ML-116
+          - ML-104
+          - ML-120
+          - ML-098
+          - CS-004
+          - CS-009
+          # Earned Thematic Resolution -- anti-arcs earn meaning differently
+          - CC-059
+
+# ============================================================
+# Default answers (used if questionnaire not run)
+# ============================================================
+# Defaults produce the maximally inclusive configuration:
+# hybrid tradition keeps both commercial and literary criteria,
+# no genre keeps genre-specific auditors off,
+# balanced prose keeps both spareness and richness criteria,
+# hybrid structure keeps both traditional and experimental,
+# central theme keeps all thematic criteria,
+# mixed POV keeps all POV criteria,
+# mixed tone keeps all tonal sentinels active,
+# transformative arc keeps all arc criteria active.
+
+defaults:
+  fiction_tradition: hybrid
+  genre: none
+  prose_style: balanced
+  structural_approach: hybrid_structure
+  thematic_ambition: central
+  pov_approach: mixed
+  tone: mixed_tone
+  character_arc: transformative
