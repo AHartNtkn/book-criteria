@@ -73,7 +73,7 @@ Write to `/home/ahart/Documents/book-criteria/docs/research/raw/[FILENAME].md`:
 ### [Sentinel Name]
 **Detection**: [Binary-checkable condition]
 **Why it indicates autocomplete**: [LLM failure mode]
-**Design space cost**: [What you lose]
+**Design space cost**: [What LEGITIMATE fiction gets excluded by banning this pattern — e.g., "A human author using 'testament to' in a legal drama would be flagged" or "Beckett deliberately uses repetitive structure for thematic effect." This is NOT about why the pattern is bad — it's about what good fiction gets caught in the filter.]
 **Source**: [URL]
 ```
 
