@@ -31,11 +31,24 @@ load_criteria_settings() {
 }
 
 get_iteration_cap() {
-    if [[ -n "$CRITERIA_FILE" ]]; then
-        yq '.iteration_cap' "$CRITERIA_FILE"
-    else
-        yq '.iteration_cap' "$CONFIG_FILE"
+    local level="${1:-}"
+    local cap=""
+
+    # Check for per-level cap first (iteration_caps.scene, iteration_caps.chapter_plan, etc.)
+    if [[ -n "$level" && -n "$CRITERIA_FILE" ]]; then
+        cap=$(yq ".iteration_caps.${level} // \"\"" "$CRITERIA_FILE" 2>/dev/null)
     fi
+
+    # Fall back to global cap
+    if [[ -z "$cap" || "$cap" == "null" ]]; then
+        if [[ -n "$CRITERIA_FILE" ]]; then
+            cap=$(yq '.iteration_cap' "$CRITERIA_FILE")
+        else
+            cap=$(yq '.iteration_cap' "$CONFIG_FILE")
+        fi
+    fi
+
+    echo "${cap:-0}"
 }
 
 # Get list of auditors for a given pipeline level

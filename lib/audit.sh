@@ -132,7 +132,7 @@ audit_refine_loop() {
     local context_args=("$@")
 
     local iteration_cap
-    iteration_cap=$(get_iteration_cap)
+    iteration_cap=$(get_iteration_cap "$level")
     local round=1
 
     while true; do
