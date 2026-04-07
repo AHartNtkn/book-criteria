@@ -46,6 +46,9 @@ log_call() {
 }
 METAJSON
 
+    # Track step progress
+    step_start "$description" "claude call $call_id"
+
     # Run claude and capture response
     local response
     local start_time
@@ -63,6 +66,13 @@ METAJSON
 
     # Save timing
     echo "{\"duration_seconds\": $duration, \"exit_code\": $exit_code}" > "$call_dir/timing.json"
+
+    # Update step progress
+    if [[ "$exit_code" -eq 0 ]]; then
+        step_done "$description" "${duration}s, $(echo "$response" | wc -c) bytes"
+    else
+        step_failed "$description" "exit code $exit_code after ${duration}s"
+    fi
 
     # Log summary to stderr
     echo "    [log] $description (${duration}s)" >&2

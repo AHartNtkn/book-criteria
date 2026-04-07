@@ -8,6 +8,7 @@ source lib/config.sh
 source lib/state.sh
 source lib/scoring.sh
 source lib/logging.sh
+source lib/progress.sh
 source lib/audit.sh
 
 # ── Prerequisites ──────────────────────────────────────────────
@@ -40,6 +41,7 @@ fi
 
 init_state
 init_logging
+init_progress
 mkdir -p output
 
 PREMISE_FILE="output/synthesized-premise.md"
@@ -159,10 +161,12 @@ phase_premise_brainstorm() {
 
     for ((i=1; i<=total; i++)); do
         (
-            local idx
             idx=$(printf '%02d' "$i")
-            local idea_dir="$LOG_DIR/ideate-premise-$idx"
+            step_id="ideate-premise-$idx"
+            idea_dir="$LOG_DIR/$step_id"
             mkdir -p "$idea_dir"
+
+            step_start "$step_id" "Premise ideation agent $i"
 
             words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
             prompt=$(python3 fill_template.py prompts/ideate-premise.md \
@@ -171,10 +175,15 @@ phase_premise_brainstorm() {
                 "ideation_guidance=$STATE_DIR/ideation-guidance-premise.txt")
 
             echo "$prompt" > "$idea_dir/prompt.md"
-            echo "$prompt" | claude -p - --output-format text \
-                > "output/brainstorm/premise/idea-${idx}.md"
-            cp "output/brainstorm/premise/idea-${idx}.md" "$idea_dir/response.md"
-            echo "  Ideation agent $i complete" >&2
+            step_heartbeat "$step_id"
+
+            if echo "$prompt" | claude -p - --output-format text \
+                > "output/brainstorm/premise/idea-${idx}.md"; then
+                cp "output/brainstorm/premise/idea-${idx}.md" "$idea_dir/response.md"
+                step_done "$step_id" "$(wc -c < "output/brainstorm/premise/idea-${idx}.md") bytes"
+            else
+                step_failed "$step_id" "claude -p exited $?"
+            fi
         ) &
 
         # Batch control
@@ -263,10 +272,12 @@ phase_chapter_brainstorm() {
     local total=5
     for ((i=1; i<=total; i++)); do
         (
-            local idx
             idx=$(printf '%02d' "$i")
-            local idea_log_dir="$LOG_DIR/ideate-chapter-$(printf '%02d' "$ch")-$idx"
+            step_id="ideate-chapter-$(printf '%02d' "$ch")-$idx"
+            idea_log_dir="$LOG_DIR/$step_id"
             mkdir -p "$idea_log_dir"
+
+            step_start "$step_id" "Chapter $ch ideation agent $i"
 
             words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
             prompt=$(python3 fill_template.py prompts/ideate-chapter.md \
@@ -277,10 +288,15 @@ phase_chapter_brainstorm() {
                 "random_words=$words")
 
             echo "$prompt" > "$idea_log_dir/prompt.md"
-            echo "$prompt" | claude -p - --output-format text \
-                > "$brainstorm_dir/idea-${idx}.md"
-            cp "$brainstorm_dir/idea-${idx}.md" "$idea_log_dir/response.md"
-            echo "    Ideation agent $i complete" >&2
+            step_heartbeat "$step_id"
+
+            if echo "$prompt" | claude -p - --output-format text \
+                > "$brainstorm_dir/idea-${idx}.md"; then
+                cp "$brainstorm_dir/idea-${idx}.md" "$idea_log_dir/response.md"
+                step_done "$step_id" "$(wc -c < "$brainstorm_dir/idea-${idx}.md") bytes"
+            else
+                step_failed "$step_id" "claude -p exited $?"
+            fi
         ) &
     done
     wait
