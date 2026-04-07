@@ -7,6 +7,7 @@ cd "$PROJECT_DIR"
 source lib/config.sh
 source lib/state.sh
 source lib/scoring.sh
+source lib/logging.sh
 source lib/audit.sh
 
 # ── Prerequisites ──────────────────────────────────────────────
@@ -38,6 +39,7 @@ else
 fi
 
 init_state
+init_logging
 mkdir -p output
 
 PREMISE_FILE="output/synthesized-premise.md"
@@ -122,7 +124,8 @@ build_all_completed_prose() {
 }
 
 run_claude() {
-    echo "$1" | claude -p - --output-format text
+    local desc="${2:-unnamed}"
+    log_call "$desc" "$1"
 }
 
 # ── Phase 0: Premise Brainstorming ────────────────────────────
@@ -147,13 +150,21 @@ phase_premise_brainstorm() {
 
     for ((i=1; i<=total; i++)); do
         (
+            local idx
+            idx=$(printf '%02d' "$i")
+            local idea_dir="$LOG_DIR/ideate-premise-$idx"
+            mkdir -p "$idea_dir"
+
             words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
             prompt=$(python3 fill_template.py prompts/ideate-premise.md \
                 "premise=premise.md" \
                 "random_words=$words" \
                 "ideation_guidance=$STATE_DIR/ideation-guidance-premise.txt")
+
+            echo "$prompt" > "$idea_dir/prompt.md"
             echo "$prompt" | claude -p - --output-format text \
-                > "output/brainstorm/premise/idea-$(printf '%02d' "$i").md"
+                > "output/brainstorm/premise/idea-${idx}.md"
+            cp "output/brainstorm/premise/idea-${idx}.md" "$idea_dir/response.md"
             echo "  Ideation agent $i complete" >&2
         ) &
 
@@ -179,7 +190,7 @@ phase_premise_brainstorm() {
     assembled=$(python3 fill_template.py prompts/synthesize-premise.md \
         "premise=premise.md" \
         "candidate_ideas=$STATE_DIR/all-premise-ideas.txt")
-    run_claude "$assembled" > "$PREMISE_FILE"
+    run_claude "$assembled" "synthesize-premise" > "$PREMISE_FILE"
 
     echo "Synthesized premise written to $PREMISE_FILE" >&2
 }
@@ -195,7 +206,7 @@ phase_novel_planning() {
         local assembled
         assembled=$(python3 fill_template.py prompts/plan-novel.md \
             "premise=$PREMISE_FILE")
-        run_claude "$assembled" > output/novel-plan.md
+        run_claude "$assembled" "plan-novel" > output/novel-plan.md
     fi
 
     echo "Auditing novel plan..." >&2
@@ -243,6 +254,11 @@ phase_chapter_brainstorm() {
     local total=5
     for ((i=1; i<=total; i++)); do
         (
+            local idx
+            idx=$(printf '%02d' "$i")
+            local idea_log_dir="$LOG_DIR/ideate-chapter-$(printf '%02d' "$ch")-$idx"
+            mkdir -p "$idea_log_dir"
+
             words=$(python3 random_words.py 5 | tr '\n' ', ' | sed 's/, $//')
             prompt=$(python3 fill_template.py prompts/ideate-chapter.md \
                 "synthesized_premise=$PREMISE_FILE" \
@@ -250,8 +266,11 @@ phase_chapter_brainstorm() {
                 "chapter_description=$ch_desc_file" \
                 "completed_chapters_summary=$summary_file" \
                 "random_words=$words")
+
+            echo "$prompt" > "$idea_log_dir/prompt.md"
             echo "$prompt" | claude -p - --output-format text \
-                > "$brainstorm_dir/idea-$(printf '%02d' "$i").md"
+                > "$brainstorm_dir/idea-${idx}.md"
+            cp "$brainstorm_dir/idea-${idx}.md" "$idea_log_dir/response.md"
             echo "    Ideation agent $i complete" >&2
         ) &
     done
@@ -269,7 +288,7 @@ phase_chapter_brainstorm() {
         "chapter_description=$ch_desc_file" \
         "completed_chapters_summary=$summary_file" \
         "candidate_approaches=$STATE_DIR/all-chapter-ideas.txt")
-    run_claude "$assembled" > "$concept_file"
+    run_claude "$assembled" "synthesize-chapter-$ch" > "$concept_file"
 }
 
 # ── Phase 2+3: Chapter Planning + Scene Authoring ─────────────
@@ -336,7 +355,7 @@ plan_one_chapter() {
             "chapter_number=$ch" \
             "chapter_concept=$ch_dir/chapter-concept.md" \
             "completed_chapters_summary=$summary_file")
-        run_claude "$assembled" > "$plan_file"
+        run_claude "$assembled" "plan-chapter-$ch" > "$plan_file"
     fi
 
     echo "  Auditing chapter $ch plan..." >&2
@@ -396,7 +415,7 @@ author_chapter_scenes() {
                 "scene_plan=$scene_plan_file" \
                 "chapter_number=$ch" \
                 "scene_number=$sc")
-            run_claude "$assembled" > "$scene_file"
+            run_claude "$assembled" "author-scene-ch${ch}-sc${sc}" > "$scene_file"
         fi
 
         # Audit/refine scene
@@ -452,7 +471,7 @@ collect_scene_context() {
         "chapter_plan=$plan_file" \
         "upcoming_scene_plan=$scene_plan_file" \
         "completed_content=$prose_file")
-    run_claude "$assembled" > "$output_file"
+    run_claude "$assembled" "collect-context-ch${ch}-sc${sc}" > "$output_file"
 }
 
 run_backtrack_chapter() {
@@ -481,7 +500,7 @@ run_backtrack_chapter() {
         "completed_scenes=$scenes_file")
 
     local result
-    result=$(run_claude "$assembled")
+    result=$(run_claude "$assembled" "backtrack-chapter-$ch")
 
     if ! echo "$result" | head -1 | grep -q "^NO_CHANGE"; then
         echo "  Chapter plan revised by backtracking" >&2
@@ -512,7 +531,7 @@ run_backtrack_novel() {
         "completed_chapters_summary=$summary_file")
 
     local result
-    result=$(run_claude "$assembled")
+    result=$(run_claude "$assembled" "backtrack-novel-after-ch$ch")
 
     if ! echo "$result" | head -1 | grep -q "^NO_CHANGE"; then
         echo "Novel plan revised by backtracking" >&2
@@ -529,8 +548,12 @@ run_backtrack_novel() {
 # ── Main ───────────────────────────────────────────────────────
 
 main() {
+    # Tee stderr to a log file so terminal output is captured
+    exec 2> >(tee -a "$STATE_DIR/pipeline-$(date -u +%Y%m%d-%H%M%S).log" >&2)
+
     echo "Fiction Pipeline starting at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
     echo "Project dir: $PROJECT_DIR" >&2
+    echo "Log dir: $LOG_DIR" >&2
 
     local current_phase
     current_phase=$(read_state "phase")

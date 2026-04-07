@@ -60,9 +60,11 @@ run_auditors() {
         filled=$(python3 "$PROJECT_DIR/fill_template.py" "$auditor_prompt_file" \
             "${context_args[@]}")
 
-        # Call claude
+        # Call claude with logging
+        local safe_name
+        safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
         local output
-        output=$(echo "$filled" | claude -p - --output-format text)
+        output=$(log_call "audit-${safe_name}" "$filled")
 
         # Append to combined feedback
         printf '\n\n--- Auditor: %s ---\n%s' "$auditor_name" "$output" >> "$COMBINED_FEEDBACK"
@@ -106,7 +108,7 @@ run_enhancement() {
         "${context_args[@]}")
 
     local enhancements
-    enhancements=$(echo "$filled" | claude -p - --output-format text)
+    enhancements=$(log_call "enhance-${level}" "$filled")
 
     # Append to combined feedback with clear header
     printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$COMBINED_FEEDBACK"
@@ -170,13 +172,16 @@ audit_refine_loop() {
         echo "Fixing (round $round)..." >&2
         update_state "status" '"fixing"'
 
+        # Snapshot the content before fixer overwrites it
+        log_snapshot "pre-fix-round-${round}" "$content_file"
+
         local assembled
         assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
             "${context_args[@]}" \
             "audit_feedback=$COMBINED_FEEDBACK")
 
         local fixed_output
-        fixed_output=$(echo "$assembled" | claude -p - --output-format text)
+        fixed_output=$(log_call "fix-${level}-round-${round}" "$assembled")
 
         # Check for deletion recommendation
         if echo "$fixed_output" | head -5 | grep -q "^RECOMMENDATION: DELETE"; then
