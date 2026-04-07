@@ -18,37 +18,95 @@ get_auditors_for_level() {
         "$PROJECT_DIR/auditor-config.yaml"
 }
 
-# Check if a single auditor's scores all pass (criteria >= 4, sentinels PASS)
-# Args: $1 = scores JSON string
-# Returns: 0 if all pass, 1 if any fail
-check_auditor_passing() {
-    local scores_json="$1"
+# Generate a round-specific settings file that disables criteria/sentinels
+# that already passed in previous rounds.
+# Args: $1 = output path for the round settings file
+generate_round_settings() {
+    local output_path="$1"
+    local passed_items_file="$STATE_DIR/passed-items.json"
+    local base_settings="$PROJECT_DIR/criteria-settings.yaml"
+
     python3 -c "
-import json, sys
+import json, yaml, sys, os
+
+output_path = sys.argv[1]
+passed_file = sys.argv[2]
+base_file = sys.argv[3]
+
+# Load base settings
+base = {}
+if os.path.isfile(base_file):
+    with open(base_file) as f:
+        base = yaml.safe_load(f) or {}
+
+# Load passed items
+passed = set()
+if os.path.isfile(passed_file):
+    with open(passed_file) as f:
+        passed = set(json.load(f))
+
+# Merge: start with base, then additionally disable passed items
+criteria = dict(base.get('criteria', {}))
+sentinels = dict(base.get('sentinels', {}))
+
+for item_id in passed:
+    if item_id.startswith('SS-') or item_id.startswith('CS-') or \
+       item_id.startswith('NS-') or item_id.startswith('IS-'):
+        sentinels[item_id] = False
+    else:
+        criteria[item_id] = False
+
+result = {
+    'iteration_cap': base.get('iteration_cap', 5),
+    'iteration_caps': base.get('iteration_caps', {}),
+    'criteria': criteria,
+    'sentinels': sentinels,
+}
+
+with open(output_path, 'w') as f:
+    yaml.dump(result, f, default_flow_style=False)
+" "$output_path" "$passed_items_file" "$base_settings"
+}
+
+# Record passing criteria/sentinels from an auditor's scores
+# Args: $1 = scores JSON string
+record_passing_items() {
+    local scores_json="$1"
+    local passed_items_file="$STATE_DIR/passed-items.json"
+
+    python3 -c "
+import json, sys, os
 
 scores = json.loads(sys.stdin.read())
-criteria = scores.get('criteria', {})
-sentinels = scores.get('sentinels', {})
+passed_file = sys.argv[1]
 
-for name, data in criteria.items():
-    if data.get('score', 0) < 4:
-        sys.exit(1)
+# Load existing passed items
+existing = set()
+if os.path.isfile(passed_file):
+    with open(passed_file) as f:
+        existing = set(json.load(f))
 
-for name, data in sentinels.items():
-    if data.get('status', 'FAIL') != 'PASS':
-        sys.exit(1)
+# Add newly passing items
+for name, data in scores.get('criteria', {}).items():
+    if data.get('score', 0) >= 4:
+        existing.add(name)
 
-sys.exit(0)
-" <<< "$scores_json"
+for name, data in scores.get('sentinels', {}).items():
+    if data.get('status', 'FAIL') == 'PASS':
+        existing.add(name)
+
+with open(passed_file, 'w') as f:
+    json.dump(sorted(existing), f)
+" "$passed_items_file" <<< "$scores_json"
 }
 
 # Run all auditors for a level in parallel using dynamic prompt assembly.
-# Skips auditors that passed in a previous round (tracked in passed_auditors file).
+# Uses round-specific settings that disable previously-passing criteria/sentinels.
 # Sets: COMBINED_FEEDBACK (file path), COMBINED_SCORES (JSON string)
 #
 # Args: $1 = level (novel_plan|chapter_plan|scene)
 #        $2 = content file being audited
-#        remaining args = KEY=FILE pairs for context (all available context for this level)
+#        remaining args = KEY=FILE pairs for context
 run_auditors() {
     local level="$1"
     local content_file="$2"
@@ -62,14 +120,9 @@ run_auditors() {
     COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
     > "$COMBINED_FEEDBACK"
 
-    # Load set of previously passing auditors
-    local passed_file="$STATE_DIR/passed-auditors.txt"
-    local -A passed_set
-    if [[ -f "$passed_file" ]]; then
-        while IFS= read -r name; do
-            [[ -n "$name" ]] && passed_set["$name"]=1
-        done < "$passed_file"
-    fi
+    # Generate round-specific settings (base settings + disable passed items)
+    local round_settings="$STATE_DIR/round-settings.yaml"
+    generate_round_settings "$round_settings"
 
     # Create per-auditor output directory for this round
     local auditor_out_dir="$STATE_DIR/auditor-results"
@@ -84,24 +137,20 @@ run_auditors() {
 
         local safe_name
         safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
-
-        # Skip auditors that passed in a previous round
-        if [[ -n "${passed_set[$safe_name]+x}" ]]; then
-            skipped=$((skipped + 1))
-            continue
-        fi
-
         local prompt_file="$auditor_out_dir/${safe_name}.prompt.md"
 
+        # Assemble using round-specific settings (which disable passed items)
         if ! python3 "$PROJECT_DIR/assemble_auditor.py" "$auditor_name" \
+                --settings "$round_settings" \
                 > "$prompt_file" 2>/dev/null; then
             echo "WARNING: Could not assemble auditor '$auditor_name'" >&2
             continue
         fi
 
-        # Skip empty auditors
+        # Skip auditors with no remaining active criteria/sentinels
         if grep -q "No active criteria" "$prompt_file" && \
            grep -q "No active sentinels" "$prompt_file"; then
+            skipped=$((skipped + 1))
             continue
         fi
 
@@ -115,13 +164,13 @@ run_auditors() {
 
     local total=${#active_auditors[@]}
     if [[ "$skipped" -gt 0 ]]; then
-        echo "  Running $total auditors ($skipped skipped — passed previously)..." >&2
+        echo "  Running $total auditors ($skipped skipped — all criteria passed)..." >&2
     else
         echo "  Running $total auditors in parallel (batches of $AUDITOR_BATCH_SIZE)..." >&2
     fi
 
     if [[ "$total" -eq 0 ]]; then
-        echo "  All auditors passed in previous rounds." >&2
+        echo "  All criteria/sentinels passed in previous rounds." >&2
         return
     fi
 
@@ -168,11 +217,9 @@ print(f'{nc} criteria, {ns} sentinels scored')
     done
     wait
 
-    # Phase 3: Merge results and track which auditors passed
-    local newly_passed=0
+    # Phase 3: Merge results and record passing items
     for entry in "${active_auditors[@]}"; do
         local safe_name="${entry%%|*}"
-        local auditor_name="${entry#*|}"
         local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
         local scores_file="$auditor_out_dir/${safe_name}.scores.json"
 
@@ -186,15 +233,12 @@ print(f'{nc} criteria, {ns} sentinels scored')
             scores=$(cat "$scores_file")
             COMBINED_SCORES=$(merge_scores "$COMBINED_SCORES" "$scores")
 
-            # Check if this individual auditor passed
-            if check_auditor_passing "$scores"; then
-                echo "$safe_name" >> "$passed_file"
-                newly_passed=$((newly_passed + 1))
-            fi
+            # Record individual passing criteria/sentinels
+            record_passing_items "$scores"
         fi
     done
 
-    echo "  All $total auditors complete ($newly_passed newly passed)." >&2
+    echo "  All $total auditors complete." >&2
 }
 
 # Run the enhancement agent for a level.
@@ -253,12 +297,12 @@ audit_refine_loop() {
     local iteration_cap
     iteration_cap=$(get_iteration_cap "$level")
 
-    # Clear passed-auditors tracking when starting a new audit target
-    local passed_file="$STATE_DIR/passed-auditors.txt"
+    # Clear per-item pass tracking when starting a new audit target
+    local passed_items_file="$STATE_DIR/passed-items.json"
     local saved_audit_target
     saved_audit_target=$(read_state "audit_target")
     if [[ "$saved_audit_target" != "$log_prefix" ]]; then
-        > "$passed_file"
+        rm -f "$passed_items_file"
     fi
 
     # Resume from saved round if restarting mid-audit for the SAME content
@@ -285,13 +329,12 @@ audit_refine_loop() {
         update_state "refinement_round" "$round"
         update_state "status" '"auditing"'
 
-        # Run auditors (skips previously-passing ones)
+        # Run auditors (with per-item pass filtering)
         run_auditors "$level" "$content_file" "${context_args[@]}"
         log_scores "$log_prefix" "$round" "$COMBINED_SCORES"
 
-        # Check pass conditions on ALL scores (including previously-passed auditors'
-        # scores which aren't in COMBINED_SCORES since they were skipped).
-        # If no auditors ran this round (all passed previously), that's a full pass.
+        # Check pass conditions — if no scores were produced this round
+        # (all items passed previously), that's a full pass
         local criteria_ok sentinel_ok
         criteria_ok=$(check_criteria_passing "$COMBINED_SCORES" 4 2>/dev/null) || true
         sentinel_ok=$(check_sentinels_passing "$COMBINED_SCORES" 2>/dev/null) || true
