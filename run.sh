@@ -44,6 +44,15 @@ mkdir -p output
 
 PREMISE_FILE="output/synthesized-premise.md"
 BRAINSTORM_BATCH_SIZE=5
+PIPELINE_LOG=""
+
+# Log to both stderr and the pipeline log file
+pipelog() {
+    echo "$*" >&2
+    if [[ -n "$PIPELINE_LOG" ]]; then
+        echo "$*" >> "$PIPELINE_LOG"
+    fi
+}
 
 # ── Helpers ────────────────────────────────────────────────────
 
@@ -548,12 +557,12 @@ run_backtrack_novel() {
 # ── Main ───────────────────────────────────────────────────────
 
 main() {
-    # Tee stderr to a log file so terminal output is captured
-    exec 2> >(tee -a "$STATE_DIR/pipeline-$(date -u +%Y%m%d-%H%M%S).log" >&2)
+    PIPELINE_LOG="$STATE_DIR/pipeline-$(date -u +%Y%m%d-%H%M%S).log"
 
     echo "Fiction Pipeline starting at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
     echo "Project dir: $PROJECT_DIR" >&2
     echo "Log dir: $LOG_DIR" >&2
+    echo "Pipeline log: $PIPELINE_LOG" >&2
 
     local current_phase
     current_phase=$(read_state "phase")
