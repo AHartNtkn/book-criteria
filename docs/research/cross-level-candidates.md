@@ -16,12 +16,16 @@ Analysis of items currently at a single pipeline level that have meaningful form
 - **chapter_plan**: Whether the chapter-level plan tracks details introduced early (character traits, world facts, relationship states) and ensures they remain consistent across later chapters, with no contradictions in the plan itself.
 - **novel_plan**: Whether the novel plan's high-level character descriptions, world rules, and established facts remain consistent from the first act through the last, across all chapter summaries.
 
+YES
+
 ---
 
 ### SC-006: Atmosphere and Mood Creation (currently: scene)
 
 **Proposed additional levels:**
 - **chapter_plan**: Whether each scene in the chapter plan is annotated with an intended mood/atmosphere, and whether the sequence of moods across scenes creates a coherent emotional texture for the chapter rather than random tonal shifts.
+
+YES
 
 ---
 
@@ -30,6 +34,8 @@ Analysis of items currently at a single pipeline level that have meaningful form
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan's overall arc delivers on the pacing and content promises implied by its genre classification and opening chapter description.
 - **chapter_plan**: Whether each chapter's planned scenes deliver the kinds of experiences the chapter's setup promises.
+
+YES
 
 ---
 
@@ -41,6 +47,8 @@ Analysis of items currently at a single pipeline level that have meaningful form
 
 Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan and scene. SC-026 is the positive criterion version and should have matching coverage.
 
+NO. Length is something that can't really be planned through refinment. Length issues mostly emerge as a consiquence of trying to one-shot scenes and chapters; this is mitigated by the refinement loop.
+
 ---
 
 ### SC-027: Character Behavioral Consistency (currently: scene)
@@ -48,6 +56,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 **Proposed additional levels:**
 - **chapter_plan**: Whether the character's planned actions across scenes are consistent with their established traits, motivations, and competencies as described in the plan.
 - **novel_plan**: Whether the character descriptions and planned arcs across chapters maintain behavioral consistency (a cautious character doesn't become reckless without planned development justifying it).
+
+YES
 
 ---
 
@@ -57,6 +67,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **chapter_plan**: Whether characters in the plan have structured internal contradictions that generate scene-level conflict (e.g., a character who values loyalty but needs to betray someone creates specific dramatic scenes).
 - **ideation**: Whether the character concept contains built-in contradictions that will generate narrative energy across the story.
 
+YES
+
 ---
 
 ### SC-029: Character Consistency Under Change (currently: scene)
@@ -64,6 +76,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 **Proposed additional levels:**
 - **chapter_plan**: Whether the character's planned arc across scenes shows recognizable continuity even as they change -- each step of change following from the previous state.
 - **novel_plan**: Whether the character's planned transformation across chapters maintains identity continuity -- the character at the end is recognizably the same person as at the beginning, despite growth.
+
+YES
 
 ---
 
@@ -73,6 +87,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **chapter_plan**: Whether the chapter plan includes moments of character self-discovery that are prepared by prior scenes (the reader has been positioned to understand what the character discovers about themselves).
 - **novel_plan**: Whether the novel plan structures the protagonist's major self-revelation as the culmination of an arc prepared across chapters.
 
+YES
+
 ---
 
 ### SC-038: Character-Driven Stakes (currently: scene)
@@ -80,6 +96,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 **Proposed additional levels:**
 - **chapter_plan**: Whether what is at risk in each planned scene connects to what the character specifically cares about, as established in the plan.
 - **novel_plan**: Whether the novel's central stakes are rooted in what the protagonist personally and intensely cares about, not just abstract consequences.
+
+YES
 
 ---
 
@@ -90,6 +108,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **novel_plan**: Whether the protagonist's overall arc is designed to dramatize the novel's central thematic argument.
 - **ideation**: Whether the character concept is inherently linked to the thematic question being explored.
 
+YES
+
 ---
 
 ### SC-049: Creative Problem-Solving Within the Story (currently: scene)
@@ -97,6 +117,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 **Proposed additional levels:**
 - **chapter_plan**: Whether the planned resolutions to scene-level problems arise from character-specific abilities and established resources rather than generic solutions.
 - **novel_plan**: Whether the protagonist's planned climactic resolution uses creative means established throughout the story rather than obvious or deus-ex-machina solutions.
+
+YES
 
 ---
 
@@ -106,6 +128,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **chapter_plan**: Whether the sequence of scenes in the chapter plan raises questions that are strategically delayed, creating forward pull between scenes.
 - **novel_plan**: Whether the novel plan establishes macro-questions in early chapters that sustain curiosity across the full arc, with answers arriving at structurally optimal moments.
 
+YES
+
 ---
 
 ### SC-071: Dramatic Irony (currently: scene)
@@ -113,6 +137,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 **Proposed additional levels:**
 - **chapter_plan**: Whether the chapter plan structures information asymmetry between reader and characters across scenes, creating anticipation or dread as the reader watches characters approach situations the reader understands differently.
 - **novel_plan**: Whether the novel plan uses multi-chapter information gaps where the reader knows something a character doesn't for extended stretches, creating sustained tension.
+
+YES
 
 ---
 
@@ -122,6 +148,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **chapter_plan**: Whether characters carry appropriate emotional states between planned scenes -- a character who suffers a loss in scene 2 is still affected in scene 3.
 - **novel_plan**: Whether the emotional consequences of major events in early chapters persist and influence character behavior in later chapters, as reflected in the plan.
 
+YES
+
 ---
 
 ### SC-089: Emotional Resonance and Memorability (currently: scene)
@@ -130,12 +158,16 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **chapter_plan**: Whether the chapter plan builds toward at least one moment of high emotional impact, with prior scenes providing the emotional groundwork.
 - **novel_plan**: Whether the novel plan structures its most emotionally resonant moments at key structural positions, with the full arc earning those moments.
 
+YES
+
 ---
 
 ### SC-091: Enter Late, Exit Early (currently: scene)
 
 **Proposed additional levels:**
 - **chapter_plan**: Whether planned scenes begin at or near the point of conflict rather than including setup/arrival phases, and whether they end at or shortly after the dramatic turn rather than trailing into aftermath.
+
+YES
 
 ---
 
@@ -145,6 +177,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 - **chapter_plan**: Whether planned flashbacks are positioned at points where they serve present-timeline dramatic needs rather than interrupting momentum, and whether they earn their space by illuminating current conflicts.
 - **novel_plan**: Whether flashback chapters or extended backstory sequences are positioned in the novel plan where they enhance rather than stall the main narrative arc.
 
+YES
+
 ---
 
 ### SC-109: Flat vs Round Character Deployment (currently: scene)
@@ -152,6 +186,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 **Proposed additional levels:**
 - **chapter_plan**: Whether the plan distinguishes which characters in each chapter receive psychological depth (round treatment) versus those serving functional roles (flat treatment), and whether those choices are appropriate.
 - **novel_plan**: Whether the novel plan designates which characters across the full cast receive full development arcs versus serving as functional/thematic roles.
+
+YES
 
 ---
 
@@ -163,6 +199,8 @@ Note: ML-058 covers uniform chapter/scene lengths as a sentinel at chapter_plan 
 
 Note: ML-020 covers "Macro Pacing Variation" at chapter_plan and scene already. SC-136 is essentially the same criterion -- this is a potential duplicate to resolve rather than a new cross-level item.
 
+YES, and this creates a duplicate, so fuse appropriately
+
 ---
 
 ### SC-138: Meaningful vs Cosmetic Flaws (currently: scene)
@@ -171,6 +209,8 @@ Note: ML-020 covers "Macro Pacing Variation" at chapter_plan and scene already. 
 - **chapter_plan**: Whether character flaws in the plan actively create consequences in planned scenes -- the flaw causes specific problems that drive specific complications.
 - **novel_plan**: Whether the protagonist's flaw as described in the novel plan is the engine of their arc, creating the central internal obstacle that must be confronted.
 - **ideation**: Whether the character concept includes a flaw that is structurally generative (it will produce conflict and consequences) rather than decorative.
+
+YES
 
 ---
 
@@ -181,6 +221,8 @@ Note: ML-020 covers "Macro Pacing Variation" at chapter_plan and scene already. 
 - **novel_plan**: Whether the novel plan makes deliberate, non-formulaic structural choices -- unconventional act structures, surprising arc shapes, non-default genre execution.
 - **ideation**: Whether the premise itself involves a non-default narrative approach -- an unusual structural conceit, a surprising POV choice, a genre combination.
 
+YES
+
 ---
 
 ### SC-156: Novelistic Discovery (currently: scene)
@@ -189,6 +231,8 @@ Note: ML-020 covers "Macro Pacing Variation" at chapter_plan and scene already. 
 - **ideation**: Whether the story concept has the potential to reveal something about human experience that the reader doesn't already know -- whether the premise is oriented toward discovery rather than confirmation.
 - **novel_plan**: Whether the novel plan is structured to build toward genuine insight or revelation about its subject, not just plot resolution.
 
+YES
+
 ---
 
 ### SC-176: Personal Stakes Grounding (currently: scene)
@@ -196,6 +240,8 @@ Note: ML-020 covers "Macro Pacing Variation" at chapter_plan and scene already. 
 **Proposed additional levels:**
 - **chapter_plan**: Whether abstract or large-scale stakes in the chapter plan are connected to specific, personal consequences for characters the reader follows in planned scenes.
 - **novel_plan**: Whether the novel's global stakes (world-saving, war, etc.) are grounded in specific personal consequences for the protagonist.
+
+YES
 
 ---
 
@@ -206,6 +252,8 @@ Note: ML-020 covers "Macro Pacing Variation" at chapter_plan and scene already. 
 
 Note: CC-133 (Recovery Beats / Emotional Processing Scenes) already covers this at chapter_plan level. SC-194 is essentially the scene-level version of CC-133. This suggests they should be linked as a multi-level item rather than treated as separate concepts.
 
+Agree with analysis; incorporate
+
 ---
 
 ### SC-202: Relationship Dynamics (currently: scene)
@@ -213,6 +261,8 @@ Note: CC-133 (Recovery Beats / Emotional Processing Scenes) already covers this 
 **Proposed additional levels:**
 - **chapter_plan**: Whether character relationships in the chapter plan evolve across scenes -- each scene changing the relationship in some way rather than all relationships remaining static.
 - **novel_plan**: Whether the novel plan tracks relationship arcs across chapters, with each major relationship having a planned trajectory of change.
+
+YES
 
 ---
 
@@ -222,6 +272,8 @@ Note: CC-133 (Recovery Beats / Emotional Processing Scenes) already covers this 
 - **chapter_plan**: Whether the chapter plan structures reveals and reversals that are surprising yet prepared by prior scenes.
 - **novel_plan**: Whether the novel plan includes major plot developments that are simultaneously unexpected and retrospectively inevitable, with earlier chapters providing the groundwork.
 
+YES
+
 ---
 
 ### SC-265: Suspense and Anticipation (currently: scene)
@@ -230,6 +282,8 @@ Note: CC-133 (Recovery Beats / Emotional Processing Scenes) already covers this 
 - **chapter_plan**: Whether the chapter plan creates sustained anticipation by establishing threats or promises in early scenes that are not resolved until later scenes.
 - **novel_plan**: Whether the novel plan builds sustained suspense arcs that span multiple chapters, with escalating uncertainty about outcomes.
 
+YES
+
 ---
 
 ### SC-266: Symbolism and Image System Effectiveness (currently: scene)
@@ -237,6 +291,8 @@ Note: CC-133 (Recovery Beats / Emotional Processing Scenes) already covers this 
 **Proposed additional levels:**
 - **chapter_plan**: Whether the chapter plan deploys recurring images or symbolic objects across scenes in a pattern that accumulates meaning.
 - **novel_plan**: Whether the novel plan establishes image systems and symbolic patterns that evolve across chapters, reinforcing theme through structural repetition-with-variation.
+
+YES
 
 ---
 
@@ -248,6 +304,8 @@ Note: CC-133 (Recovery Beats / Emotional Processing Scenes) already covers this 
 
 Note: CC-196 and CC-197 cover similar ground at chapter_plan. SC-279 specifically asks whether they operate *simultaneously* at scene level. The novel_plan level is the main gap.
 
+YES for the novel_plan level; incorporate into the others.
+
 ---
 
 ### SC-284: Trope Awareness and Subversion (currently: scene)
@@ -256,6 +314,8 @@ Note: CC-196 and CC-197 cover similar ground at chapter_plan. SC-279 specificall
 - **chapter_plan**: Whether the chapter plan deploys genre conventions with awareness -- subverting, combining, or executing them with freshness rather than mechanically hitting trope checkboxes.
 - **novel_plan**: Whether the novel plan demonstrates awareness of its genre's structural conventions and either executes them with depth or subverts them purposefully.
 - **ideation**: Whether the story concept engages with genre tropes in a way that signals awareness -- a fresh angle, deliberate subversion, or creative recombination.
+
+YES
 
 ---
 
@@ -271,6 +331,8 @@ Note: CC-196 and CC-197 cover similar ground at chapter_plan. SC-279 specificall
 - **chapter_plan**: Whether every chapter in the plan ends with all conflicts resolved and no unfinished business -- a pattern that eliminates forward momentum.
 - **novel_plan**: Whether the novel plan shows every act ending in clean resolution rather than maintaining unresolved tensions that carry across structural boundaries.
 
+YES
+
 ---
 
 ### SS-044: Backstory Info-Dump in Opening (currently: scene)
@@ -280,6 +342,8 @@ Note: CC-196 and CC-197 cover similar ground at chapter_plan. SC-279 specificall
 
 Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at novel_plan level. The chapter_plan level is the gap.
 
+YES
+
 ---
 
 ### SS-058: Conflict Resolved Through Communication (currently: scene)
@@ -287,6 +351,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 **Proposed additional levels:**
 - **chapter_plan**: Whether the chapter plan resolves its central conflict through a scene where characters simply talk honestly, without the resolution requiring action, sacrifice, or difficult choice.
 - **novel_plan**: Whether the novel plan's climactic resolution is achieved through honest communication rather than through dramatic action and sacrifice.
+
+YES
 
 ---
 
@@ -296,6 +362,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 - **chapter_plan**: Whether character flaws listed in the chapter plan ever produce consequences in any planned scene.
 - **novel_plan**: Whether the protagonist's stated flaw in the novel plan drives any actual complication or setback across the story.
 
+YES
+
 ---
 
 ### SS-091: Episodic Scene Sequence (currently: scene)
@@ -303,6 +371,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 **Proposed additional levels:**
 - **chapter_plan**: Whether planned scenes within a chapter are causally connected -- each scene's outcome driving the next scene's situation -- or merely linked by featuring the same characters.
 - **novel_plan**: Whether chapters in the novel plan are causally connected or merely sequential episodes featuring the same cast.
+
+YES
 
 ---
 
@@ -312,6 +382,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 - **chapter_plan**: Whether the chapter plan's characters are distinguishable by function, personality, and role, or whether they are interchangeable.
 - **novel_plan**: Whether the novel plan's cast is differentiated -- each character serving a distinct narrative function and having a distinct personality profile.
 
+YES
+
 ---
 
 ### SS-125: Homogeneous Narrative Structure (currently: scene)
@@ -320,6 +392,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 - **chapter_plan**: Whether every chapter in the plan follows the same structural pattern (same number of scenes, same types of scenes in the same order).
 - **novel_plan**: Whether the novel plan follows a single predictable arc pattern without structural variation or surprise.
 
+YES
+
 ---
 
 ### SS-128: Immediate Forgiveness After Betrayal (currently: scene)
@@ -327,6 +401,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 **Proposed additional levels:**
 - **chapter_plan**: Whether the chapter plan shows betrayal and reconciliation occurring in adjacent scenes with no intervening emotional processing or consequence.
 - **novel_plan**: Whether the novel plan resolves major interpersonal betrayals within the same chapter they occur, without lasting consequences across the arc.
+
+YES
 
 ---
 
@@ -339,6 +415,8 @@ Note: NS-014 already covers "Opening Saturated with Backstory/Exposition" at nov
 
 Note: CC-087 covers Ghost/Wound/Lie/Weakness Architecture at chapter_plan level. CS-004 covers absence of Want/Need tension. CS-009 covers "Character Wound Never Activated." The ideation level is the main gap.
 
+YES to ideation, incorporate into others.
+
 ---
 
 ### SS-185: Rapid Conflict Resolution (currently: scene)
@@ -348,6 +426,8 @@ Note: CC-087 covers Ghost/Wound/Lie/Weakness Architecture at chapter_plan level.
 
 Note: CS-013 already covers "Conflict Resolved Within Same Scene Introduced" at chapter_plan level. These overlap.
 
+Incoporate
+
 ---
 
 ### SS-289: Stereotypical Character Details (currently: scene)
@@ -355,6 +435,8 @@ Note: CS-013 already covers "Conflict Resolved Within Same Scene Introduced" at 
 **Proposed additional levels:**
 - **ideation**: Whether character concepts rely on stock AI-generated names (Elara, Thorne, Kael), occupations (clockmaker, herbalist, retired detective), or backgrounds that repeat across many AI stories.
 - **novel_plan**: Whether the novel plan's cast of characters uses names, occupations, and backgrounds that are suspiciously common in AI-generated fiction.
+
+YES
 
 ---
 
@@ -366,6 +448,8 @@ Note: CS-013 already covers "Conflict Resolved Within Same Scene Introduced" at 
 
 Note: CS-100 covers "Universal Positive Resolution Without Complication" at chapter_plan. CS-093 covers "Too-Neat Ending." The novel_plan level is the main gap.
 
+YES to novel_plan, incorporate others
+
 ---
 
 ### SS-302: The Monoculture Alien (currently: scene)
@@ -376,6 +460,8 @@ Note: CS-100 covers "Universal Positive Resolution Without Complication" at chap
 - **ideation**: Whether the worldbuilding concept includes monoculture species/races as a default, or builds in cultural complexity.
 
 Note: CC-008 covers "Avoidance of Monocultures" at chapter_plan. CS-056 covers it as a sentinel. The ideation level is the main gap.
+
+YES to ideation, incorporate others
 
 ---
 
@@ -393,6 +479,8 @@ Note: CC-008 covers "Avoidance of Monocultures" at chapter_plan. CS-056 covers i
 
 Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protagonist Active Agency in Climax" at novel_plan but only for the climax. ML-026 covers "Passive Protagonist" at chapter_plan and scene. The gap is protagonist agency as a positive criterion across the full novel_plan arc (not just the climax) and at ideation.
 
+YES
+
 ---
 
 ### CC-022: Character Arc Execution (currently: chapter_plan)
@@ -401,6 +489,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan structures the protagonist's transformation (or deliberate stasis) across the full arc -- with clear starting state, catalyzing events, progressive change, and resolution of the internal journey.
 - **ideation**: Whether the character concept includes a clear starting psychological state and a direction of potential transformation that will generate dramatic interest.
 
+YES
+
 ---
 
 ### CC-033: Conflict Evolution (currently: chapter_plan)
@@ -408,12 +498,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan shows conflicts transforming across the full arc -- the nature of the central conflict at the climax being fundamentally different from what it was at the inciting incident, reflecting character growth and changed circumstances.
 
+YES
+
 ---
 
 ### CC-034: Conflict Hierarchy (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan maintains a clear hierarchy with one dominant conflict providing the structural spine while subsidiary conflicts create texture at the chapter level.
+
+YES
 
 ---
 
@@ -423,12 +517,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan includes genuine dilemmas at key structural turning points -- choices between incompatible goods or between two harmful options -- rather than only obstacles to overcome.
 - **ideation**: Whether the story concept is built around a genuine dilemma that has no easy resolution, creating structural tension.
 
+YES
+
 ---
 
 ### CC-061: Emotional Arc Shape (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan traces a discernible emotional trajectory -- a shape of fortune and misfortune across the full arc that creates reader satisfaction.
+
+YES
 
 ---
 
@@ -438,6 +536,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan's full cast is psychologically distinct, functionally non-redundant, and individually necessary to the story -- no two characters serving the same narrative purpose.
 - **ideation**: Whether the cast concept includes characters who are designed to contrast with and reveal different aspects of each other.
 
+YES
+
 ---
 
 ### CC-074: Foil and Mirror Cast Architecture (currently: chapter_plan)
@@ -445,6 +545,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **novel_plan**: Whether the supporting cast across the novel plan is designed to illuminate the protagonist through contrast and parallel -- foils challenging and mirrors reflecting the protagonist's journey.
 - **ideation**: Whether the character ensemble concept includes deliberate foil/mirror relationships that will generate thematic resonance.
+
+YES
 
 ---
 
@@ -454,6 +556,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan structures the protagonist's Ghost (trauma), Wound (damage), Lie (false belief), and Weakness (behavioral expression) as a coherent psychological architecture that drives the full arc.
 - **ideation**: Whether the character concept includes a coherent Ghost/Wound/Lie/Weakness structure that will generate dramatic tension and arc potential.
 
+YES
+
 ---
 
 ### CC-098: Interpretive Richness and Ambiguity (currently: chapter_plan)
@@ -461,6 +565,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan is structured to support multiple valid interpretations of its events, characters, and themes, rather than driving toward a single unambiguous reading.
 - **ideation**: Whether the story concept is inherently open to multiple interpretations and rewards deep engagement.
+
+YES
 
 ---
 
@@ -470,6 +576,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan's structure and content are so intertwined that the meaning could not be adequately paraphrased -- the story's form IS its content.
 - **ideation**: Whether the story concept is one where form and content are designed to be inseparable -- the structural approach embodying the thematic content.
 
+YES
+
 ---
 
 ### CC-106: Motif Development and Evolution (currently: chapter_plan)
@@ -478,12 +586,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan establishes recurring motifs (images, phrases, situations) that evolve and accumulate meaning across the full arc.
 - **scene**: Whether individual scenes deploy and develop established motifs through specific prose choices, imagery, and detail.
 
+YES
+
 ---
 
 ### CC-129: Reader Agency in Meaning-Making (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan leaves interpretive space for readers rather than driving toward a single, declared meaning.
+
+YES
 
 ---
 
@@ -492,6 +604,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan structures the protagonist's conscious Want and unconscious Need as the dual engine of the arc, with their tension driving structural turning points.
 - **ideation**: Whether the character concept includes a Want/Need tension -- an external goal that is in productive conflict with an internal need the character doesn't yet recognize.
+
+YES
 
 ---
 
@@ -507,12 +621,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan includes any sympathetic character who holds a moral position that genuinely opposes or complicates the protagonist's position.
 - **ideation**: Whether the story concept includes genuine moral disagreement among sympathetic characters, or whether all sympathetic characters share a single moral framework.
 
+YES
+
 ---
 
 ### CS-024: Costless Victory (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan's climactic resolution comes at meaningful cost -- sacrifice, loss, or permanent negative consequence -- or whether victory is free.
+
+YES
 
 ---
 
@@ -521,12 +639,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan's emotional trajectory across chapters shows variation in intensity and valence, or whether it maintains a homogeneously positive/neutral tone.
 
+YES
+
 ---
 
 ### CS-035: Flat Character Arc Where Round Arc Is Required (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the protagonist in the novel plan undergoes internal change across the full arc, or whether they begin and end in the same psychological state despite events that should transform them.
+
+YES
 
 ---
 
@@ -536,12 +658,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan's central theme can be reduced to an inspirational poster phrase, or whether it explores something specific and complex.
 - **ideation**: Whether the thematic premise is a generic platitude ("love conquers all," "believe in yourself") or a specific, complex question worth exploring.
 
+YES
+
 ---
 
 ### CS-049: Loss of Thematic Thread Across Long Text (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan maintains its thematic content across the full arc, or whether themes established in the first third are absent or contradicted in the final third.
+
+YES
 
 ---
 
@@ -551,12 +677,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **novel_plan**: Whether the novel plan immediately establishes maximum-intensity stakes without earning them through character investment, leaving no room for escalation.
 - **ideation**: Whether the story concept starts at maximum stakes ("the fate of the universe") rather than building from personal to global.
 
+YES
+
 ---
 
 ### CS-090: Thematic Idea Merely Repeated Rather Than Developed (currently: chapter_plan)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan shows the thematic idea being deepened, complicated, and challenged across the arc, or merely restated at the same level of complexity in each chapter.
+
+YES
 
 ---
 
@@ -565,6 +695,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan avoids all morally uncomfortable territory, or whether it engages with genuinely difficult moral questions.
 - **ideation**: Whether the story concept inherently engages with morally challenging material, or whether it is designed to avoid all discomfort.
+
+YES
 
 ---
 
@@ -580,6 +712,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **chapter_plan**: Whether each chapter has its own clear dramatic question that relates to and advances the novel's central dramatic question.
 - **ideation**: Whether the story concept poses a clear, compelling central dramatic question.
 
+YES
+
 ---
 
 ### NC-011: Empathic Engagement (currently: novel_plan)
@@ -588,6 +722,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **chapter_plan**: Whether each chapter's plan includes moments designed to create reader emotional investment in and empathy with characters.
 - **ideation**: Whether the story concept features characters and situations likely to arouse reader empathy and emotional investment.
 
+YES
+
 ---
 
 ### NC-017: Narrative Coherence (currently: novel_plan)
@@ -595,12 +731,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **chapter_plan**: Whether all elements within a chapter -- scenes, character actions, setting details -- align logically and consistently to create a coherent chapter-level narrative unit.
 
+YES
+
 ---
 
 ### NC-032: Surprise-Within-Expectations Balance (currently: novel_plan)
 
 **Proposed additional levels:**
 - **chapter_plan**: Whether individual chapters contain genuine surprises while operating within the framework of the story's established promises.
+
+YES
 
 ---
 
@@ -615,12 +755,16 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 **Proposed additional levels:**
 - **chapter_plan**: Whether individual chapters show meaningful progression -- the characters' situations, understanding, or capabilities changing between the first and last scene of the chapter.
 
+YES
+
 ---
 
 ### NS-008: Homogeneous Plot Structure (currently: novel_plan)
 
 **Proposed additional levels:**
 - **ideation**: Whether the story concept follows a stock AI-generated plot archetype (protagonist returns to small town, reconnects with community, resolves minor conflict through tradition).
+
+YES
 
 ---
 
@@ -630,6 +774,8 @@ Note: CC-127 covers "Protagonist Agency" at chapter_plan. NC-025 covers "Protago
 - **chapter_plan**: Whether individual chapters maintain consistently positive emotional valence with no significant setbacks or negative turns.
 
 Note: CS-029 covers "Emotional Architecture Collapse" at chapter_plan, which is very similar. These could be linked.
+
+Incorporate; these would become duplicates.
 
 ---
 
@@ -647,6 +793,8 @@ Note: CS-029 covers "Emotional Architecture Collapse" at chapter_plan, which is 
 
 Note: ML-031 covers "Premise Stated But Never Explored" at ideation/novel_plan/scene, which is the sentinel version. IC-001 as a positive criterion should have matching novel_plan and chapter_plan formulations.
 
+YES
+
 ---
 
 ### IC-002: Cognitive Load Management (currently: ideation)
@@ -655,12 +803,16 @@ Note: ML-031 covers "Premise Stated But Never Explored" at ideation/novel_plan/s
 - **chapter_plan**: Whether individual chapters introduce new names, concepts, and world elements at a rate that respects reader working memory, or whether multiple new elements are piled into single scenes.
 - **novel_plan**: Whether the novel plan distributes the introduction of new characters, locations, and concepts across chapters rather than front-loading them.
 
+YES
+
 ---
 
 ### IC-004: Concept-to-Premise Development (currently: ideation)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan demonstrates that the bare concept has been developed into a specific premise with concrete characters, goals, obstacles, and stakes.
+
+YES
 
 ---
 
@@ -677,6 +829,8 @@ Note: ML-031 covers "Premise Stated But Never Explored" at ideation/novel_plan/s
 
 Note: SS-113 covers "Generic Opening Situation (Mirror, Waking Up, Weather)" at scene level, which overlaps partially. IS-001 specifically targets formulaic *constructions* rather than generic *situations*, and should have a scene-level formulation for the prose check.
 
+YES
+
 ---
 
 ### IS-004: Triple-Stacked Descriptors (currently: ideation)
@@ -685,6 +839,8 @@ Note: SS-113 covers "Generic Opening Situation (Mirror, Waking Up, Weather)" at 
 - **scene**: Whether the prose stacks three or more abstract descriptors in apposition to describe a single concept, creating the impression of profundity without concrete meaning.
 
 Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related but distinct (stacked *metaphors* vs stacked *descriptors*). IS-004 should have its own scene-level formulation since it targets a different specific pattern.
+
+YES
 
 ---
 
@@ -700,6 +856,8 @@ Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related
 - **chapter_plan**: Whether scene descriptions in the chapter plan use abstract conceptual vocabulary ("comprehensive exploration," "multifaceted journey") rather than concrete, specific descriptions of what happens.
 - **novel_plan**: Whether chapter summaries in the novel plan use abstract conceptual language rather than concrete descriptions of dramatic events.
 
+YES
+
 ---
 
 ### ML-003: Cliche Avoidance at Story Level (currently: ideation, scene)
@@ -707,6 +865,8 @@ Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related
 **Proposed additional levels:**
 - **chapter_plan**: Whether the chapter plan's scene sequence, conflict types, and resolution patterns avoid exhausted structural cliches.
 - **novel_plan**: Whether the novel plan's overall arc, character types, and plot patterns avoid exhausted premises and story shapes.
+
+YES
 
 ---
 
@@ -716,12 +876,16 @@ Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related
 - **chapter_plan**: Whether the chapter's planned dramatic situations offer something the reader hasn't encountered in that exact form.
 - **novel_plan**: Whether the novel plan's overall premise, arc, and world are original rather than retreading familiar territory.
 
+YES
+
 ---
 
 ### ML-006: Concrete vs. Abstract Description (currently: ideation, scene)
 
 **Proposed additional levels:**
 - **chapter_plan**: Whether scene descriptions in the chapter plan specify concrete dramatic situations rather than abstract summaries ("a tense confrontation" vs "Maria discovers the letter and confronts James about his lies").
+
+YES
 
 ---
 
@@ -731,6 +895,8 @@ Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related
 - **chapter_plan**: Whether individual chapters deliver genre-specific dramatic experiences, or merely use genre trappings as decoration while telling a non-genre story.
 - **ideation**: Whether the story concept genuinely engages with genre conventions at a structural level, or merely borrows genre surface elements.
 
+YES
+
 ---
 
 ### ML-025: Originality of Execution (currently: ideation, scene)
@@ -739,6 +905,8 @@ Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related
 - **chapter_plan**: Whether the chapter plan handles scenes, transitions, and dramatic beats in fresh, non-default ways rather than formulaic patterns.
 - **novel_plan**: Whether the novel plan makes original structural and narrative choices rather than defaulting to standard templates.
 
+YES
+
 ---
 
 ### ML-028: Premise Clarity (currently: ideation, scene)
@@ -746,12 +914,16 @@ Note: ML-034 covers "S58: Eyeball Kicks" at ideation and scene, which is related
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan's overall premise is articulable in a single clear sentence communicating protagonist, goal, and central conflict.
 
+YES
+
 ---
 
 ### ML-032: Prose Density (Layered Meaning) (currently: chapter_plan, scene)
 
 **Proposed additional levels:**
 - **novel_plan**: Whether the novel plan structures chapters so that each chapter simultaneously advances plot, develops character, and explores theme, rather than dedicating separate chapters to separate concerns.
+
+YES
 
 ---
 
