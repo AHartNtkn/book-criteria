@@ -93,6 +93,10 @@ with open(passed_file, 'w') as f:
 " "$passed_items_file" <<< "$scores_json"
 }
 
+# Set by audit_refine_loop before calling run_auditors
+CURRENT_AUDIT_ROUND=0
+CURRENT_AUDIT_PREFIX=""
+
 # Run all auditors for a level in parallel using dynamic prompt assembly.
 # Sets: COMBINED_FEEDBACK (file path), COMBINED_SCORES (JSON string)
 # FATAL on any auditor failure.
@@ -109,7 +113,7 @@ run_auditors() {
     local auditor_names
     auditor_names=$(get_auditors_for_level "$level")
 
-    COMBINED_FEEDBACK="$STATE_DIR/current-feedback.txt"
+    COMBINED_FEEDBACK="$auditor_out_dir/combined-feedback.txt"
     COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
     > "$COMBINED_FEEDBACK"
 
@@ -117,9 +121,8 @@ run_auditors() {
     local round_settings="$STATE_DIR/round-settings.yaml"
     generate_round_settings "$round_settings"
 
-    # Create per-auditor output directory for this round
-    local auditor_out_dir="$STATE_DIR/auditor-results"
-    rm -rf "$auditor_out_dir"
+    # Organized output: auditor-results/level/target/round-N/
+    local auditor_out_dir="$STATE_DIR/auditor-results/${level}/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
     mkdir -p "$auditor_out_dir"
 
     # Phase 1: Assemble prompts and identify active auditors (sequential, fast)
@@ -358,6 +361,10 @@ audit_refine_loop() {
         echo "Audit round $round for $log_prefix" >&2
         update_state "refinement_round" "$round"
         update_state "status" '"auditing"'
+
+        # Set context for run_auditors directory structure
+        CURRENT_AUDIT_ROUND=$round
+        CURRENT_AUDIT_PREFIX=$log_prefix
 
         # Run auditors — FATAL on any failure (exits the pipeline)
         run_auditors "$level" "$content_file" "${context_args[@]}"
