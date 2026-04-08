@@ -25,11 +25,13 @@ init_logging() {
 # Args: $1 = description (for logging)
 #        $2 = prompt text (instructions + context)
 #        $3 = output file path (the LLM is told to write here)
+#        $4 = model flag (optional, e.g., "--model sonnet")
 # Returns: 0 if output file exists and is non-empty after the call
 run_claude_to_file() {
     local description="$1"
     local prompt_text="$2"
     local output_file="$3"
+    local model_flag="${4:-}"
 
     CALL_COUNTER=$((CALL_COUNTER + 1))
     local call_id
@@ -72,6 +74,7 @@ METAJSON
     echo "$full_prompt" | claude -p - \
         --tools "$CLAUDE_TOOLS" \
         $CLAUDE_FLAGS \
+        $model_flag \
         --output-format text \
         > "$call_dir/claude-stdout.txt" 2>&1
     local exit_code=$?
@@ -101,10 +104,12 @@ METAJSON
 #
 # Args: $1 = description
 #        $2 = prompt text
+#        $3 = model flag (optional)
 # Outputs: the claude response to stdout
 log_call() {
     local description="$1"
     local prompt_text="$2"
+    local model_flag="${3:-}"
 
     CALL_COUNTER=$((CALL_COUNTER + 1))
     local call_id
@@ -135,7 +140,7 @@ METAJSON
     local start_time
     start_time=$(date +%s)
 
-    response=$(echo "$prompt_text" | claude -p - --output-format text)
+    response=$(echo "$prompt_text" | claude -p - $model_flag --output-format text)
     local exit_code=$?
 
     local end_time

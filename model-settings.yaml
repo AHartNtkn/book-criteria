@@ -1,0 +1,18 @@
+# Model assignments per pipeline role.
+# Use model aliases: opus, sonnet, haiku
+# Or full model IDs: claude-opus-4-6, claude-sonnet-4-6, claude-haiku-4-5-20251001
+
+# Creative heavy-lifting (judgment, synthesis, rewriting)
+synthesis: opus
+planning: opus
+enhancement: opus
+fixing: opus
+
+# Evaluation and extraction (criteria-based, mechanical)
+auditor: sonnet
+consolidation: sonnet
+context_collection: sonnet
+backtracking: sonnet
+
+# Brainstorming (quantity over quality, synthesis curates)
+ideation: haiku

@@ -225,6 +225,7 @@ Do not write any other files. Do not use any other tools."
             echo "$write_prompt" | claude -p - \
                 --tools "Read,Write" \
                 --dangerously-skip-permissions \
+                $(get_model_flag auditor) \
                 --output-format text \
                 > "$auditor_out_dir/${safe_name}.claude-stdout.txt" 2>&1
 
@@ -332,7 +333,7 @@ run_enhancement() {
     filled=$(python3 "$PROJECT_DIR/fill_template.py" "$enhance_prompt" \
         "${context_args[@]}")
 
-    run_claude_to_file "enhance-${level}" "$filled" "$enhance_output"
+    run_claude_to_file "enhance-${level}" "$filled" "$enhance_output" "$(get_model_flag enhancement)"
 }
 
 # The main audit/refine loop.
@@ -425,6 +426,7 @@ Use the Write tool to create this file. Read each feedback file listed above usi
         echo "$consolidate_prompt" | claude -p - \
             --tools "Read,Write" \
             --dangerously-skip-permissions \
+            $(get_model_flag consolidation) \
             --output-format text \
             > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
 
@@ -474,7 +476,7 @@ Use the Write tool to create this file. Read each feedback file listed above usi
             "${context_args[@]}" \
             "audit_feedback=$consolidated_feedback")
 
-        run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file"
+        run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
 
         # Check for deletion recommendation
         if [[ -f "$content_file" ]] && head -5 "$content_file" | grep -q "^RECOMMENDATION: DELETE"; then

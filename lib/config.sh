@@ -11,6 +11,7 @@
 
 CONFIG_FILE=""
 CRITERIA_FILE=""
+MODEL_SETTINGS_FILE=""
 
 load_config() {
     local config_file="$1"
@@ -88,6 +89,30 @@ is_sentinel_enabled() {
         echo "false"
     else
         echo "true"
+    fi
+}
+
+load_model_settings() {
+    local model_file="$1"
+    if [[ ! -f "$model_file" ]]; then
+        echo "WARNING: Model settings not found: $model_file — using CLI defaults" >&2
+        return
+    fi
+    MODEL_SETTINGS_FILE="$model_file"
+}
+
+# Get the model for a pipeline role.
+# Args: $1 = role (synthesis|planning|enhancement|fixing|auditor|consolidation|context_collection|backtracking|ideation)
+# Returns: model flag string (e.g., "--model sonnet") or empty string for CLI default
+get_model_flag() {
+    local role="$1"
+    if [[ -z "$MODEL_SETTINGS_FILE" ]]; then
+        return
+    fi
+    local model
+    model=$(yq -r ".$role // \"\"" "$MODEL_SETTINGS_FILE")
+    if [[ -n "$model" && "$model" != "null" ]]; then
+        echo "--model $model"
     fi
 }
 

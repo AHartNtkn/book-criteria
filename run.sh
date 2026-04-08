@@ -42,6 +42,9 @@ fi
 init_state
 init_logging
 init_progress
+if [[ -f "model-settings.yaml" ]]; then
+    load_model_settings "model-settings.yaml"
+fi
 mkdir -p output
 
 PREMISE_FILE="output/synthesized-premise.md"
@@ -140,7 +143,8 @@ run_claude_write() {
     local prompt="$1"
     local desc="${2:-unnamed}"
     local outfile="$3"
-    run_claude_to_file "$desc" "$prompt" "$outfile"
+    local model_flag="${4:-}"
+    run_claude_to_file "$desc" "$prompt" "$outfile" "$model_flag"
 }
 
 # ── Phase 0: Premise Brainstorming ────────────────────────────
@@ -209,6 +213,7 @@ Do not write any other files. Do not use any other tools."
                 echo "$write_prompt" | claude -p - \
                     --tools "Read,Write" \
                     --dangerously-skip-permissions \
+                    $(get_model_flag ideation) \
                     --output-format text \
                     > "$idea_dir/claude-stdout.txt" 2>&1
 
@@ -251,7 +256,7 @@ Do not write any other files. Do not use any other tools."
     assembled=$(python3 fill_template.py prompts/synthesize-premise.md \
         "premise=premise.md" \
         "candidate_ideas=$STATE_DIR/all-premise-ideas.txt")
-    run_claude_write "$assembled" "synthesize-premise" "$PREMISE_FILE"
+    run_claude_write "$assembled" "synthesize-premise" "$PREMISE_FILE" "$(get_model_flag synthesis)"
 
     echo "Synthesized premise written to $PREMISE_FILE" >&2
 }
@@ -267,7 +272,7 @@ phase_novel_planning() {
         local assembled
         assembled=$(python3 fill_template.py prompts/plan-novel.md \
             "premise=$PREMISE_FILE")
-        run_claude_write "$assembled" "plan-novel" "output/novel-plan.md"
+        run_claude_write "$assembled" "plan-novel" "output/novel-plan.md" "$(get_model_flag planning)"
     fi
 
     echo "Auditing novel plan..." >&2
@@ -360,6 +365,7 @@ Do not write any other files. Do not use any other tools."
                 echo "$write_prompt" | claude -p - \
                     --tools "Read,Write" \
                     --dangerously-skip-permissions \
+                    $(get_model_flag ideation) \
                     --output-format text \
                     > "$idea_log_dir/claude-stdout.txt" 2>&1
 
@@ -386,7 +392,7 @@ Do not write any other files. Do not use any other tools."
         "chapter_description=$ch_desc_file" \
         "completed_chapters_summary=$summary_file" \
         "candidate_approaches=$STATE_DIR/all-chapter-ideas.txt")
-    run_claude_write "$assembled" "synthesize-chapter-$ch" "$concept_file"
+    run_claude_write "$assembled" "synthesize-chapter-$ch" "$concept_file" "$(get_model_flag synthesis)"
 }
 
 # ── Phase 2+3: Chapter Planning + Scene Authoring ─────────────
@@ -453,7 +459,7 @@ plan_one_chapter() {
             "chapter_number=$ch" \
             "chapter_concept=$ch_dir/chapter-concept.md" \
             "completed_chapters_summary=$summary_file")
-        run_claude_write "$assembled" "plan-chapter-$ch" "$plan_file"
+        run_claude_write "$assembled" "plan-chapter-$ch" "$plan_file" "$(get_model_flag planning)"
     fi
 
     echo "  Auditing chapter $ch plan..." >&2
@@ -513,7 +519,7 @@ author_chapter_scenes() {
                 "scene_plan=$scene_plan_file" \
                 "chapter_number=$ch" \
                 "scene_number=$sc")
-            run_claude_write "$assembled" "author-scene-ch${ch}-sc${sc}" "$scene_file"
+            run_claude_write "$assembled" "author-scene-ch${ch}-sc${sc}" "$scene_file" "$(get_model_flag planning)"
         fi
 
         # Audit/refine scene
@@ -569,7 +575,7 @@ collect_scene_context() {
         "chapter_plan=$plan_file" \
         "upcoming_scene_plan=$scene_plan_file" \
         "completed_content=$prose_file")
-    run_claude_write "$assembled" "collect-context-ch${ch}-sc${sc}" "$output_file"
+    run_claude_write "$assembled" "collect-context-ch${ch}-sc${sc}" "$output_file" "$(get_model_flag context_collection)"
 }
 
 run_backtrack_chapter() {
@@ -600,7 +606,7 @@ run_backtrack_chapter() {
         "chapter_plan=$ch_dir/chapter-plan.md" \
         "completed_scenes=$scenes_file")
 
-    run_claude_write "$assembled" "backtrack-chapter-$ch" "$bt_output"
+    run_claude_write "$assembled" "backtrack-chapter-$ch" "$bt_output" "$(get_model_flag backtracking)"
 
     if [[ -f "$bt_output" && -s "$bt_output" ]] && ! head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
         echo "  Chapter plan revised by backtracking" >&2
@@ -633,7 +639,7 @@ run_backtrack_novel() {
         "novel_plan=output/novel-plan.md" \
         "completed_chapters_summary=$summary_file")
 
-    run_claude_write "$assembled" "backtrack-novel-after-ch$ch" "$bt_output"
+    run_claude_write "$assembled" "backtrack-novel-after-ch$ch" "$bt_output" "$(get_model_flag backtracking)"
 
     if [[ -f "$bt_output" && -s "$bt_output" ]] && ! head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
         echo "Novel plan revised by backtracking" >&2
