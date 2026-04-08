@@ -48,22 +48,37 @@ def prompt_interactive(questions):
     print("\n=== Fiction Style Questionnaire ===\n")
 
     for q in questions:
+        is_multi = q.get("multi", False)
         print(f"\n{q['text']}\n")
         for i, opt in enumerate(q["options"]):
             print(f"  {i + 1}. {opt['label']}")
         print()
 
-        while True:
-            choice = input(f"Select (1-{len(q['options'])}): ").strip()
-            try:
-                idx = int(choice) - 1
-                if 0 <= idx < len(q["options"]):
-                    answers[q["id"]] = q["options"][idx]["id"]
-                    print(f"  → {q['options'][idx]['id']}")
-                    break
-            except ValueError:
-                pass
-            print(f"  Invalid choice. Enter 1-{len(q['options'])}.")
+        if is_multi:
+            while True:
+                choice = input(f"Select one or more (comma-separated, e.g. 1,3): ").strip()
+                try:
+                    indices = [int(x.strip()) - 1 for x in choice.split(",")]
+                    if all(0 <= idx < len(q["options"]) for idx in indices):
+                        selected = [q["options"][idx]["id"] for idx in indices]
+                        answers[q["id"]] = selected
+                        print(f"  → {', '.join(selected)}")
+                        break
+                except ValueError:
+                    pass
+                print(f"  Invalid. Enter comma-separated numbers (1-{len(q['options'])}).")
+        else:
+            while True:
+                choice = input(f"Select (1-{len(q['options'])}): ").strip()
+                try:
+                    idx = int(choice) - 1
+                    if 0 <= idx < len(q["options"]):
+                        answers[q["id"]] = q["options"][idx]["id"]
+                        print(f"  → {q['options'][idx]['id']}")
+                        break
+                except ValueError:
+                    pass
+                print(f"  Invalid choice. Enter 1-{len(q['options'])}.")
 
     return answers
 
@@ -84,25 +99,33 @@ def apply_answers(questions, answers, genre_ids):
     enabled_genre = set()
 
     for q in questions:
-        answer_id = answers.get(q["id"])
-        if answer_id is None:
+        answer_val = answers.get(q["id"])
+        if answer_val is None:
             continue
 
-        chosen = None
-        for opt in q["options"]:
-            if opt["id"] == answer_id:
-                chosen = opt
-                break
+        # Multi-select: answer can be a list of IDs
+        is_multi = q.get("multi", False)
+        if is_multi:
+            answer_ids = answer_val if isinstance(answer_val, list) else [answer_val]
+        else:
+            answer_ids = [answer_val]
 
-        if chosen is None:
-            print(f"WARNING: Unknown answer '{answer_id}' for question '{q['id']}'",
-                  file=sys.stderr)
-            continue
+        for answer_id in answer_ids:
+            chosen = None
+            for opt in q["options"]:
+                if opt["id"] == answer_id:
+                    chosen = opt
+                    break
 
-        for item_id in chosen.get("disables", []):
-            disabled.add(item_id)
-        for item_id in chosen.get("enables", []):
-            enabled_genre.add(item_id)
+            if chosen is None:
+                print(f"WARNING: Unknown answer '{answer_id}' for question '{q['id']}'",
+                      file=sys.stderr)
+                continue
+
+            for item_id in chosen.get("disables", []):
+                disabled.add(item_id)
+            for item_id in chosen.get("enables", []):
+                enabled_genre.add(item_id)
 
     return disabled, enabled_genre
 

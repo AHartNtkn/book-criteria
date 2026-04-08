@@ -126,7 +126,8 @@ questions:
   # the questionnaire multiple times or editing the config.
 
   - id: genre
-    text: "Which genre contract should be honored? (Select the primary genre.)"
+    multi: true
+    text: "Which genre contracts should be honored? (Select all that apply.)"
     options:
       - id: detective_mystery
         label: "Detective/mystery -- fair play, clue architecture, investigation"
@@ -655,7 +656,7 @@ questions:
 
 defaults:
   fiction_tradition: hybrid
-  genre: none
+  genre: [none]
   prose_style: balanced
   structural_approach: hybrid_structure
   thematic_ambition: central
