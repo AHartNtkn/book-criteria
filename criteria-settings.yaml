@@ -7,13 +7,14 @@ iteration_caps:
   novel_plan: 5
   chapter_plan: 5
   scene: 3
+  backtrack: 1
 
 criteria:
   CC-001: false
-  CC-025: false
+  CC-025: true
   CC-029: true
   CC-044: true
-  CC-045: false
+  CC-045: true
   CC-046: true
   CC-047: false
   CC-049: true
@@ -25,11 +26,11 @@ criteria:
   CC-081: true
   CC-082: true
   CC-083: true
-  CC-084: false
+  CC-084: true
   CC-085: false
-  CC-088: false
+  CC-088: true
   CC-100: true
-  CC-102: false
+  CC-102: true
   CC-109: true
   CC-122: true
   CC-130: true
@@ -39,8 +40,8 @@ criteria:
   CC-144: false
   CC-167: false
   CC-182: false
-  CC-187: false
-  CC-198: false
+  CC-187: true
+  CC-198: true
   CC-201: true
   CC-202: true
   CC-208: true
@@ -51,17 +52,17 @@ criteria:
   ML-024: true
   NC-012: false
   NC-016: false
-  NC-026: false
+  NC-026: true
   SC-024: false
   SC-160: false
 
 sentinels:
   CS-011: true
   CS-019: false
-  CS-040: false
+  CS-040: true
   CS-043: true
-  CS-050: false
-  CS-051: false
+  CS-050: true
+  CS-051: true
   CS-068: true
   CS-073: false
   CS-076: false
@@ -71,6 +72,6 @@ sentinels:
   CS-094: true
   CS-103: true
   NS-007: true
-  NS-019: false
-  NS-020: false
+  NS-019: true
+  NS-020: true
   SS-184: false

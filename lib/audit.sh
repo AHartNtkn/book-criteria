@@ -357,7 +357,12 @@ audit_refine_loop() {
     local context_args=("$@")
 
     local iteration_cap
-    iteration_cap=$(get_iteration_cap "$level")
+    if [[ "${BACKTRACK_MODE:-0}" == "1" ]]; then
+        iteration_cap=$(get_iteration_cap "backtrack")
+        BACKTRACK_MODE=0  # Reset so nested calls don't inherit
+    else
+        iteration_cap=$(get_iteration_cap "$level")
+    fi
 
     # Clear per-item pass tracking when starting a new audit target
     local passed_items_file="$STATE_DIR/passed-items.json"

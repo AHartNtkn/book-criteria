@@ -612,7 +612,7 @@ run_backtrack_chapter() {
         echo "  Chapter plan revised by backtracking" >&2
         cp "$bt_output" "$ch_dir/chapter-plan.md"
 
-        audit_refine_loop "chapter_plan" "$ch_dir/chapter-plan.md" \
+        BACKTRACK_MODE=1 audit_refine_loop "chapter_plan" "$ch_dir/chapter-plan.md" \
             "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan-bt" \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
@@ -645,7 +645,7 @@ run_backtrack_novel() {
         echo "Novel plan revised by backtracking" >&2
         cp "$bt_output" output/novel-plan.md
 
-        audit_refine_loop "novel_plan" "output/novel-plan.md" \
+        BACKTRACK_MODE=1 audit_refine_loop "novel_plan" "output/novel-plan.md" \
             "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
