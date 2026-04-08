@@ -81,7 +81,11 @@ if os.path.isfile(passed_file):
         existing = set(json.load(f))
 
 for name, data in scores.get('criteria', {}).items():
-    if data.get('score', 0) >= 4:
+    score = data.get('score', 0)
+    # N/A counts as passed (not applicable = no action needed)
+    if score == 'N/A' or score == 'n/a':
+        existing.add(name)
+    elif isinstance(score, (int, float)) and score >= 4:
         existing.add(name)
 
 for name, data in scores.get('sentinels', {}).items():

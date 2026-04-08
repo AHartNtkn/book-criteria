@@ -15,7 +15,8 @@ Before considering any strengths, read the content and list every flaw you obser
 **Default score is 2.** You must justify movement upward or downward from 2. Do not start at 3 and look for reasons to adjust. Start at 2 (functional but weak) and require evidence to move higher.
 
 Score definitions:
-- **0**: Absent or completely broken — the quality this criterion measures does not exist
+- **N/A**: Not applicable — the quality this criterion measures does not exist in this work AND is not expected to. Use when the criterion describes something the story is not attempting (e.g., quest structure in a locked-room mystery, magic system in realistic fiction). N/A means "this criterion does not apply," NOT "this was attempted and failed."
+- **0**: Absent or completely broken — the quality this criterion measures SHOULD exist but does not, or exists but is completely broken
 - **1**: Severely deficient — present but failing in most respects
 - **2**: Functional but weak — the default. Present, basically works, but has clear problems
 - **3**: Adequate — competent execution with some notable strengths, some weaknesses
@@ -59,7 +60,7 @@ Write your flaw-first analysis. Then for each criterion, state the score with ev
 {
     "criteria": {
         "criterion-id": {"score": 0, "evidence": "specific quote or reference"},
-        "criterion-id": {"score": 0, "evidence": "specific quote or reference"}
+        "criterion-id": {"score": "N/A", "evidence": "why this criterion does not apply to this work"}
     },
     "sentinels": {
         "sentinel-id": {"status": "PASS", "evidence": "why this passes or fails"},

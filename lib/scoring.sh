@@ -54,6 +54,14 @@ if not criteria:
 all_pass = True
 for name, data in criteria.items():
     score = data.get('score', 0)
+    # N/A scores are not failures — skip them
+    if score == 'N/A' or score == 'n/a':
+        continue
+    if isinstance(score, str):
+        try:
+            score = int(score)
+        except ValueError:
+            continue
     if score < $threshold:
         print(f'BELOW THRESHOLD: {name} = {score} (need >= $threshold)', file=sys.stderr)
         all_pass = False
