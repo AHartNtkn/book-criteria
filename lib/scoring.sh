@@ -14,23 +14,94 @@ import json, re, sys
 
 text = sys.stdin.read()
 
+def try_parse(s):
+    \"\"\"Try to parse JSON, with repair for common LLM errors.\"\"\"
+    # First try direct parse
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        pass
+
+    # Repair: escape unescaped double quotes inside JSON string values.
+    # Strategy: find each \"key\": \"value\" pair and escape inner quotes in value.
+    def escape_inner_quotes(m):
+        key_part = m.group(1)  # everything up to the value's opening quote
+        value = m.group(2)     # the value content (between outer quotes)
+        # Escape any unescaped double quotes inside the value
+        fixed_value = value.replace('\"', '\\\\\"')
+        return key_part + '\"' + fixed_value + '\"'
+
+    try:
+        # Match \"evidence\": \"...\" patterns where the value may contain unescaped quotes
+        # This regex finds: \"key\": \" then captures everything until the pattern
+        # looks like it's ending with \", followed by } or ,
+        # Since this is tricky, use a different approach: parse line by line
+        lines = s.split('\\n')
+        fixed_lines = []
+        for line in lines:
+            # If line has \"evidence\": with potential inner quotes, fix them
+            if '\"evidence\"' in line or '\"status\"' in line:
+                # Find the value portion after the last \": \"
+                parts = line.split('\": \"', 1)
+                if len(parts) == 2:
+                    prefix = parts[0] + '\": \"'
+                    rest = parts[1]
+                    # The value ends with \"} or \",
+                    if rest.endswith('\"}') or rest.endswith('\"},'):
+                        suffix = rest[-2:] if rest.endswith('\"},') else rest[-2:]
+                        if rest.endswith('\"},'):
+                            suffix = rest[-3:]
+                            inner = rest[:-3]
+                        else:
+                            suffix = rest[-2:]
+                            inner = rest[:-2]
+                        # Escape any double quotes in the inner value
+                        inner_fixed = inner.replace('\\\\\"', '\\x00').replace('\"', '\\\\\"').replace('\\x00', '\\\\\"')
+                        fixed_lines.append(prefix + inner_fixed + suffix)
+                        continue
+            fixed_lines.append(line)
+        fixed = '\\n'.join(fixed_lines)
+        return json.loads(fixed)
+    except (json.JSONDecodeError, Exception):
+        pass
+
+    # Last resort: extract just scores using regex, ignore evidence text
+    try:
+        result = {'criteria': {}, 'sentinels': {}}
+        # Extract criterion scores: \"ID\": {\"score\": N
+        for m in re.finditer(r'\"([A-Z]{2}-\\d+)\"\\s*:\\s*\\{\\s*\"score\"\\s*:\\s*(\\d+|\"N/A\")', s):
+            cid = m.group(1)
+            score_raw = m.group(2)
+            score = score_raw.strip('\"') if score_raw.startswith('\"') else int(score_raw)
+            result['criteria'][cid] = {'score': score, 'evidence': '(extracted from malformed JSON)'}
+        # Extract sentinel statuses: \"ID\": {\"status\": \"PASS\"/\"FAIL\"
+        for m in re.finditer(r'\"([A-Z]{2}-\\d+)\"\\s*:\\s*\\{\\s*\"status\"\\s*:\\s*\"(PASS|FAIL)\"', s):
+            sid = m.group(1)
+            status = m.group(2)
+            result['sentinels'][sid] = {'status': status, 'evidence': '(extracted from malformed JSON)'}
+        if result['criteria'] or result['sentinels']:
+            return result
+    except Exception:
+        pass
+
+    return None
+
 # Try fenced JSON blocks first
 blocks = re.findall(r'\x60\x60\x60json\s*\n(.*?)\n\s*\x60\x60\x60', text, re.DOTALL)
 if blocks:
-    # Use the last JSON block (auditors put scores at the end)
-    print(blocks[-1])
-    sys.exit(0)
+    parsed = try_parse(blocks[-1])
+    if parsed and ('criteria' in parsed or 'sentinels' in parsed):
+        # Re-serialize to guarantee valid JSON output
+        print(json.dumps(parsed))
+        sys.exit(0)
 
 # Fallback: find bare JSON objects with criteria/sentinels keys
 matches = re.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', text, re.DOTALL)
 for m in reversed(matches):
-    try:
-        parsed = json.loads(m)
-        if 'criteria' in parsed or 'sentinels' in parsed:
-            print(m)
-            sys.exit(0)
-    except json.JSONDecodeError:
-        continue
+    parsed = try_parse(m)
+    if parsed and ('criteria' in parsed or 'sentinels' in parsed):
+        print(json.dumps(parsed))
+        sys.exit(0)
 
 print('FATAL: No valid scores JSON found in auditor output', file=sys.stderr)
 sys.exit(1)
