@@ -289,20 +289,30 @@ print(f'{nc} criteria, {ns} sentinels scored')
     fi
 
     # All auditors succeeded — merge results (both newly run and resumed)
-    local all_completed=("${resumed_auditors[@]}" "${active_auditors[@]}")
-    for entry in "${all_completed[@]}"; do
-        local safe_name="${entry%%|*}"
-        local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
-        local scores_file="$auditor_out_dir/${safe_name}.scores.json"
-
-        printf '\n\n' >> "$COMBINED_FEEDBACK"
-        cat "$feedback_file" >> "$COMBINED_FEEDBACK"
-
-        local scores
-        scores=$(cat "$scores_file")
-        COMBINED_SCORES=$(merge_scores "$COMBINED_SCORES" "$scores")
-        record_passing_items "$scores"
+    # Concatenate feedback files
+    for fb in "$auditor_out_dir"/*.feedback.txt; do
+        if [[ -f "$fb" && -s "$fb" ]]; then
+            printf '\n\n' >> "$COMBINED_FEEDBACK"
+            cat "$fb" >> "$COMBINED_FEEDBACK"
+        fi
     done
+
+    # Merge all score files in one Python call (avoids bash JSON corruption)
+    COMBINED_SCORES=$(python3 -c "
+import json, os, sys, glob
+
+scores_dir = sys.argv[1]
+merged = {'criteria': {}, 'sentinels': {}}
+for f in sorted(glob.glob(os.path.join(scores_dir, '*.scores.json'))):
+    with open(f) as fh:
+        data = json.load(fh)
+    merged['criteria'].update(data.get('criteria', {}))
+    merged['sentinels'].update(data.get('sentinels', {}))
+print(json.dumps(merged))
+" "$auditor_out_dir")
+
+    # Record passing items from the merged scores
+    record_passing_items "$COMBINED_SCORES"
 
     echo "  All auditors complete ($total new + $resumed resumed)." >&2
 }
