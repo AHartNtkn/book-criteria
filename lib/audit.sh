@@ -399,12 +399,45 @@ audit_refine_loop() {
         echo "  Consolidating audit feedback..." >&2
         local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
         local consolidated_feedback="$auditor_out_dir/consolidated-feedback.md"
+
+        # Build list of feedback file paths for the consolidator to read
+        local feedback_list_file="$auditor_out_dir/feedback-file-list.txt"
+        > "$feedback_list_file"
+        local all_entries=("${resumed_auditors[@]}" "${active_auditors[@]}")
+        for entry in "${all_entries[@]}"; do
+            local sn="${entry%%|*}"
+            local fb="$auditor_out_dir/${sn}.feedback.txt"
+            if [[ -f "$fb" && -s "$fb" ]]; then
+                echo "- $fb" >> "$feedback_list_file"
+            fi
+        done
+
         local consolidate_prompt
         consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
             "$PROJECT_DIR/prompts/consolidate-feedback.md" \
-            "audit_feedback=$COMBINED_FEEDBACK")
-        run_claude_to_file "consolidate-feedback-round-${round}" \
-            "$consolidate_prompt" "$consolidated_feedback"
+            "feedback_file_list=$feedback_list_file")
+
+        # Append file-writing instruction
+        consolidate_prompt="${consolidate_prompt}
+
+---
+IMPORTANT: Write your consolidated feedback to the file: ${consolidated_feedback}
+Use the Write tool to create this file. Read each feedback file listed above using the Read tool."
+
+        # Consolidator gets Read+Write tools to access feedback files and write output
+        echo "$consolidate_prompt" | claude -p - \
+            --tools "Read,Write" \
+            --dangerously-skip-permissions \
+            --output-format text \
+            > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
+
+        # Also log it
+        step_start "consolidate-feedback-round-${round}" "Consolidating audit feedback"
+        if [[ -f "$consolidated_feedback" && -s "$consolidated_feedback" ]]; then
+            step_done "consolidate-feedback-round-${round}" "$(wc -c < "$consolidated_feedback") bytes"
+        else
+            step_failed "consolidate-feedback-round-${round}" "no output"
+        fi
 
         if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
             echo "WARNING: Consolidation failed, using raw feedback" >&2

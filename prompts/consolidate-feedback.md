@@ -1,14 +1,16 @@
 # Consolidate Audit Feedback
 
-You are reading the raw output from multiple auditors who evaluated the same content. Your job is to produce one unified feedback document that the fixer will use.
+You are consolidating raw output from multiple auditors who evaluated the same content. Your job is to read each auditor's feedback file and produce one unified feedback document that the fixer will use.
 
-## Raw Auditor Outputs
+## Auditor Feedback Files
 
-{audit_feedback}
+The following files contain raw auditor output. Read each one using the Read tool:
+
+{feedback_file_list}
 
 ## Your Task
 
-Multiple auditors examined the same content from different angles. Their outputs overlap — the same problem is often identified by several auditors from different perspectives. Your job is to deduplicate and consolidate.
+Read each feedback file. Multiple auditors examined the same content from different angles. Their outputs overlap — the same problem is often identified by several auditors from different perspectives. Your job is to deduplicate and consolidate.
 
 ### What to keep:
 
@@ -17,8 +19,6 @@ Multiple auditors examined the same content from different angles. Their outputs
 2. **Failing scores** — for criteria that scored below 4, keep the criterion name, score, and evidence. If the same criterion was scored by multiple auditors, keep the lowest score and best evidence.
 
 3. **Failing sentinels** — for sentinels that FAILED, keep the sentinel name and evidence.
-
-4. **Enhancement opportunities** — if present, keep these as-is.
 
 ### What to drop:
 
@@ -50,10 +50,6 @@ Multiple auditors examined the same content from different angles. Their outputs
 
 [Sentinel ID]: [Name] — FAIL
   Evidence: [specific reference]
-
-## Enhancement Opportunities
-
-[If present in the input, reproduce as-is]
 ```
 
 Write the consolidated feedback to the file you are instructed to write to.
