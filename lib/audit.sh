@@ -121,18 +121,31 @@ run_auditors() {
     local round_settings="$STATE_DIR/round-settings.yaml"
     generate_round_settings "$round_settings"
 
-    # Organized output: auditor-results/level/target/round-N/
-    local auditor_out_dir="$STATE_DIR/auditor-results/${level}/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
+    # Organized output: auditor-results/target/round-N/
+    local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
     mkdir -p "$auditor_out_dir"
 
     # Phase 1: Assemble prompts and identify active auditors (sequential, fast)
     local active_auditors=()
+    local resumed_auditors=()
     local skipped=0
+    local resumed=0
     while IFS= read -r auditor_name; do
         [[ -z "$auditor_name" ]] && continue
 
         local safe_name
         safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
+
+        # Skip auditors that already completed in this round (mid-round resume)
+        local existing_status="$auditor_out_dir/${safe_name}.status"
+        if [[ -f "$existing_status" && "$(cat "$existing_status")" == "OK" ]]; then
+            echo "    Already done: $auditor_name (resuming)" >&2
+            resumed=$((resumed + 1))
+            # Still need to include in active_auditors for merge phase
+            resumed_auditors+=("$safe_name|$auditor_name")
+            continue
+        fi
+
         local prompt_file="$auditor_out_dir/${safe_name}.prompt.md"
 
         if ! python3 "$PROJECT_DIR/assemble_auditor.py" "$auditor_name" \
@@ -158,13 +171,13 @@ run_auditors() {
     done <<< "$auditor_names"
 
     local total=${#active_auditors[@]}
-    if [[ "$skipped" -gt 0 ]]; then
-        echo "  Running $total auditors ($skipped skipped — all criteria passed)..." >&2
-    else
-        echo "  Running $total auditors in parallel (batches of $AUDITOR_BATCH_SIZE)..." >&2
-    fi
+    local status_parts=()
+    [[ "$total" -gt 0 ]] && status_parts+=("$total to run")
+    [[ "$resumed" -gt 0 ]] && status_parts+=("$resumed already done")
+    [[ "$skipped" -gt 0 ]] && status_parts+=("$skipped skipped (all criteria passed)")
+    echo "  Auditors: $(IFS=', '; echo "${status_parts[*]}")" >&2
 
-    if [[ "$total" -eq 0 ]]; then
+    if [[ "$total" -eq 0 && "$resumed" -eq 0 ]]; then
         echo "  All criteria/sentinels passed in previous rounds." >&2
         return
     fi
@@ -263,8 +276,9 @@ print(f'{nc} criteria, {ns} sentinels scored')
         exit 1
     fi
 
-    # All auditors succeeded — merge results
-    for entry in "${active_auditors[@]}"; do
+    # All auditors succeeded — merge results (both newly run and resumed)
+    local all_completed=("${resumed_auditors[@]}" "${active_auditors[@]}")
+    for entry in "${all_completed[@]}"; do
         local safe_name="${entry%%|*}"
         local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
         local scores_file="$auditor_out_dir/${safe_name}.scores.json"
@@ -278,7 +292,7 @@ print(f'{nc} criteria, {ns} sentinels scored')
         record_passing_items "$scores"
     done
 
-    echo "  All $total auditors complete." >&2
+    echo "  All auditors complete ($total new + $resumed resumed)." >&2
 }
 
 # Run the enhancement agent for a level.
