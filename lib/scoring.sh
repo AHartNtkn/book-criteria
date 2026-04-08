@@ -104,15 +104,18 @@ merge_scores() {
     python3 -c "
 import json, sys
 
-a = json.loads(sys.argv[1])
-b = json.loads(sys.argv[2])
+lines = sys.stdin.read().split('\n---SPLIT---\n')
+a = json.loads(lines[0])
+b = json.loads(lines[1])
 
 merged = {
     'criteria': {**a.get('criteria', {}), **b.get('criteria', {})},
     'sentinels': {**a.get('sentinels', {}), **b.get('sentinels', {})}
 }
 print(json.dumps(merged))
-" "$a" "$b"
+" <<< "${a}
+---SPLIT---
+${b}"
 }
 
 # Write scores to the audit log.
