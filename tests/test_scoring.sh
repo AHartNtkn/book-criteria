@@ -45,23 +45,23 @@ assert_eq "show-not-tell score" "3" "$(echo "$SCORES" | jq '.criteria["show-not-
 
 # Test 2: check_criteria_passing with threshold 4
 echo "--- Test 2: check_criteria_passing ---"
-RESULT=$(check_criteria_passing "$SCORES" 4 2>/dev/null) || true
+RESULT=$(check_criteria_passing "$SCORES" 4 2>/dev/null)
 assert_eq "fails when show-not-tell is 3" "FAIL" "$RESULT"
 
 # Test 3: check_criteria_passing with threshold 3
 echo "--- Test 3: check_criteria_passing threshold 3 ---"
-RESULT=$(check_criteria_passing "$SCORES" 3 2>/dev/null) || true
+RESULT=$(check_criteria_passing "$SCORES" 3 2>/dev/null)
 assert_eq "passes when threshold is 3" "PASS" "$RESULT"
 
 # Test 4: check_sentinels_passing
 echo "--- Test 4: check_sentinels_passing ---"
-RESULT=$(check_sentinels_passing "$SCORES" 2>/dev/null) || true
+RESULT=$(check_sentinels_passing "$SCORES" 2>/dev/null)
 assert_eq "fails when excessive-nodding is FAIL" "FAIL" "$RESULT"
 
 # Test 5: check_sentinels_passing with all-pass input
 echo "--- Test 5: sentinels all pass ---"
 ALL_PASS='{"criteria":{},"sentinels":{"s1":{"status":"PASS","evidence":"ok"}}}'
-RESULT=$(check_sentinels_passing "$ALL_PASS" 2>/dev/null) || true
+RESULT=$(check_sentinels_passing "$ALL_PASS" 2>/dev/null)
 assert_eq "passes when all sentinels pass" "PASS" "$RESULT"
 
 # Test 6: log_scores writes file

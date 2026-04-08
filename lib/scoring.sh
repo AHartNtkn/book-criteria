@@ -67,11 +67,11 @@ for name, data in criteria.items():
         all_pass = False
 
 print('PASS' if all_pass else 'FAIL')
-sys.exit(0 if all_pass else 1)
 " <<< "$scores_json"
 }
 
 # Check if all sentinels pass. Prints PASS or FAIL.
+# Always exits 0 — pass/fail communicated via stdout.
 # Args: $1 = scores JSON string
 check_sentinels_passing() {
     local scores_json="$1"
@@ -93,7 +93,6 @@ for name, data in sentinels.items():
         all_pass = False
 
 print('PASS' if all_pass else 'FAIL')
-sys.exit(0 if all_pass else 1)
 " <<< "$scores_json"
 }
 

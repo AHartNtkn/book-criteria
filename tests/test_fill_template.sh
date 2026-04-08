@@ -83,7 +83,7 @@ STDERR_OUTPUT=$(python3 "$PROJECT_DIR/fill_template.py" \
     "$PROJECT_DIR/tests/fixtures/sample-template.md" \
     "premise=$TESTDIR/nonexistent.md" \
     "novel_plan=$TESTDIR/novel-plan.md" \
-    "chapter_number=1" 2>&1 >/dev/null) || true
+    "chapter_number=1" 2>&1 >/dev/null)
 assert_contains "warning for missing file" \
     "WARNING" "$STDERR_OUTPUT"
 

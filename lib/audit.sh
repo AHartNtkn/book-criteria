@@ -396,8 +396,8 @@ audit_refine_loop() {
 
         # Check pass conditions
         local criteria_ok sentinel_ok
-        criteria_ok=$(check_criteria_passing "$COMBINED_SCORES" 4 2>/dev/null) || true
-        sentinel_ok=$(check_sentinels_passing "$COMBINED_SCORES" 2>/dev/null) || true
+        criteria_ok=$(check_criteria_passing "$COMBINED_SCORES" 4 2>/dev/null)
+        sentinel_ok=$(check_sentinels_passing "$COMBINED_SCORES" 2>/dev/null)
 
         if [[ "$criteria_ok" == "PASS" ]] && [[ "$sentinel_ok" == "PASS" ]]; then
             echo "PASS: All criteria >= 4, all sentinels pass (round $round)" >&2
@@ -405,12 +405,11 @@ audit_refine_loop() {
             return 0
         fi
 
-        # Check iteration cap
+        # Check iteration cap — this is a normal exit, not an error
         if [[ "$iteration_cap" -gt 0 ]] && [[ "$round" -ge "$iteration_cap" ]]; then
-            echo "WARNING: Iteration cap ($iteration_cap) reached at round $round" >&2
-            echo "Final scores: $COMBINED_SCORES" >&2
+            echo "Iteration cap ($iteration_cap) reached at round $round. Moving on." >&2
             update_state "status" '"cap_reached"'
-            return 1
+            return 0
         fi
 
         # Run enhancement (appends to COMBINED_FEEDBACK)
