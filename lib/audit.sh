@@ -182,10 +182,20 @@ run_auditors() {
         return
     fi
 
-    # Phase 2: Run all active auditors in parallel batches
+    # Phase 2: Run auditors with a job pool (maintain AUDITOR_BATCH_SIZE concurrent)
     # Each subshell writes a .status file: "OK" on success, error message on failure
-    local batch_count=0
+    # Uses a FIFO semaphore to maintain constant concurrency
+    local sem_fifo="$auditor_out_dir/.semaphore"
+    mkfifo "$sem_fifo"
+    # Pre-fill semaphore with N tokens
+    for ((s=0; s<AUDITOR_BATCH_SIZE; s++)); do
+        echo "token" >> "$sem_fifo" &
+    done
+
     for entry in "${active_auditors[@]}"; do
+        # Wait for a slot (blocks until a token is available)
+        read -r < "$sem_fifo"
+
         local safe_name="${entry%%|*}"
         local auditor_name="${entry#*|}"
         local filled_file="$auditor_out_dir/${safe_name}.filled.md"
@@ -195,8 +205,8 @@ run_auditors() {
 
         echo "    Launched: $auditor_name" >&2
         (
-            # Write status on exit (success or failure)
-            trap 'if [[ ! -f "$status_file" ]]; then echo "CRASHED: unexpected exit" > "$status_file"; fi' EXIT
+            # Write status on exit (success or failure), then release semaphore slot
+            trap 'if [[ ! -f "$status_file" ]]; then echo "CRASHED: unexpected exit" > "$status_file"; fi; echo "token" > "$sem_fifo"' EXIT
 
             step_start "audit-${safe_name}" "Auditor: $auditor_name"
 
@@ -247,13 +257,9 @@ ns=len(d.get('sentinels',{}))
 print(f'{nc} criteria, {ns} sentinels scored')
 " 2>/dev/null)"
         ) &
-
-        batch_count=$((batch_count + 1))
-        if (( batch_count % AUDITOR_BATCH_SIZE == 0 )); then
-            wait
-        fi
     done
     wait
+    rm -f "$sem_fifo"
 
     # Phase 3: Check for failures, then merge results
     local failed=0
