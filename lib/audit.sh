@@ -188,10 +188,15 @@ run_auditors() {
 
     # Phase 2: Run auditors in parallel, maintaining AUDITOR_BATCH_SIZE concurrent
     # Uses `wait -n` to wait for any one job to finish before launching next
+    # Note: subshells always exit 0 or 1; wait -n propagates the exit code.
+    # Under set -e, a subshell exit 1 would kill the pipeline via wait -n.
+    # Subshell failures are tracked via .status files and checked in Phase 3,
+    # so we capture wait -n's exit code without letting set -e act on it.
     local running=0
     for entry in "${active_auditors[@]}"; do
         if [[ "$running" -ge "$AUDITOR_BATCH_SIZE" ]]; then
-            wait -n  # Wait for any one background job to finish
+            local wait_rc=0
+            wait -n || wait_rc=$?
             running=$((running - 1))
         fi
 
@@ -258,7 +263,8 @@ print(f'{nc} criteria, {ns} sentinels scored')
         ) &
         running=$((running + 1))
     done
-    wait
+    local wait_rc=0
+    wait || wait_rc=$?
 
     # Phase 3: Check for failures, then merge results
     local failed=0
