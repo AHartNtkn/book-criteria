@@ -440,8 +440,8 @@ Use the Write tool to create this file. Read each feedback file listed above usi
         fi
 
         if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
-            echo "WARNING: Consolidation failed, using raw feedback" >&2
-            consolidated_feedback="$COMBINED_FEEDBACK"
+            echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
+            exit 1
         fi
 
         # Check pass conditions
