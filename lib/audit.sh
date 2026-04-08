@@ -301,7 +301,7 @@ print(f'{nc} criteria, {ns} sentinels scored')
 }
 
 # Run the enhancement agent for a level.
-# Appends enhancement suggestions to $COMBINED_FEEDBACK.
+# Writes to $STATE_DIR/current-enhancements.md (not appended to audit feedback).
 run_enhancement() {
     local level="$1"
     shift
@@ -327,13 +327,6 @@ run_enhancement() {
         "${context_args[@]}")
 
     run_claude_to_file "enhance-${level}" "$filled" "$enhance_output"
-
-    if [[ -f "$enhance_output" && -s "$enhance_output" ]]; then
-        printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$COMBINED_FEEDBACK"
-        printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$COMBINED_FEEDBACK"
-        printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$COMBINED_FEEDBACK"
-        cat "$enhance_output" >> "$COMBINED_FEEDBACK"
-    fi
 }
 
 # The main audit/refine loop.
@@ -389,6 +382,22 @@ audit_refine_loop() {
         run_auditors "$level" "$content_file" "${context_args[@]}"
         log_scores "$log_prefix" "$round" "$COMBINED_SCORES"
 
+        # Consolidate audit feedback (deduplicate across auditors)
+        echo "  Consolidating audit feedback..." >&2
+        local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
+        local consolidated_feedback="$auditor_out_dir/consolidated-feedback.md"
+        local consolidate_prompt
+        consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
+            "$PROJECT_DIR/prompts/consolidate-feedback.md" \
+            "audit_feedback=$COMBINED_FEEDBACK")
+        run_claude_to_file "consolidate-feedback-round-${round}" \
+            "$consolidate_prompt" "$consolidated_feedback"
+
+        if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
+            echo "WARNING: Consolidation failed, using raw feedback" >&2
+            consolidated_feedback="$COMBINED_FEEDBACK"
+        fi
+
         # Check pass conditions
         local criteria_ok sentinel_ok
         criteria_ok=$(check_criteria_passing "$COMBINED_SCORES" 4 2>/dev/null)
@@ -407,26 +416,18 @@ audit_refine_loop() {
             return 0
         fi
 
-        # Run enhancement (appends to COMBINED_FEEDBACK)
+        # Run enhancement (separate from audit feedback)
         run_enhancement "$level" "${context_args[@]}"
 
-        # Consolidate feedback: deduplicate, filter to actionable items only
-        echo "  Consolidating feedback..." >&2
-        local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
-        local consolidated_feedback="$auditor_out_dir/consolidated-feedback.md"
-        local consolidate_prompt
-        consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
-            "$PROJECT_DIR/prompts/consolidate-feedback.md" \
-            "audit_feedback=$COMBINED_FEEDBACK")
-        run_claude_to_file "consolidate-feedback-round-${round}" \
-            "$consolidate_prompt" "$consolidated_feedback"
-
-        if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
-            echo "WARNING: Consolidation failed, using raw feedback" >&2
-            consolidated_feedback="$COMBINED_FEEDBACK"
+        # Append enhancement suggestions to consolidated feedback for the fixer
+        if [[ -f "$STATE_DIR/current-enhancements.md" && -s "$STATE_DIR/current-enhancements.md" ]]; then
+            printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$consolidated_feedback"
+            printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$consolidated_feedback"
+            printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$consolidated_feedback"
+            cat "$STATE_DIR/current-enhancements.md" >> "$consolidated_feedback"
         fi
 
-        # Run fixer with consolidated feedback
+        # Run fixer with consolidated audit feedback + enhancement suggestions
         echo "Fixing (round $round)..." >&2
         update_state "status" '"fixing"'
 
