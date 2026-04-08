@@ -403,10 +403,26 @@ audit_refine_loop() {
             return 1
         fi
 
-        # Run enhancement
+        # Run enhancement (appends to COMBINED_FEEDBACK)
         run_enhancement "$level" "${context_args[@]}"
 
-        # Run fixer
+        # Consolidate feedback: deduplicate, filter to actionable items only
+        echo "  Consolidating feedback..." >&2
+        local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
+        local consolidated_feedback="$auditor_out_dir/consolidated-feedback.md"
+        local consolidate_prompt
+        consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
+            "$PROJECT_DIR/prompts/consolidate-feedback.md" \
+            "audit_feedback=$COMBINED_FEEDBACK")
+        run_claude_to_file "consolidate-feedback-round-${round}" \
+            "$consolidate_prompt" "$consolidated_feedback"
+
+        if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
+            echo "WARNING: Consolidation failed, using raw feedback" >&2
+            consolidated_feedback="$COMBINED_FEEDBACK"
+        fi
+
+        # Run fixer with consolidated feedback
         echo "Fixing (round $round)..." >&2
         update_state "status" '"fixing"'
 
@@ -415,7 +431,7 @@ audit_refine_loop() {
         local assembled
         assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
             "${context_args[@]}" \
-            "audit_feedback=$COMBINED_FEEDBACK")
+            "audit_feedback=$consolidated_feedback")
 
         run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file"
 
