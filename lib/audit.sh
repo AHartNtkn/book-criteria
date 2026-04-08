@@ -113,10 +113,6 @@ run_auditors() {
     local auditor_names
     auditor_names=$(get_auditors_for_level "$level")
 
-    COMBINED_FEEDBACK="$auditor_out_dir/combined-feedback.txt"
-    COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
-    > "$COMBINED_FEEDBACK"
-
     # Generate round-specific settings
     local round_settings="$STATE_DIR/round-settings.yaml"
     generate_round_settings "$round_settings"
@@ -124,6 +120,10 @@ run_auditors() {
     # Organized output: auditor-results/target/round-N/
     local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
     mkdir -p "$auditor_out_dir"
+
+    COMBINED_FEEDBACK="$auditor_out_dir/combined-feedback.txt"
+    COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
+    > "$COMBINED_FEEDBACK"
 
     # Phase 1: Assemble prompts and identify active auditors (sequential, fast)
     local active_auditors=()
