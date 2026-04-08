@@ -403,10 +403,7 @@ audit_refine_loop() {
         # Build list of feedback file paths for the consolidator to read
         local feedback_list_file="$auditor_out_dir/feedback-file-list.txt"
         > "$feedback_list_file"
-        local all_entries=("${resumed_auditors[@]}" "${active_auditors[@]}")
-        for entry in "${all_entries[@]}"; do
-            local sn="${entry%%|*}"
-            local fb="$auditor_out_dir/${sn}.feedback.txt"
+        for fb in "$auditor_out_dir"/*.feedback.txt; do
             if [[ -f "$fb" && -s "$fb" ]]; then
                 echo "- $fb" >> "$feedback_list_file"
             fi
