@@ -376,6 +376,13 @@ audit_refine_loop() {
     update_state "audit_target" "\"$log_prefix\""
 
     while true; do
+        # Check iteration cap at the start — if we've done enough rounds, stop
+        if [[ "$iteration_cap" -gt 0 ]] && [[ "$round" -gt "$iteration_cap" ]]; then
+            echo "Iteration cap ($iteration_cap) reached. Moving on." >&2
+            update_state "status" '"cap_reached"'
+            return 0
+        fi
+
         echo "Audit round $round for $log_prefix" >&2
         update_state "refinement_round" "$round"
         update_state "status" '"auditing"'
@@ -412,13 +419,6 @@ audit_refine_loop() {
         if [[ "$criteria_ok" == "PASS" ]] && [[ "$sentinel_ok" == "PASS" ]]; then
             echo "PASS: All criteria >= 4, all sentinels pass (round $round)" >&2
             update_state "status" '"passed"'
-            return 0
-        fi
-
-        # Check iteration cap — this is a normal exit, not an error
-        if [[ "$iteration_cap" -gt 0 ]] && [[ "$round" -ge "$iteration_cap" ]]; then
-            echo "Iteration cap ($iteration_cap) reached at round $round. Moving on." >&2
-            update_state "status" '"cap_reached"'
             return 0
         fi
 
