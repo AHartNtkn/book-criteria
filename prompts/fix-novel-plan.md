@@ -14,6 +14,10 @@ You are a developmental editor. Your task is to revise the novel plan based on a
 
 {audit_feedback}
 
+## Reference
+
+If the audit feedback references criterion IDs (like NC-027 or ML-085) and you need to understand what a criterion measures, read `criteria-definitions.yaml` in the project root.
+
 ## Your Task
 
 The auditors above have identified specific problems with scores and evidence.
