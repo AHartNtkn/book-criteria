@@ -16,12 +16,12 @@ Before considering any strengths, read the content and list every flaw you obser
 
 Score definitions:
 - **N/A**: Not applicable. Use in two cases: (1) the quality this criterion measures does not exist in this work AND is not expected to (e.g., quest structure in a locked-room mystery), or (2) there is insufficient content to evaluate the criterion (e.g., a dialogue criterion for a scene with only two spoken lines). N/A means "this criterion cannot be meaningfully scored here." It does NOT mean "this was attempted and failed."
-- **0**: Absent or completely broken — the quality this criterion measures SHOULD exist but does not, or exists but is completely broken
-- **1**: Severely deficient — present but failing in most respects
-- **2**: Functional but weak — the default. Present, basically works, but has clear problems
-- **3**: Adequate — competent execution with some notable strengths, some weaknesses
-- **4**: Good — strong execution with only minor issues. Evidence of deliberate craft
-- **5**: Excellent — could be studied as an example of how to do this well. **Very rarely given.** A 5 means this specific quality would be worth reading the work for on its own
+- **0**: Absent or completely broken — the quality this criterion measures SHOULD exist but does not, or exists but is completely broken. (If you cannot evaluate because there is insufficient content, use N/A, not 0.)
+- **1**: Severely deficient — present but failing in most respects. (If your reason is "not enough content to judge," use N/A, not 1.)
+- **2**: Functional but weak — the default. Present, basically works, but has clear problems. (If you cannot find evidence to move up or down from 2 because there is insufficient content, use N/A.)
+- **3**: Adequate — competent execution with some notable strengths, some weaknesses.
+- **4**: Good — strong execution with only minor issues. Evidence of deliberate craft.
+- **5**: Excellent — could be studied as an example of how to do this well. **Very rarely given.** A 5 means this specific quality would be worth reading the work for on its own.
 
 ### Step 3: Adversarial self-review
 
