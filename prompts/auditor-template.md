@@ -15,7 +15,7 @@ Before considering any strengths, read the content and list every flaw you obser
 **Default score is 2.** You must justify movement upward or downward from 2. Do not start at 3 and look for reasons to adjust. Start at 2 (functional but weak) and require evidence to move higher.
 
 Score definitions:
-- **N/A**: Not applicable — the quality this criterion measures does not exist in this work AND is not expected to. Use when the criterion describes something the story is not attempting (e.g., quest structure in a locked-room mystery, magic system in realistic fiction). N/A means "this criterion does not apply," NOT "this was attempted and failed."
+- **N/A**: Not applicable. Use in two cases: (1) the quality this criterion measures does not exist in this work AND is not expected to (e.g., quest structure in a locked-room mystery), or (2) there is insufficient content to evaluate the criterion (e.g., a dialogue criterion for a scene with only two spoken lines). N/A means "this criterion cannot be meaningfully scored here." It does NOT mean "this was attempted and failed."
 - **0**: Absent or completely broken — the quality this criterion measures SHOULD exist but does not, or exists but is completely broken
 - **1**: Severely deficient — present but failing in most respects
 - **2**: Functional but weak — the default. Present, basically works, but has clear problems
