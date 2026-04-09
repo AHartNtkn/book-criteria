@@ -14,6 +14,10 @@ You are a developmental editor. Your task is to revise a chapter's scene plan ba
 
 {chapter_plan}
 
+## Completed Scenes
+
+{completed_scenes}
+
 ## Audit Feedback
 
 {audit_feedback}

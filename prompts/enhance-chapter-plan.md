@@ -13,6 +13,9 @@ You are a creative development consultant. Your job is NOT to find problems — 
 ### Current Chapter Plan
 {chapter_plan}
 
+### Completed Scenes
+{completed_scenes}
+
 ### Completed Chapters Summary
 {completed_chapters_summary}
 

@@ -466,12 +466,15 @@ plan_one_chapter() {
     fi
 
     echo "  Auditing chapter $ch plan..." >&2
+    local no_scenes_file="$STATE_DIR/no-scenes-yet.txt"
+    echo "(No scenes written yet)" > "$no_scenes_file"
     audit_refine_loop "chapter_plan" "$plan_file" \
         "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan" \
         "premise=$PREMISE_FILE" \
         "synthesized_premise=$PREMISE_FILE" \
         "novel_plan=output/novel-plan.md" \
-        "chapter_plan=$plan_file"
+        "chapter_plan=$plan_file" \
+        "completed_scenes=$no_scenes_file"
 }
 
 author_chapter_scenes() {
@@ -585,9 +588,10 @@ run_backtrack_chapter() {
     local ch="$1"
     local ch_dir="$2"
 
-    echo "  Backtracking: evaluating chapter plan..." >&2
-
+    local bt_output="$STATE_DIR/backtrack-chapter-result.md"
     local scenes_file="$STATE_DIR/completed-scenes-bt.txt"
+
+    # Build completed scenes (needed by both resume and normal paths)
     local has_scenes=false
     > "$scenes_file"
     for sf in "$ch_dir"/scene-*.md; do
@@ -598,7 +602,23 @@ run_backtrack_chapter() {
         return
     fi
 
-    local bt_output="$STATE_DIR/backtrack-chapter-result.md"
+    # If the revision already happened (bt_output matches chapter plan), skip to audit.
+    # bt_output is deleted after a successful audit, so it only exists mid-crash.
+    if [[ -f "$bt_output" ]] && cmp -s "$bt_output" "$ch_dir/chapter-plan.md"; then
+        echo "  Chapter plan already revised by backtracking, resuming audit..." >&2
+        BACKTRACK_MODE=1 audit_refine_loop "chapter_plan" "$ch_dir/chapter-plan.md" \
+            "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan-bt" \
+            "premise=$PREMISE_FILE" \
+            "synthesized_premise=$PREMISE_FILE" \
+            "novel_plan=output/novel-plan.md" \
+            "chapter_plan=$ch_dir/chapter-plan.md" \
+            "completed_scenes=$scenes_file"
+        rm -f "$bt_output"
+        return
+    fi
+
+    echo "  Backtracking: evaluating chapter plan..." >&2
+
     rm -f "$bt_output"
 
     local assembled
@@ -620,19 +640,35 @@ run_backtrack_chapter() {
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
             "novel_plan=output/novel-plan.md" \
-            "chapter_plan=$ch_dir/chapter-plan.md"
+            "chapter_plan=$ch_dir/chapter-plan.md" \
+            "completed_scenes=$scenes_file"
+        rm -f "$bt_output"
     fi
 }
 
 run_backtrack_novel() {
     local ch="$1"
 
+    local bt_output="$STATE_DIR/backtrack-novel-result.md"
+
+    # If the revision already happened (bt_output matches novel plan), skip to audit.
+    # bt_output is deleted after a successful audit, so it only exists mid-crash.
+    if [[ -f "$bt_output" ]] && cmp -s "$bt_output" output/novel-plan.md; then
+        echo "Novel plan already revised by backtracking, resuming audit..." >&2
+        BACKTRACK_MODE=1 audit_refine_loop "novel_plan" "output/novel-plan.md" \
+            "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
+            "premise=$PREMISE_FILE" \
+            "synthesized_premise=$PREMISE_FILE" \
+            "novel_plan=output/novel-plan.md"
+        rm -f "$bt_output"
+        return
+    fi
+
     echo "Backtracking: evaluating novel plan..." >&2
 
     local summary_file="$STATE_DIR/completed-summary-bt.txt"
     build_completed_summary "$ch" > "$summary_file"
 
-    local bt_output="$STATE_DIR/backtrack-novel-result.md"
     rm -f "$bt_output"
 
     local assembled
@@ -653,6 +689,7 @@ run_backtrack_novel() {
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
             "novel_plan=output/novel-plan.md"
+        rm -f "$bt_output"
     fi
 }
 

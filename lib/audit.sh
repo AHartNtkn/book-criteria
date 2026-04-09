@@ -331,10 +331,11 @@ print(json.dumps(merged))
 }
 
 # Run the enhancement agent for a level.
-# Writes to $STATE_DIR/current-enhancements.md (not appended to audit feedback).
+# Args: $1 = level, $2 = output file path, remaining = context key=value pairs
 run_enhancement() {
     local level="$1"
-    shift
+    local enhance_output="$2"
+    shift 2
     local context_args=("$@")
 
     local enhance_prompt
@@ -349,8 +350,6 @@ run_enhancement() {
     esac
 
     echo "  Brainstorming enhancements..." >&2
-
-    local enhance_output="$STATE_DIR/current-enhancements.md"
 
     local filled
     filled=$(python3 "$PROJECT_DIR/fill_template.py" "$enhance_prompt" \
@@ -378,21 +377,33 @@ audit_refine_loop() {
     fi
 
     # Skip if this target already completed in a previous session.
-    local logged_rounds
-    logged_rounds=$(ls "$STATE_DIR/audit-logs/${log_prefix}-round-"*.json 2>/dev/null | wc -l)
-    if [[ "$logged_rounds" -gt 0 ]]; then
-        if [[ "$iteration_cap" -gt 0 && "$logged_rounds" -ge "$iteration_cap" ]]; then
-            echo "Already completed $logged_rounds rounds (cap: $iteration_cap) for $log_prefix. Skipping." >&2
-            return 0
-        fi
-        local last_log
-        last_log=$(ls -t "$STATE_DIR/audit-logs/${log_prefix}-round-"*.json 2>/dev/null | head -1)
-        local prev_criteria_ok prev_sentinel_ok
-        prev_criteria_ok=$(check_criteria_passing "$(cat "$last_log")" 4 2>/dev/null)
-        prev_sentinel_ok=$(check_sentinels_passing "$(cat "$last_log")" 2>/dev/null)
-        if [[ "$prev_criteria_ok" == "PASS" && "$prev_sentinel_ok" == "PASS" ]]; then
-            echo "Already passed for $log_prefix. Skipping." >&2
-            return 0
+    # But NOT if the state says we're mid-audit for this target — let the resume logic handle it.
+    local saved_audit_target_early
+    saved_audit_target_early=$(read_state "audit_target")
+    local saved_status_early
+    saved_status_early=$(read_state "status")
+    local mid_audit=false
+    if [[ "$saved_audit_target_early" == "$log_prefix" && "$saved_status_early" != "passed" && "$saved_status_early" != "cap_reached" ]]; then
+        mid_audit=true
+    fi
+
+    if [[ "$mid_audit" == "false" ]]; then
+        local logged_rounds
+        logged_rounds=$(find "$STATE_DIR/audit-logs" -maxdepth 1 -name "${log_prefix}-round-*.json" 2>/dev/null | wc -l)
+        if [[ "$logged_rounds" -gt 0 ]]; then
+            if [[ "$iteration_cap" -gt 0 && "$logged_rounds" -ge "$iteration_cap" ]]; then
+                echo "Already completed $logged_rounds rounds (cap: $iteration_cap) for $log_prefix. Skipping." >&2
+                return 0
+            fi
+            local last_log
+            last_log=$(ls -t "$STATE_DIR/audit-logs/${log_prefix}-round-"*.json 2>/dev/null | head -1)
+            local prev_criteria_ok prev_sentinel_ok
+            prev_criteria_ok=$(check_criteria_passing "$(cat "$last_log")" 4 2>/dev/null)
+            prev_sentinel_ok=$(check_sentinels_passing "$(cat "$last_log")" 2>/dev/null)
+            if [[ "$prev_criteria_ok" == "PASS" && "$prev_sentinel_ok" == "PASS" ]]; then
+                echo "Already passed for $log_prefix. Skipping." >&2
+                return 0
+            fi
         fi
     fi
 
@@ -441,50 +452,54 @@ audit_refine_loop() {
         log_scores "$log_prefix" "$round" "$COMBINED_SCORES"
 
         # Consolidate audit feedback (deduplicate across auditors)
-        echo "  Consolidating audit feedback..." >&2
         local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
         local consolidated_feedback="$auditor_out_dir/consolidated-feedback.md"
 
-        # Build list of feedback file paths for the consolidator to read
-        local feedback_list_file="$auditor_out_dir/feedback-file-list.txt"
-        > "$feedback_list_file"
-        for fb in "$auditor_out_dir"/*.feedback.txt; do
-            if [[ -f "$fb" && -s "$fb" ]]; then
-                echo "- $fb" >> "$feedback_list_file"
-            fi
-        done
+        if [[ -f "$consolidated_feedback" && -s "$consolidated_feedback" ]]; then
+            echo "  Consolidated feedback exists ($(wc -c < "$consolidated_feedback") bytes), skipping." >&2
+        else
+            echo "  Consolidating audit feedback..." >&2
 
-        local consolidate_prompt
-        consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
-            "$PROJECT_DIR/prompts/consolidate-feedback.md" \
-            "feedback_file_list=$feedback_list_file")
+            # Build list of feedback file paths for the consolidator to read
+            local feedback_list_file="$auditor_out_dir/feedback-file-list.txt"
+            > "$feedback_list_file"
+            for fb in "$auditor_out_dir"/*.feedback.txt; do
+                if [[ -f "$fb" && -s "$fb" ]]; then
+                    echo "- $fb" >> "$feedback_list_file"
+                fi
+            done
 
-        # Append file-writing instruction
-        consolidate_prompt="${consolidate_prompt}
+            local consolidate_prompt
+            consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
+                "$PROJECT_DIR/prompts/consolidate-feedback.md" \
+                "feedback_file_list=$feedback_list_file")
+
+            # Append file-writing instruction
+            consolidate_prompt="${consolidate_prompt}
 
 ---
 IMPORTANT: Write your consolidated feedback to the file: ${consolidated_feedback}
 Use the Write tool to create this file. Read each feedback file listed above using the Read tool."
 
-        # Consolidator gets Read+Write tools to access feedback files and write output
-        echo "$consolidate_prompt" | claude -p - \
-            --tools "Read,Write" \
-            --dangerously-skip-permissions \
-            $(get_model_flag consolidation) \
-            --output-format text \
-            > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
+            # Consolidator gets Read+Write tools to access feedback files and write output
+            echo "$consolidate_prompt" | claude -p - \
+                --tools "Read,Write" \
+                --dangerously-skip-permissions \
+                $(get_model_flag consolidation) \
+                --output-format text \
+                > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
 
-        # Also log it
-        step_start "consolidate-feedback-round-${round}" "Consolidating audit feedback"
-        if [[ -f "$consolidated_feedback" && -s "$consolidated_feedback" ]]; then
-            step_done "consolidate-feedback-round-${round}" "$(wc -c < "$consolidated_feedback") bytes"
-        else
-            step_failed "consolidate-feedback-round-${round}" "no output"
-        fi
+            step_start "consolidate-feedback-round-${round}" "Consolidating audit feedback"
+            if [[ -f "$consolidated_feedback" && -s "$consolidated_feedback" ]]; then
+                step_done "consolidate-feedback-round-${round}" "$(wc -c < "$consolidated_feedback") bytes"
+            else
+                step_failed "consolidate-feedback-round-${round}" "no output"
+            fi
 
-        if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
-            echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
-            exit 1
+            if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
+                echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
+                exit 1
+            fi
         fi
 
         # Check pass conditions
@@ -499,14 +514,19 @@ Use the Write tool to create this file. Read each feedback file listed above usi
         fi
 
         # Run enhancement (separate from audit feedback)
-        run_enhancement "$level" "${context_args[@]}"
+        local enhancement_file="$auditor_out_dir/enhancements.md"
+        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
+            echo "  Enhancement exists ($(wc -c < "$enhancement_file") bytes), skipping." >&2
+        else
+            run_enhancement "$level" "$enhancement_file" "${context_args[@]}"
+        fi
 
         # Append enhancement suggestions to consolidated feedback for the fixer
-        if [[ -f "$STATE_DIR/current-enhancements.md" && -s "$STATE_DIR/current-enhancements.md" ]]; then
+        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
             printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$consolidated_feedback"
             printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$consolidated_feedback"
             printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$consolidated_feedback"
-            cat "$STATE_DIR/current-enhancements.md" >> "$consolidated_feedback"
+            cat "$enhancement_file" >> "$consolidated_feedback"
         fi
 
         # Run fixer with consolidated audit feedback + enhancement suggestions
