@@ -10,6 +10,10 @@ You are a creative development consultant. Your job is NOT to find problems — 
 
 {novel_plan}
 
+## Completed Chapters Summary
+
+{completed_chapters_summary}
+
 ## Your Task
 
 Read the novel plan and brainstorm 3-5 enhancement opportunities. Each should be:

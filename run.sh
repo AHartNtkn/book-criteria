@@ -279,11 +279,14 @@ phase_novel_planning() {
     fi
 
     echo "Auditing novel plan..." >&2
+    local no_chapters_file="$STATE_DIR/no-chapters-yet.txt"
+    echo "(No chapters written yet)" > "$no_chapters_file"
     audit_refine_loop "novel_plan" "output/novel-plan.md" \
         "prompts/fix-novel-plan.md" "novel-plan" \
         "premise=$PREMISE_FILE" \
         "synthesized_premise=$PREMISE_FILE" \
-        "novel_plan=output/novel-plan.md"
+        "novel_plan=output/novel-plan.md" \
+        "completed_chapters_summary=$no_chapters_file"
 
     echo "Novel plan complete." >&2
 }
@@ -650,6 +653,10 @@ run_backtrack_novel() {
     local ch="$1"
 
     local bt_output="$STATE_DIR/backtrack-novel-result.md"
+    local summary_file="$STATE_DIR/completed-summary-bt.txt"
+
+    # Build completed chapters summary (needed by both resume and normal paths)
+    build_completed_summary "$ch" > "$summary_file"
 
     # If the revision already happened (bt_output matches novel plan), skip to audit.
     # bt_output is deleted after a successful audit, so it only exists mid-crash.
@@ -659,15 +666,13 @@ run_backtrack_novel() {
             "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
-            "novel_plan=output/novel-plan.md"
+            "novel_plan=output/novel-plan.md" \
+            "completed_chapters_summary=$summary_file"
         rm -f "$bt_output"
         return
     fi
 
     echo "Backtracking: evaluating novel plan..." >&2
-
-    local summary_file="$STATE_DIR/completed-summary-bt.txt"
-    build_completed_summary "$ch" > "$summary_file"
 
     rm -f "$bt_output"
 
@@ -688,7 +693,8 @@ run_backtrack_novel() {
             "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
-            "novel_plan=output/novel-plan.md"
+            "novel_plan=output/novel-plan.md" \
+            "completed_chapters_summary=$summary_file"
         rm -f "$bt_output"
     fi
 }

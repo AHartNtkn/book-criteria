@@ -10,6 +10,10 @@ You are a developmental editor. Your task is to revise the novel plan based on a
 
 {novel_plan}
 
+## Completed Chapters Summary
+
+{completed_chapters_summary}
+
 ## Audit Feedback
 
 {audit_feedback}
