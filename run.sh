@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+# Kill all child processes when this script exits (signal or otherwise)
+trap 'kill 0' EXIT
+
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
 

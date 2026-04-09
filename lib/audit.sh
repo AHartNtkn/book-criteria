@@ -22,7 +22,7 @@ get_auditors_for_level() {
 # that already passed in previous rounds.
 generate_round_settings() {
     local output_path="$1"
-    local passed_items_file="$STATE_DIR/passed-items.json"
+    local passed_items_file="$CURRENT_PASSED_ITEMS_FILE"
     local base_settings="$PROJECT_DIR/criteria-settings.yaml"
 
     python3 -c "
@@ -67,7 +67,7 @@ with open(output_path, 'w') as f:
 # Record passing criteria/sentinels from an auditor's scores
 record_passing_items() {
     local scores_json="$1"
-    local passed_items_file="$STATE_DIR/passed-items.json"
+    local passed_items_file="$CURRENT_PASSED_ITEMS_FILE"
 
     python3 -c "
 import json, sys, os
@@ -186,18 +186,31 @@ run_auditors() {
         return
     fi
 
-    # Phase 2: Run auditors in parallel, maintaining AUDITOR_BATCH_SIZE concurrent
-    # Uses `wait -n` to wait for any one job to finish before launching next
-    # Note: subshells always exit 0 or 1; wait -n propagates the exit code.
-    # Under set -e, a subshell exit 1 would kill the pipeline via wait -n.
-    # Subshell failures are tracked via .status files and checked in Phase 3,
-    # so we capture wait -n's exit code without letting set -e act on it.
+    # Phase 2: Run auditors in parallel, maintaining AUDITOR_BATCH_SIZE concurrent.
+    # Uses `wait -n` to wait for any one job to finish before launching next.
+    # Fail-fast: if any auditor fails, kill remaining jobs and exit immediately.
+    # Completed (OK) auditors survive in status files for resume on restart.
     local running=0
     for entry in "${active_auditors[@]}"; do
         if [[ "$running" -ge "$AUDITOR_BATCH_SIZE" ]]; then
             local wait_rc=0
             wait -n || wait_rc=$?
             running=$((running - 1))
+            if [[ "$wait_rc" -ne 0 ]]; then
+                echo "FATAL: An auditor failed. Killing remaining jobs." >&2
+                kill $(jobs -p) 2>/dev/null
+                wait 2>/dev/null
+                # Report which auditor(s) failed
+                for chk in "${active_auditors[@]}"; do
+                    local chk_name="${chk%%|*}"
+                    local chk_display="${chk#*|}"
+                    local chk_status="$auditor_out_dir/${chk_name}.status"
+                    if [[ -f "$chk_status" && "$(cat "$chk_status")" != "OK" ]]; then
+                        echo "FATAL: Auditor '$chk_display' failed: $(cat "$chk_status")" >&2
+                    fi
+                done
+                exit 1
+            fi
         fi
 
         local safe_name="${entry%%|*}"
@@ -209,8 +222,11 @@ run_auditors() {
 
         echo "    Launched: $auditor_name" >&2
         (
-            # Write status on exit (success or failure)
-            trap 'if [[ ! -f "$status_file" ]]; then echo "CRASHED: unexpected exit" > "$status_file"; fi' EXIT
+            # Write status on exit — but only if we weren't killed by a signal
+            # (fail-fast kills siblings; they shouldn't write spurious status)
+            _auditor_killed=0
+            trap '_auditor_killed=1' TERM INT
+            trap 'if [[ "$_auditor_killed" -eq 0 && ! -f "$status_file" ]]; then echo "CRASHED: unexpected exit" > "$status_file"; fi' EXIT
 
             step_start "audit-${safe_name}" "Auditor: $auditor_name"
 
@@ -264,29 +280,26 @@ print(f'{nc} criteria, {ns} sentinels scored')
         ) &
         running=$((running + 1))
     done
-    local wait_rc=0
-    wait || wait_rc=$?
-
-    # Phase 3: Check for failures, then merge results
-    local failed=0
-    for entry in "${active_auditors[@]}"; do
-        local safe_name="${entry%%|*}"
-        local auditor_name="${entry#*|}"
-        local status_file="$auditor_out_dir/${safe_name}.status"
-
-        if [[ ! -f "$status_file" ]]; then
-            echo "FATAL: Auditor '$auditor_name' produced no status file — subshell may have crashed" >&2
-            failed=$((failed + 1))
-        elif [[ "$(cat "$status_file")" != "OK" ]]; then
-            echo "FATAL: Auditor '$auditor_name' failed: $(cat "$status_file")" >&2
-            failed=$((failed + 1))
+    # Drain remaining jobs, fail-fast on any failure
+    while [[ "$running" -gt 0 ]]; do
+        local wait_rc=0
+        wait -n || wait_rc=$?
+        running=$((running - 1))
+        if [[ "$wait_rc" -ne 0 ]]; then
+            echo "FATAL: An auditor failed. Killing remaining jobs." >&2
+            kill $(jobs -p) 2>/dev/null
+            wait 2>/dev/null
+            for chk in "${active_auditors[@]}"; do
+                local chk_name="${chk%%|*}"
+                local chk_display="${chk#*|}"
+                local chk_status="$auditor_out_dir/${chk_name}.status"
+                if [[ -f "$chk_status" && "$(cat "$chk_status")" != "OK" ]]; then
+                    echo "FATAL: Auditor '$chk_display' failed: $(cat "$chk_status")" >&2
+                fi
+            done
+            exit 1
         fi
     done
-
-    if [[ "$failed" -gt 0 ]]; then
-        echo "FATAL: $failed of $total auditors failed. Stopping pipeline." >&2
-        exit 1
-    fi
 
     # All auditors succeeded — merge results (both newly run and resumed)
     # Concatenate feedback files
@@ -364,16 +377,32 @@ audit_refine_loop() {
         iteration_cap=$(get_iteration_cap "$level")
     fi
 
-    # Clear per-item pass tracking when starting a new audit target
-    local passed_items_file="$STATE_DIR/passed-items.json"
-    local saved_audit_target
-    saved_audit_target=$(read_state "audit_target")
-    if [[ "$saved_audit_target" != "$log_prefix" ]]; then
-        rm -f "$passed_items_file"
+    # Skip if this target already completed in a previous session.
+    local logged_rounds
+    logged_rounds=$(ls "$STATE_DIR/audit-logs/${log_prefix}-round-"*.json 2>/dev/null | wc -l)
+    if [[ "$logged_rounds" -gt 0 ]]; then
+        if [[ "$iteration_cap" -gt 0 && "$logged_rounds" -ge "$iteration_cap" ]]; then
+            echo "Already completed $logged_rounds rounds (cap: $iteration_cap) for $log_prefix. Skipping." >&2
+            return 0
+        fi
+        local last_log
+        last_log=$(ls -t "$STATE_DIR/audit-logs/${log_prefix}-round-"*.json 2>/dev/null | head -1)
+        local prev_criteria_ok prev_sentinel_ok
+        prev_criteria_ok=$(check_criteria_passing "$(cat "$last_log")" 4 2>/dev/null)
+        prev_sentinel_ok=$(check_sentinels_passing "$(cat "$last_log")" 2>/dev/null)
+        if [[ "$prev_criteria_ok" == "PASS" && "$prev_sentinel_ok" == "PASS" ]]; then
+            echo "Already passed for $log_prefix. Skipping." >&2
+            return 0
+        fi
     fi
+
+    # Per-target passed-items file — each audit target has its own, nothing is ever cleared
+    CURRENT_PASSED_ITEMS_FILE="$STATE_DIR/passed-items-${log_prefix}.json"
 
     # Resume from saved round if restarting mid-audit for the SAME content
     local round=1
+    local saved_audit_target
+    saved_audit_target=$(read_state "audit_target")
     local saved_round
     saved_round=$(read_state "refinement_round")
     local saved_status
