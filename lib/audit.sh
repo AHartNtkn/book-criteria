@@ -420,12 +420,12 @@ audit_refine_loop() {
     saved_status=$(read_state "status")
 
     if [[ "$saved_audit_target" == "$log_prefix" && "$saved_round" != "0" && "$saved_round" != "null" ]]; then
-        if [[ "$saved_status" == "fixing" || "$saved_status" == "passed" || "$saved_status" == "cap_reached" ]]; then
+        if [[ "$saved_status" == "fixed" || "$saved_status" == "passed" || "$saved_status" == "cap_reached" ]]; then
             round=$((saved_round + 1))
             echo "Resuming audit from round $round (previous fix completed)" >&2
-        elif [[ "$saved_status" == "auditing" ]]; then
+        elif [[ "$saved_status" == "auditing" || "$saved_status" == "fixing" ]]; then
             round=$saved_round
-            echo "Resuming audit from round $round (re-running interrupted audit)" >&2
+            echo "Resuming audit from round $round (re-running interrupted round)" >&2
         fi
     fi
 
@@ -521,8 +521,8 @@ Use the Write tool to create this file. Read each feedback file listed above usi
             run_enhancement "$level" "$enhancement_file" "${context_args[@]}"
         fi
 
-        # Append enhancement suggestions to consolidated feedback for the fixer
-        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
+        # Append enhancement suggestions to consolidated feedback for the fixer (only once)
+        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]] && ! grep -q "ENHANCEMENT OPPORTUNITIES" "$consolidated_feedback" 2>/dev/null; then
             printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$consolidated_feedback"
             printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$consolidated_feedback"
             printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$consolidated_feedback"
@@ -535,12 +535,19 @@ Use the Write tool to create this file. Read each feedback file listed above usi
 
         log_snapshot "pre-fix-round-${round}" "$content_file"
 
-        local assembled
-        assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
-            "${context_args[@]}" \
-            "audit_feedback=$consolidated_feedback")
+        # Check if fixer already ran (content differs from pre-fix snapshot)
+        local pre_fix_snapshot
+        pre_fix_snapshot=$(find "$LOG_DIR/snapshots" -name "*pre-fix-round-${round}*" 2>/dev/null | head -1)
+        if [[ -n "$pre_fix_snapshot" ]] && ! cmp -s "$pre_fix_snapshot" "$content_file"; then
+            echo "  Fix already applied (content differs from snapshot), skipping." >&2
+        else
+            local assembled
+            assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+                "${context_args[@]}" \
+                "audit_feedback=$consolidated_feedback")
 
-        run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
+            run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
+        fi
 
         # Check for deletion recommendation
         if [[ -f "$content_file" ]] && head -5 "$content_file" | grep -q "^RECOMMENDATION: DELETE"; then
@@ -562,6 +569,7 @@ Use the Write tool to create this file. Read each feedback file listed above usi
             exit 1
         fi
 
+        update_state "status" '"fixed"'
         round=$((round + 1))
     done
 }
