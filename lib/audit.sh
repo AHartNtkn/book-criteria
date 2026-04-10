@@ -376,37 +376,6 @@ audit_refine_loop() {
         iteration_cap=$(get_iteration_cap "$level")
     fi
 
-    # Skip if this target already completed in a previous session.
-    # But NOT if the state says we're mid-audit for this target — let the resume logic handle it.
-    local saved_audit_target_early
-    saved_audit_target_early=$(read_state "audit_target")
-    local saved_status_early
-    saved_status_early=$(read_state "status")
-    local mid_audit=false
-    if [[ "$saved_audit_target_early" == "$log_prefix" && "$saved_status_early" != "passed" && "$saved_status_early" != "cap_reached" ]]; then
-        mid_audit=true
-    fi
-
-    if [[ "$mid_audit" == "false" ]]; then
-        local logged_rounds
-        logged_rounds=$(find "$STATE_DIR/audit-logs" -maxdepth 1 -name "${log_prefix}-round-*.json" 2>/dev/null | wc -l)
-        if [[ "$logged_rounds" -gt 0 ]]; then
-            if [[ "$iteration_cap" -gt 0 && "$logged_rounds" -ge "$iteration_cap" ]]; then
-                echo "Already completed $logged_rounds rounds (cap: $iteration_cap) for $log_prefix. Skipping." >&2
-                return 0
-            fi
-            local last_log
-            last_log=$(ls -t "$STATE_DIR/audit-logs/${log_prefix}-round-"*.json 2>/dev/null | head -1)
-            local prev_criteria_ok prev_sentinel_ok
-            prev_criteria_ok=$(check_criteria_passing "$(cat "$last_log")" 4 2>/dev/null)
-            prev_sentinel_ok=$(check_sentinels_passing "$(cat "$last_log")" 2>/dev/null)
-            if [[ "$prev_criteria_ok" == "PASS" && "$prev_sentinel_ok" == "PASS" ]]; then
-                echo "Already passed for $log_prefix. Skipping." >&2
-                return 0
-            fi
-        fi
-    fi
-
     # Per-target passed-items file — each audit target has its own, nothing is ever cleared
     CURRENT_PASSED_ITEMS_FILE="$STATE_DIR/passed-items-${log_prefix}.json"
 

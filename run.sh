@@ -1,8 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-# Kill all child processes when this script exits (signal or otherwise)
-trap 'kill 0' EXIT
+# Log shutdown reason and kill all child processes on exit
+_shutdown() {
+    local reason="${1:-unknown}"
+    echo "PIPELINE SHUTDOWN: $reason at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
+    kill 0
+}
+trap '_shutdown "EXIT (set -e or normal)"' EXIT
+trap '_shutdown "SIGINT (ctrl-c)"' INT
+trap '_shutdown "SIGTERM (killed)"' TERM
+trap '_shutdown "SIGHUP (terminal closed)"' HUP
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
@@ -153,8 +161,8 @@ run_claude_write() {
 # ── Phase 0: Premise Brainstorming ────────────────────────────
 
 phase_premise_brainstorm() {
-    if [[ -f "$PREMISE_FILE" && -s "$PREMISE_FILE" ]]; then
-        echo "Synthesized premise exists ($(wc -c < "$PREMISE_FILE") bytes), skipping." >&2
+    if marker_done "phase-premise-brainstorm"; then
+        echo "Premise brainstorming already done, skipping." >&2
         return
     fi
 
@@ -262,20 +270,27 @@ Do not write any other files. Do not use any other tools."
     run_claude_write "$assembled" "synthesize-premise" "$PREMISE_FILE" "$(get_model_flag synthesis)"
 
     echo "Synthesized premise written to $PREMISE_FILE" >&2
+    marker_set "phase-premise-brainstorm"
 }
 
 # ── Phase 1: Novel Planning ───────────────────────────────────
 
 phase_novel_planning() {
+    if marker_done "phase-novel-plan-audit"; then
+        echo "Novel plan already done, skipping." >&2
+        return
+    fi
+
     echo "=== Phase 1: Novel Planning ===" >&2
     update_state "phase" '"novel_planning"'
 
-    if [[ ! -f "output/novel-plan.md" || ! -s "output/novel-plan.md" ]]; then
+    if ! marker_done "phase-novel-plan-written"; then
         echo "Creating novel plan..." >&2
         local assembled
         assembled=$(python3 fill_template.py prompts/plan-novel.md \
             "premise=$PREMISE_FILE")
         run_claude_write "$assembled" "plan-novel" "output/novel-plan.md" "$(get_model_flag planning)"
+        marker_set "phase-novel-plan-written"
     fi
 
     echo "Auditing novel plan..." >&2
@@ -287,6 +302,7 @@ phase_novel_planning() {
         "synthesized_premise=$PREMISE_FILE" \
         "novel_plan=output/novel-plan.md" \
         "completed_chapters_summary=$no_chapters_file"
+    marker_set "phase-novel-plan-audit"
 
     echo "Novel plan complete." >&2
 }
@@ -296,10 +312,12 @@ phase_novel_planning() {
 phase_chapter_brainstorm() {
     local ch="$1"
     local ch_dir="$2"
+    local ch_pad
+    ch_pad=$(printf '%02d' "$ch")
     local concept_file="$ch_dir/chapter-concept.md"
 
-    if [[ -f "$concept_file" && -s "$concept_file" ]]; then
-        echo "  Chapter $ch concept exists ($(wc -c < "$concept_file") bytes), skipping." >&2
+    if marker_done "ch-${ch_pad}-concept"; then
+        echo "  Chapter $ch concept already done, skipping." >&2
         return
     fi
 
@@ -399,6 +417,7 @@ Do not write any other files. Do not use any other tools."
         "completed_chapters_summary=$summary_file" \
         "candidate_approaches=$STATE_DIR/all-chapter-ideas.txt")
     run_claude_write "$assembled" "synthesize-chapter-$ch" "$concept_file" "$(get_model_flag synthesis)"
+    marker_set "ch-${ch_pad}-concept"
 }
 
 # ── Phase 2+3: Chapter Planning + Scene Authoring ─────────────
@@ -407,11 +426,8 @@ process_chapters() {
     local chapter_count
     chapter_count=$(count_chapters)
 
-    local start_ch
-    start_ch=$(read_state "chapter")
-    [[ "$start_ch" == "0" || "$start_ch" == "null" ]] && start_ch=1
-
-    for ((ch=start_ch; ch<=chapter_count; ch++)); do
+    # Iterate all chapters from 1; each step self-skips via markers
+    for ((ch=1; ch<=chapter_count; ch++)); do
         echo "=== Chapter $ch of $chapter_count ===" >&2
         update_state "chapter" "$ch"
 
@@ -442,12 +458,19 @@ process_chapters() {
 plan_one_chapter() {
     local ch="$1"
     local ch_dir="$2"
+    local ch_pad
+    ch_pad=$(printf '%02d' "$ch")
     local plan_file="$ch_dir/chapter-plan.md"
+
+    if marker_done "ch-${ch_pad}-plan-audit"; then
+        echo "  Chapter $ch plan already done, skipping." >&2
+        return
+    fi
 
     update_state "phase" '"chapter_planning"'
     update_state "scene" "0"
 
-    if [[ ! -f "$plan_file" || ! -s "$plan_file" ]]; then
+    if ! marker_done "ch-${ch_pad}-plan-written"; then
         echo "  Planning chapter $ch..." >&2
 
         local summary_file="$STATE_DIR/completed-summary.txt"
@@ -466,23 +489,27 @@ plan_one_chapter() {
             "chapter_concept=$ch_dir/chapter-concept.md" \
             "completed_chapters_summary=$summary_file")
         run_claude_write "$assembled" "plan-chapter-$ch" "$plan_file" "$(get_model_flag planning)"
+        marker_set "ch-${ch_pad}-plan-written"
     fi
 
     echo "  Auditing chapter $ch plan..." >&2
     local no_scenes_file="$STATE_DIR/no-scenes-yet.txt"
     echo "(No scenes written yet)" > "$no_scenes_file"
     audit_refine_loop "chapter_plan" "$plan_file" \
-        "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan" \
+        "prompts/fix-chapter-plan.md" "ch${ch_pad}-plan" \
         "premise=$PREMISE_FILE" \
         "synthesized_premise=$PREMISE_FILE" \
         "novel_plan=output/novel-plan.md" \
         "chapter_plan=$plan_file" \
         "completed_scenes=$no_scenes_file"
+    marker_set "ch-${ch_pad}-plan-audit"
 }
 
 author_chapter_scenes() {
     local ch="$1"
     local ch_dir="$2"
+    local ch_pad
+    ch_pad=$(printf '%02d' "$ch")
     local plan_file="$ch_dir/chapter-plan.md"
 
     update_state "phase" '"scene_authoring"'
@@ -490,32 +517,34 @@ author_chapter_scenes() {
     local scene_count
     scene_count=$(count_scenes "$plan_file")
 
-    local start_sc
-    start_sc=$(read_state "scene")
-    [[ "$start_sc" == "0" || "$start_sc" == "null" ]] && start_sc=1
+    # Iterate all scenes from 1; each sub-step self-skips via markers
+    for ((sc=1; sc<=scene_count; sc++)); do
+        local sc_pad
+        sc_pad=$(printf '%02d' "$sc")
+        local mk="ch-${ch_pad}-sc-${sc_pad}"
 
-    for ((sc=start_sc; sc<=scene_count; sc++)); do
         echo "  Scene $sc of $scene_count" >&2
         update_state "scene" "$sc"
 
-        local scene_file="$ch_dir/scene-$(printf '%02d' "$sc").md"
-        local context_file="$ch_dir/scene-$(printf '%02d' "$sc")-context.md"
+        local scene_file="$ch_dir/scene-${sc_pad}.md"
+        local context_file="$ch_dir/scene-${sc_pad}-context.md"
 
-        # Collect context from prior chapters
-        if [[ ! -f "$context_file" || ! -s "$context_file" ]]; then
+        # Sub-step: collect context
+        if ! marker_done "${mk}-context"; then
             collect_scene_context "$ch" "$sc" "$ch_dir" "$context_file" "$plan_file"
+            marker_set "${mk}-context"
         fi
 
-        # Build preceding scenes within this chapter
+        # Build preceding scenes within this chapter (transient, not a sub-step)
         local preceding_file="$STATE_DIR/preceding-scenes.txt"
         build_preceding_scenes "$ch_dir" "$sc" > "$preceding_file"
 
-        # Extract this scene's plan
+        # Extract this scene's plan (transient)
         local scene_plan_file="$STATE_DIR/scene-plan.txt"
         extract_scene_plan "$plan_file" "$sc" > "$scene_plan_file"
 
-        # Author scene
-        if [[ ! -f "$scene_file" || ! -s "$scene_file" ]]; then
+        # Sub-step: author scene
+        if ! marker_done "${mk}-written"; then
             echo "    Writing scene $sc..." >&2
             local assembled
             assembled=$(python3 fill_template.py prompts/author-scene.md \
@@ -529,31 +558,42 @@ author_chapter_scenes() {
                 "chapter_number=$ch" \
                 "scene_number=$sc")
             run_claude_write "$assembled" "author-scene-ch${ch}-sc${sc}" "$scene_file" "$(get_model_flag planning)"
+            marker_set "${mk}-written"
         fi
 
-        # Audit/refine scene
-        echo "    Auditing scene $sc..." >&2
-        local audit_result=0
-        audit_refine_loop "scene" "$scene_file" \
-            "prompts/fix-scene.md" "ch$(printf '%02d' "$ch")-scene-$(printf '%02d' "$sc")" \
-            "premise=$PREMISE_FILE" \
-            "synthesized_premise=$PREMISE_FILE" \
-            "novel_plan=output/novel-plan.md" \
-            "chapter_plan=$plan_file" \
-            "relevant_context=$context_file" \
-            "preceding_scenes=$preceding_file" \
-            "scene=$scene_file" || audit_result=$?
+        # Sub-step: audit/refine scene
+        if ! marker_done "${mk}-audit"; then
+            echo "    Auditing scene $sc..." >&2
+            local audit_result=0
+            audit_refine_loop "scene" "$scene_file" \
+                "prompts/fix-scene.md" "ch${ch_pad}-scene-${sc_pad}" \
+                "premise=$PREMISE_FILE" \
+                "synthesized_premise=$PREMISE_FILE" \
+                "novel_plan=output/novel-plan.md" \
+                "chapter_plan=$plan_file" \
+                "relevant_context=$context_file" \
+                "preceding_scenes=$preceding_file" \
+                "scene=$scene_file" || audit_result=$?
 
-        if [[ "$audit_result" -eq 2 ]]; then
-            echo "    Scene $sc: fixer recommended deletion" >&2
-            rm -f "$scene_file" "$context_file"
-            run_backtrack_chapter "$ch" "$ch_dir"
-            scene_count=$(count_scenes "$plan_file")
-            continue
+            if [[ "$audit_result" -eq 2 ]]; then
+                echo "    Scene $sc: fixer recommended deletion" >&2
+                rm -f "$scene_file" "$context_file"
+                marker_clear "${mk}-context"
+                marker_clear "${mk}-written"
+                run_backtrack_chapter "$ch" "$sc" "$ch_dir"
+                marker_set "${mk}-ch-backtrack"
+                scene_count=$(count_scenes "$plan_file")
+                continue
+            fi
+            marker_set "${mk}-audit"
         fi
 
-        # Backtrack: re-evaluate chapter plan after each scene
-        run_backtrack_chapter "$ch" "$ch_dir"
+        # Sub-step: backtrack chapter plan after this scene
+        if ! marker_done "${mk}-ch-backtrack"; then
+            run_backtrack_chapter "$ch" "$sc" "$ch_dir"
+            marker_set "${mk}-ch-backtrack"
+        fi
+
         scene_count=$(count_scenes "$plan_file")
     done
 }
@@ -589,12 +629,19 @@ collect_scene_context() {
 
 run_backtrack_chapter() {
     local ch="$1"
-    local ch_dir="$2"
+    local sc="$2"
+    local ch_dir="$3"
+    local ch_pad
+    ch_pad=$(printf '%02d' "$ch")
+    local sc_pad
+    sc_pad=$(printf '%02d' "$sc")
+    local mk="ch-${ch_pad}-sc-${sc_pad}"
 
-    local bt_output="$STATE_DIR/backtrack-chapter-result.md"
+    # Per-scene bt_output so it's unambiguous which scene this corresponds to
+    local bt_output="$STATE_DIR/backtrack-chapter-${ch_pad}-sc-${sc_pad}.md"
     local scenes_file="$STATE_DIR/completed-scenes-bt.txt"
 
-    # Build completed scenes (needed by both resume and normal paths)
+    # Build completed scenes
     local has_scenes=false
     > "$scenes_file"
     for sf in "$ch_dir"/scene-*.md; do
@@ -605,97 +652,92 @@ run_backtrack_chapter() {
         return
     fi
 
-    # If the revision already happened (bt_output matches chapter plan), skip to audit.
-    # bt_output is deleted after a successful audit, so it only exists mid-crash.
-    if [[ -f "$bt_output" ]] && cmp -s "$bt_output" "$ch_dir/chapter-plan.md"; then
-        echo "  Chapter plan already revised by backtracking, resuming audit..." >&2
-        BACKTRACK_MODE=1 audit_refine_loop "chapter_plan" "$ch_dir/chapter-plan.md" \
-            "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan-bt" \
+    # Sub-step: evaluate backtracking (one-shot, marker-gated)
+    if ! marker_done "${mk}-ch-backtrack-eval"; then
+        echo "  Backtracking: evaluating chapter plan after scene $sc..." >&2
+        rm -f "$bt_output"
+        local assembled
+        assembled=$(python3 fill_template.py prompts/backtrack-chapter.md \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
             "novel_plan=output/novel-plan.md" \
             "chapter_plan=$ch_dir/chapter-plan.md" \
-            "completed_scenes=$scenes_file"
-        rm -f "$bt_output"
+            "completed_scenes=$scenes_file")
+        run_claude_write "$assembled" "backtrack-chapter-${ch}-sc-${sc}" "$bt_output" "$(get_model_flag backtracking)"
+        marker_set "${mk}-ch-backtrack-eval"
+    fi
+
+    # If NO_CHANGE or empty, no revision needed
+    if [[ ! -s "$bt_output" ]] || head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
         return
     fi
 
-    echo "  Backtracking: evaluating chapter plan..." >&2
-
-    rm -f "$bt_output"
-
-    local assembled
-    assembled=$(python3 fill_template.py prompts/backtrack-chapter.md \
-        "premise=$PREMISE_FILE" \
-        "synthesized_premise=$PREMISE_FILE" \
-        "novel_plan=output/novel-plan.md" \
-        "chapter_plan=$ch_dir/chapter-plan.md" \
-        "completed_scenes=$scenes_file")
-
-    run_claude_write "$assembled" "backtrack-chapter-$ch" "$bt_output" "$(get_model_flag backtracking)"
-
-    if [[ -f "$bt_output" && -s "$bt_output" ]] && ! head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
+    # Sub-step: apply revision (idempotent cp)
+    if ! marker_done "${mk}-ch-backtrack-applied"; then
         echo "  Chapter plan revised by backtracking" >&2
         cp "$bt_output" "$ch_dir/chapter-plan.md"
+        marker_set "${mk}-ch-backtrack-applied"
+    fi
 
+    # Sub-step: audit the revised plan
+    if ! marker_done "${mk}-ch-backtrack-audit"; then
         BACKTRACK_MODE=1 audit_refine_loop "chapter_plan" "$ch_dir/chapter-plan.md" \
-            "prompts/fix-chapter-plan.md" "ch$(printf '%02d' "$ch")-plan-bt" \
+            "prompts/fix-chapter-plan.md" "ch${ch_pad}-sc-${sc_pad}-plan-bt" \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
             "novel_plan=output/novel-plan.md" \
             "chapter_plan=$ch_dir/chapter-plan.md" \
             "completed_scenes=$scenes_file"
-        rm -f "$bt_output"
+        marker_set "${mk}-ch-backtrack-audit"
     fi
 }
 
 run_backtrack_novel() {
     local ch="$1"
+    local ch_pad
+    ch_pad=$(printf '%02d' "$ch")
+    local mk="ch-${ch_pad}"
 
-    local bt_output="$STATE_DIR/backtrack-novel-result.md"
+    local bt_output="$STATE_DIR/backtrack-novel-${ch_pad}.md"
     local summary_file="$STATE_DIR/completed-summary-bt.txt"
 
-    # Build completed chapters summary (needed by both resume and normal paths)
     build_completed_summary "$ch" > "$summary_file"
 
-    # If the revision already happened (bt_output matches novel plan), skip to audit.
-    # bt_output is deleted after a successful audit, so it only exists mid-crash.
-    if [[ -f "$bt_output" ]] && cmp -s "$bt_output" output/novel-plan.md; then
-        echo "Novel plan already revised by backtracking, resuming audit..." >&2
-        BACKTRACK_MODE=1 audit_refine_loop "novel_plan" "output/novel-plan.md" \
-            "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
+    # Sub-step: evaluate backtracking
+    if ! marker_done "${mk}-novel-backtrack-eval"; then
+        echo "Backtracking: evaluating novel plan after chapter $ch..." >&2
+        rm -f "$bt_output"
+        local assembled
+        assembled=$(python3 fill_template.py prompts/backtrack-novel.md \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
             "novel_plan=output/novel-plan.md" \
-            "completed_chapters_summary=$summary_file"
-        rm -f "$bt_output"
+            "completed_chapters_summary=$summary_file")
+        run_claude_write "$assembled" "backtrack-novel-after-ch$ch" "$bt_output" "$(get_model_flag backtracking)"
+        marker_set "${mk}-novel-backtrack-eval"
+    fi
+
+    # If NO_CHANGE or empty, no revision needed
+    if [[ ! -s "$bt_output" ]] || head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
         return
     fi
 
-    echo "Backtracking: evaluating novel plan..." >&2
-
-    rm -f "$bt_output"
-
-    local assembled
-    assembled=$(python3 fill_template.py prompts/backtrack-novel.md \
-        "premise=$PREMISE_FILE" \
-        "synthesized_premise=$PREMISE_FILE" \
-        "novel_plan=output/novel-plan.md" \
-        "completed_chapters_summary=$summary_file")
-
-    run_claude_write "$assembled" "backtrack-novel-after-ch$ch" "$bt_output" "$(get_model_flag backtracking)"
-
-    if [[ -f "$bt_output" && -s "$bt_output" ]] && ! head -1 "$bt_output" | grep -q "^NO_CHANGE"; then
+    # Sub-step: apply revision
+    if ! marker_done "${mk}-novel-backtrack-applied"; then
         echo "Novel plan revised by backtracking" >&2
         cp "$bt_output" output/novel-plan.md
+        marker_set "${mk}-novel-backtrack-applied"
+    fi
 
+    # Sub-step: audit the revised plan
+    if ! marker_done "${mk}-novel-backtrack-audit"; then
         BACKTRACK_MODE=1 audit_refine_loop "novel_plan" "output/novel-plan.md" \
-            "prompts/fix-novel-plan.md" "novel-plan-bt-ch$(printf '%02d' "$ch")" \
+            "prompts/fix-novel-plan.md" "novel-plan-bt-ch${ch_pad}" \
             "premise=$PREMISE_FILE" \
             "synthesized_premise=$PREMISE_FILE" \
             "novel_plan=output/novel-plan.md" \
             "completed_chapters_summary=$summary_file"
-        rm -f "$bt_output"
+        marker_set "${mk}-novel-backtrack-audit"
     fi
 }
 
