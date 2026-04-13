@@ -2231,12 +2231,6 @@ criteria:
     score_0: "Dialogue tags are ornate (\"he exclaimed,\" \"she retorted,\" \"he opined gravely\"), drawing constant attention to the attribution rather than the dialogue. Adverbs prop up weak dialogue (\"she said angrily\"). Physical impossibilities are used as tags (\"she laughed,\" \"he smiled\" as speech verbs). Every line has a tag even when the speaker is obvious. The tags constitute \"telling\" rather than showing."
     score_5: "Attribution is invisible. \"Said\" and \"asked\" predominate, functioning like punctuation readers skip. Tags appear only when needed for speaker clarity. Action beats replace many tags, simultaneously identifying the speaker and adding characterization or subtext. No adverbs modify \"said.\" No physical impossibilities are used as speech verbs. Tag placement varies for rhythm. Some exchanges run without any attribution, relying on turn-taking and voice distinction."
 
-  SC-066:
-    name: "Dialogue Tag and Attribution Craft"
-    measures: "Whether dialogue attribution is handled with skill — using \"said\" as the invisible default, employing action beats for both attribution and characterization, and avoiding \"said bookisms\" (opined, interjected, exclaimed) and adverbial tags (\"said angrily\") that tell rather than show."
-    score_0: "Every dialogue line uses a different fancy tag (\"opined,\" \"exclaimed,\" \"murmured,\" \"interjected,\" \"queried\"). Adverbs pile onto tags (\"said softly,\" \"whispered quietly,\" \"shouted loudly\"). Action beats are absent. The attribution itself becomes the focus rather than the dialogue."
-    score_5: "\"Said\" and \"asked\" are the primary tags, rendered invisible by familiarity. Action beats replace tags where possible, simultaneously attributing dialogue and revealing character (\"'We should leave.' His keys rattled in his hand\"). Tags with adverbs appear only in the rarest cases where no other technique conveys the meaning. The reader always knows who is speaking without the attribution calling attention to itself."
-
   SC-067:
     name: "Dialogue-Action Integration (Beats)"
     measures: "Whether dialogue is integrated with physical action, gesture, and environmental interaction to create a complete scene rather than disembodied \"talking heads.\""
@@ -2368,12 +2362,6 @@ criteria:
     measures: "Whether the prose deploys a rhythmic trinity of establishing patterns (expectation), inserting breath and pause (silence), and breaking patterns strategically (surprise) at both the sentence and scene level."
     score_0: "The prose is either all surprise (no patterns established, so nothing can be disrupted) or all expectation (patterns never broken, creating monotony). Silence (deliberate pause) is absent."
     score_5: "Patterns are established through consistent rhythms (sustained dialogue, similar sentence lengths, consecutive short paragraphs), then paused through lingering description or longer sentences, then broken through isolated short sentences, perspective shifts, or unexpected information. All three elements work in balance."
-
-  SC-094:
-    name: "Exposition Handling in Dialogue"
-    measures: "Whether information necessary for the reader is delivered through dialogue naturally and without contrivance, avoiding the \"As You Know, Bob\" pattern where characters tell each other things they already know."
-    score_0: "Characters routinely tell each other things both already know purely for the reader's benefit. Exposition is delivered in speeches rather than emerging from conflict. \"As You Know, Bob\" / \"maid and butler\" dialogue is frequent. Characters become transparent information-delivery vehicles. Information dumps are disguised as conversation but fool nobody."
-    score_5: "Exposition emerges organically from character need, conflict, and situation. Information is delivered because a character genuinely needs to know it, is arguing about its implications, or is revealing it under emotional pressure. The naive-character, disguise-with-desire, disguise-with-conflict, and emotional-overlay techniques are deployed as appropriate. Readers absorb necessary information without noticing it was delivered."
 
   SC-095:
     name: "Exposition Handling"
@@ -3130,18 +3118,6 @@ criteria:
     measures: "Whether the prose varies sentence length, structure, and opening patterns to create natural rhythm and avoid monotony — mixing short punchy sentences with longer flowing ones, varying sentence openers, and matching rhythm to emotional content."
     score_0: "Sentences are monotonously uniform in length, structure, or opening pattern. Multiple consecutive sentences begin with the same word or pattern (e.g., \"She... She... She...\" or \"He walked... He turned... He looked...\"). Long passages lack any short sentences, or vice versa. No relationship between sentence rhythm and emotional content."
     score_5: "Sentence length varies naturally. Short sentences appear at moments of impact, tension, or revelation. Longer sentences unfold during reflection or description. Sentence openers are varied (subjects, prepositional phrases, participial phrases, adverbial clauses). The rhythm matches the scene's emotional register."
-
-  SC-234:
-    name: "Sentence Variety and Rhythmic Variation"
-    measures: "Whether the prose varies sentence length, structure, and type to create rhythmic interest, or whether it falls into monotonous repetitive patterns."
-    score_0: "Sentences are uniformly the same length and structure. The prose reads like a metronome. Subject-verb-object repeats without variation. No fragments, no complex sentences, no deliberate variation. Alternatively, all sentences are long and complex with no short ones for contrast."
-    score_5: "Sentence length and structure vary deliberately. Short sentences create tension, impact, or emphasis. Longer sentences provide reflection, description, or emotional build. The prose has what Gary Provost called \"a pleasant rhythm, a lilt, a harmony.\" Occasionally a sentence \"burns with energy and builds with all the impetus of a crescendo.\" Fragments appear sparingly for emphasis. The overall effect is musical."
-
-  SC-235:
-    name: "Sentence-Level Rhythm Variation"
-    measures: "Whether sentence length and structure vary enough to create a felt rhythm, avoiding both monotonous uniformity and random chaos."
-    score_0: "Sentences are uniformly the same length and structure throughout (all medium-length declarative sentences, or all short fragments, or all long complex sentences), creating a metronomic, flat reading experience."
-    score_5: "Short, medium, and long sentences alternate with purposeful variation. Short sentences deliver punch and urgency; long sentences create flow and immersion; the mix creates what Provost calls \"music\" -- a rhythm that pleases the reader's ear and matches the emotional register of the content."
 
   SC-236:
     name: "Sequel (Reaction) Quality"

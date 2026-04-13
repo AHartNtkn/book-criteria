@@ -184,8 +184,6 @@ auditors:
       - SC-185
       - SC-232
       - SC-233
-      - SC-234
-      - SC-235
       - SC-247
       - SC-295
     sentinels:
@@ -306,7 +304,6 @@ auditors:
       - SC-063
       - SC-064
       - SC-065
-      - SC-066
       - SC-067
       - SC-068
       - SC-144
@@ -338,7 +335,6 @@ auditors:
     context: [scene]
     criteria:
       - SC-060
-      - SC-094
       - SC-131
       - SC-161
       - SC-256
