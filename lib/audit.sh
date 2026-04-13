@@ -504,19 +504,12 @@ Use the Write tool to create this file. Read each feedback file listed above usi
 
         log_snapshot "pre-fix-round-${round}" "$content_file"
 
-        # Check if fixer already ran (content differs from pre-fix snapshot)
-        local pre_fix_snapshot
-        pre_fix_snapshot=$(find "$LOG_DIR/snapshots" -name "*pre-fix-round-${round}*" 2>/dev/null | head -1)
-        if [[ -n "$pre_fix_snapshot" ]] && ! cmp -s "$pre_fix_snapshot" "$content_file"; then
-            echo "  Fix already applied (content differs from snapshot), skipping." >&2
-        else
-            local assembled
-            assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
-                "${context_args[@]}" \
-                "audit_feedback=$consolidated_feedback")
+        local assembled
+        assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+            "${context_args[@]}" \
+            "audit_feedback=$consolidated_feedback")
 
-            run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
-        fi
+        run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
 
         # Check for deletion recommendation
         if [[ -f "$content_file" ]] && head -5 "$content_file" | grep -q "^RECOMMENDATION: DELETE"; then
