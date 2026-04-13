@@ -351,9 +351,12 @@ run_enhancement() {
 
     echo "  Brainstorming enhancements..." >&2
 
+    local dares_file="$PROJECT_DIR/state/ambition-dares-${level}.txt"
+
     local filled
     filled=$(python3 "$PROJECT_DIR/fill_template.py" "$enhance_prompt" \
-        "${context_args[@]}")
+        "${context_args[@]}" \
+        "ambition_dares=$dares_file")
 
     run_claude_to_file "enhance-${level}" "$filled" "$enhance_output" "$(get_model_flag enhancement)"
 }

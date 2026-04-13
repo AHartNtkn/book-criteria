@@ -1969,9 +1969,9 @@ criteria:
 
   SC-010:
     name: "Author Intrusion Discipline"
-    measures: "Whether the narrative voice remains consistent and in service of the story, or whether the author's own voice, opinions, or knowledge break through to lecture, moralize, or explain beyond what the narrative naturally supports."
-    score_0: "The narrator breaks from story voice to editorialize, moralize, or explain significance. The author's research is showcased beyond what the story requires. Characters become mouthpieces for the author's views. The narrative tells the reader what to think or feel about events rather than dramatizing them. POV boundaries are violated to deliver information the POV character couldn't possess."
-    score_5: "The narrative voice remains consistent with the established POV and tone. Information is delivered through channels available to the characters and narrative situation. The author's knowledge and opinions are invisible -- the story's themes emerge from dramatized events rather than from narratorial commentary. Research enriches the narrative without being displayed for its own sake."
+    measures: "Whether the narrative voice remains consistent and in service of the story, or whether the author's own voice, opinions, moral judgments, or knowledge break through to lecture, moralize, or explain beyond what the narrative naturally supports. Includes the volume of narratorial commentary -- whether the narrator's presence is calibrated to the story's needs or is intrusive regardless of content."
+    score_0: "The narrator breaks from story voice to editorialize, moralize, or explain significance. The author's research is showcased beyond what the story requires. Characters become mouthpieces for the author's views. The narrative tells the reader what to think or feel about events rather than dramatizing them. The narrator passes moral judgment on characters' actions, foreclosing reader interpretation. POV boundaries are violated to deliver information the POV character couldn't possess."
+    score_5: "The narrative voice remains consistent with the established POV and tone. Information is delivered through channels available to the characters and narrative situation. The author's knowledge and opinions are invisible -- the story's themes emerge from dramatized events rather than from narratorial commentary. Research enriches the narrative without being displayed for its own sake. The narrator presents situations with objectivity, neither condemning nor excusing characters -- actions speak for themselves and the reader evaluates moral dimensions independently. Narrator presence is calibrated: sparse when the story benefits from restraint, present when commentary serves the narrative."
 
   SC-011:
     name: "Author/Narrator Voice Separation"
@@ -2023,9 +2023,9 @@ criteria:
 
   SC-020:
     name: "C4: Semantic Specificity vs Semantic Ablation"
-    measures: "Whether the text uses specific, concrete, precise language rather than generic category labels and vague descriptions"
-    score_0: "Text systematically replaces specific details with generic categories. Proper nouns dissolve into category labels. Metaphors are conventional similes. Wine is described as \"notes of dark fruit with velvety finish\" instead of \"blackcurrant and pencil lead.\" Jazz is described with \"complex harmonies\" instead of \"McCoy Tyner comping in fourths.\""
-    score_5: "Text is precise and particular. Details are chosen for their specificity and resonance. Descriptions name specific things rather than gesturing at categories. References are concrete and grounded in knowledge rather than statistical approximation."
+    measures: "Whether the text uses specific, concrete, precise language rather than generic category labels and vague descriptions. Includes whether prose clarity reflects genuine thought -- novel formulations arising from engaged observation rather than recycled, prefabricated language that substitutes for thinking."
+    score_0: "Text systematically replaces specific details with generic categories. Proper nouns dissolve into category labels. Metaphors are conventional similes. Wine is described as \"notes of dark fruit with velvety finish\" instead of \"blackcurrant and pencil lead.\" Jazz is described with \"complex harmonies\" instead of \"McCoy Tyner comping in fourths.\" Pretentious diction and verbal false limbs disguise muddled thinking."
+    score_5: "Text is precise and particular. Details are chosen for their specificity and resonance. Descriptions name specific things rather than gesturing at categories. References are concrete and grounded in knowledge rather than statistical approximation. Every phrase shows evidence of genuine thought -- the writer has let meaning choose the word rather than reaching for prefabricated language. Clarity of expression reflects clarity of mind."
 
   SC-021:
     name: "Emotional Rendering Quality"
@@ -2533,9 +2533,9 @@ criteria:
 
   SC-123:
     name: "In-Scene Object and Action Continuity"
-    measures: "Whether objects, character positions, and physical actions remain consistent within individual scenes — whether characters are holding things they picked up, standing when they should be sitting, and located where preceding actions placed them."
-    score_0: "Characters hold objects they never picked up, or objects they were holding vanish without being put down. Characters stand up without having sat down, or are suddenly in different positions. Actions within a scene contradict each other (a character exits a room and then continues conversing as if still present). Physical actions are described in impossible sequences."
-    score_5: "Every object, character position, and physical action within a scene is accounted for. If a character picks up a weapon, the narrative tracks it until it is put down, dropped, or otherwise disposed of. Characters' physical positions flow logically from their described movements. No action contradicts preceding actions within the same scene."
+    measures: "Whether objects, character positions, physical actions, and sensory details remain consistent within individual scenes — whether characters are holding things they picked up, standing when they should be sitting, located where preceding actions placed them, and whether sensory descriptions are physically coherent."
+    score_0: "Characters hold objects they never picked up, or objects they were holding vanish without being put down. Characters stand up without having sat down, or are suddenly in different positions. Actions within a scene contradict each other (a character exits a room and then continues conversing as if still present). Physical actions are described in impossible sequences. Sensory details contradict each other: sounds described as both loud and soft, motions that are both quick and slow, a room described as silent where characters respond to unmentioned sounds."
+    score_5: "Every object, character position, physical action, and sensory detail within a scene is accounted for. If a character picks up a weapon, the narrative tracks it until it is put down, dropped, or otherwise disposed of. Characters' physical positions flow logically from their described movements. No action contradicts preceding actions within the same scene. Sensory details form a coherent physical model — established conditions (light, sound, temperature) remain consistent unless a change is narrated."
 
   SC-125:
     name: "Information Delivery Timing (Rate of Revelation)"
@@ -3460,6 +3460,12 @@ criteria:
     measures: "Whether the world serves as art -- evoking emotion, meaning, and aesthetic experience -- rather than functioning merely as a rationalized encyclopedia of invented facts."
     score_0: "The world is a dry catalog of invented facts with no emotional, thematic, or aesthetic dimension. It answers every question about how the world works but never makes the reader feel anything about it. The world is technically complete but artistically empty."
     score_5: "The world evokes emotion, embodies theme, and creates aesthetic experiences that cannot be separated from its factual construction. It functions as what Lincoln Michel calls \"worldconjuring\" -- using hints and literary technique where readers fill gaps collaboratively. As M. John Harrison argued, the best speculative fiction represents \"the triumph of writing over worldbuilding.\" The world is both believable and beautiful."
+
+  SC-302:
+    name: "Classic Prose Stance (Equal-to-Equal Presentation)"
+    measures: "Whether the prose adopts the classic prose stance of presenting observations to an equal rather than lecturing down, performing expertise, or hedging anxiously — creating what Thomas and Turner call 'classic joint attention' where writer and reader contemplate a subject together."
+    score_0: "The prose adopts an inappropriate relational stance. The writer lectures the reader as a student, hedges every observation with anxiety markers ('it seems,' 'perhaps,' 'one might argue'), or performs expertise to impress rather than communicate. The prose relationship between writer and reader is unequal — condescending, timid, or ostentatious."
+    score_5: "The writer presents observations with quiet confidence, as if pointing something out to a companion. No hedging, no lecturing, no performing. Both writer and reader gaze through an undistorting window at the subject. Truth is presented as available to anyone paying attention. The reader is trusted as an intellectual equal. The prose achieves what Steven Pinker called 'the strongest cure' for enfeebled prose — brief, efficient, clear, and appearing as if it could have been written no other way."
 
 sentinels:
   CS-001:
@@ -4804,8 +4810,8 @@ sentinels:
 
   SS-141:
     name: "Low Epistemic Marker Density Sentinel"
-    detection: "The text shows unusually low frequency of epistemic markers (words expressing uncertainty, possibility, or degree of knowledge: \"might,\" \"perhaps,\" \"seems,\" \"I think,\" \"probably,\" \"as if,\" \"sort of\") and discourse markers (\"well,\" \"you know,\" \"I mean,\" \"like\") compared to human prose."
-    why_autocomplete: "Research shows ChatGPT essays have \"substantially fewer epistemic markers\" compared to human writing, which \"exhibited higher usage of modals, epistemic markers, and discourse markers.\" Human writing integrates \"more personal references and features of involvement, making their writing more nuanced.\""
+    detection: "The text shows unusually low frequency of epistemic markers (words expressing uncertainty, possibility, or degree of knowledge: \"might,\" \"perhaps,\" \"seems,\" \"I think,\" \"probably,\" \"as if,\" \"sort of\"), discourse markers (\"well,\" \"you know,\" \"I mean,\" \"like\"), and self-correction patterns (\"No, that's not right,\" \"I initially thought,\" returning to earlier topics with additional recalled information) compared to human prose."
+    why_autocomplete: "Research shows ChatGPT essays have \"substantially fewer epistemic markers\" compared to human writing, which \"exhibited higher usage of modals, epistemic markers, and discourse markers.\" Human writing integrates \"more personal references and features of involvement, making their writing more nuanced.\" LLMs also lack self-correction -- text arrives fully formed without mid-thought revision, confusion-to-clarity arcs, or associative returns to earlier topics."
 
   SS-142:
     name: "Memory/Continuity Failures Across Scenes"
@@ -5716,3 +5722,18 @@ sentinels:
     name: "Zero Subtext — Everything Is On-the-Nose"
     detection: "For each dialogue exchange, check: does any character say exactly what they mean with no indirection, deflection, or gap between statement and intention? If characters consistently state motivations, feelings, and agendas directly, the sentinel triggers."
     why_autocomplete: "LLMs optimize for clarity and information transfer. Subtext requires modeling the gap between what a character would say and what they mean, which requires a theory of mind the LLM lacks. The LLM's probability distribution favors the most direct, clear expression of any given meaning. Now Novel's comparison found AI \"tells readers exactly what's happening and why\" while human dialogue \"suggests rather than states.\""
+
+  SS-329:
+    name: "Verb Upgrading / Dramatic Inflation"
+    detection: "Neutral verbs are systematically replaced with dramatic alternatives regardless of context: 'walked' becomes 'strode,' 'looked' becomes 'gazed,' 'said' becomes 'declared,' 'noticed' becomes 'discovered,' 'ate' becomes 'devoured.' More than 30% of action verbs are dramatic when the scene context is mundane."
+    why_autocomplete: "LLMs replace neutral verbs with dramatic synonyms because training data rewards vivid language and the model cannot distinguish when vividness is warranted from when it is not. Every observation becomes a discovery, every glance a gaze, every walk a stride. This flattens the emotional landscape by treating everything as equally dramatic — the prose has no dynamic range."
+
+  SS-330:
+    name: "Exclamation Point Overuse"
+    detection: "More than three exclamation points per scene in narrative prose (outside of dialogue where a character's personality justifies them). Or: exclamation points used to signal emphasis or emotional intensity that the prose itself has not earned through sentence construction."
+    why_autocomplete: "LLMs use exclamation points as a cheap intensity signal because the punctuation mark substitutes for the harder craft work of building emphasis through word choice, rhythm, and sentence construction. The model reaches for typographic emphasis rather than earning it through prose."
+
+  SS-331:
+    name: "'Suddenly' as Default Transition"
+    detection: "The word 'suddenly' appears more than twice per chapter as a transition device introducing unexpected events or changes in scene state."
+    why_autocomplete: "LLMs use 'suddenly' as a low-effort way to introduce plot turns because it signals unexpectedness without the craft work of building surprise through pacing, setup, and reader expectation. Leonard's Rule 5 banned the word entirely. Reliance on 'suddenly' indicates the model is announcing surprise rather than creating it."

@@ -93,6 +93,7 @@ auditors:
       - SS-239
       - SS-262
       - SS-273
+      - SS-329
 
   - name: "AI Stock Phrases and Formulaic Constructions"
     level: scene
@@ -143,6 +144,8 @@ auditors:
       - SS-235
       - SS-250
       - SS-251
+      - SS-330
+      - SS-331
 
   - name: "AI Generation Tells (Broader Patterns)"
     level: scene
@@ -209,6 +212,7 @@ auditors:
       - SC-268
       - SC-283
       - SC-293
+      - SC-302
       - ML-041
     sentinels:
       - SS-041

@@ -1,12 +1,12 @@
-An inverted detective story set in medieval times.
+A locked-room murder mystery set on a small crew vessel in transit between worlds.
 
-The story is told from the perspective of a knight who has committed murder. A monk is tasked with investigating the crime. We follow the murderer — not the detective — as he attempts to cover his tracks, disrupt the investigation, manipulate allies, and maintain his standing in court.
+A crew member is found dead in a sealed compartment. The killer is among the 6-10 people aboard. There is no escape, no reinforcements, and no outside authority — the investigation must be conducted by someone on the ship, and it must resolve before arrival at port, where jurisdiction changes, evidence scatters, and people disappear.
 
-The dramatic tension comes from watching the monk's investigation close in, seen through the eyes of the person trying to stop it. The knight is intelligent and resourceful, the monk is methodical and perceptive, and the question is not whodunit but how the truth will emerge despite the knight's efforts.
+The story follows a conventional mystery structure: body discovered, investigation, red herrings, resolution. The specifics — who the detective is, who the killer is, what the locked-room mechanism is, and what the motive is — are open for the planning phase to determine.
 
-In the end, the knight is found out. The intrigue is in HOW — what mistakes he makes, what the monk notices, what the knight underestimates.
+The constraints of the setting are the engine of the story: limited crew means every person matters operationally (you can't just lock up suspects), the ship's systems (airlocks, life support, cargo holds, maintenance crawlways, access logs) become both evidence and puzzle, and the transit window creates a natural deadline.
 
-This should be a short novel (5-7 chapters). The medieval setting should feel specific and grounded — not generic fantasy-medieval but historically informed (think Umberto Eco's The Name of the Rose or Ellis Peters' Brother Cadfael series). The investigation should follow a logic that makes sense within a medieval context: no forensic science, but witness testimony, physical evidence, social observation, theological reasoning.
+This should be a short novel (5-7 chapters).
 
-Genre: inverted detective story / historical mystery.
-Tone: serious, psychologically intense, with dark humor from the knight's rationalizations.
+Genre: mystery / locked-room detective fiction.
+Tone: serious, psychologically intense.

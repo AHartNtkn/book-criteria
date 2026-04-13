@@ -751,6 +751,17 @@ main() {
     echo "Log dir: $LOG_DIR" >&2
     echo "Pipeline log: $PIPELINE_LOG" >&2
 
+    # Synthesize ambition dares from active criteria (once per pipeline run, per level)
+    for amb_level in scene chapter_plan novel_plan; do
+        local amb_file="$STATE_DIR/ambition-dares-${amb_level}.txt"
+        if [[ ! -f "$amb_file" || ! -s "$amb_file" ]]; then
+            echo "Synthesizing ambition dares for ${amb_level}..." >&2
+            local amb_prompt
+            amb_prompt=$(python3 assemble_ambition_prompt.py "$amb_level")
+            run_claude_to_file "synthesize-ambition-${amb_level}" "$amb_prompt" "$amb_file" "$(get_model_flag ambition)"
+        fi
+    done
+
     local current_phase
     current_phase=$(read_state "phase")
 

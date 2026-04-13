@@ -2,25 +2,13 @@
 # Config parsing for the fiction pipeline.
 # Requires: yq
 #
-# Supports two config files:
-#   1. criteria-settings.yaml — per-criterion and per-sentinel on/off toggles + iteration_cap
-#   2. auditor-settings.yaml — which auditors exist and what level they operate at
+# Supports:
+#   criteria-settings.yaml — per-criterion and per-sentinel on/off toggles + iteration_cap
 #
 # The criteria-settings file is generated from the style questionnaire.
-# The auditor-settings file maps auditors to their criteria/sentinel groups.
 
-CONFIG_FILE=""
 CRITERIA_FILE=""
 MODEL_SETTINGS_FILE=""
-
-load_config() {
-    local config_file="$1"
-    if [[ ! -f "$config_file" ]]; then
-        echo "FATAL: Config file not found: $config_file" >&2
-        return 1
-    fi
-    CONFIG_FILE="$config_file"
-}
 
 load_criteria_settings() {
     local criteria_file="$1"
@@ -44,18 +32,10 @@ get_iteration_cap() {
     if [[ -z "$cap" || "$cap" == "null" ]]; then
         if [[ -n "$CRITERIA_FILE" ]]; then
             cap=$(yq '.iteration_cap' "$CRITERIA_FILE")
-        else
-            cap=$(yq '.iteration_cap' "$CONFIG_FILE")
         fi
     fi
 
     echo "${cap:-0}"
-}
-
-# Get list of auditors for a given pipeline level
-get_active_auditors() {
-    local level="$1"
-    yq -r ".${level}[] | .auditor" "$CONFIG_FILE"
 }
 
 # Check if a specific criterion is enabled

@@ -308,6 +308,8 @@ questions:
           - SS-168
           - SS-182
           - SS-243
+          # Classic Prose Stance -- opaque prose deliberately rejects the equal-to-equal stance
+          - SC-302
 
       - id: balanced
         label: "Balanced / varies by scene -- transparent for action, richer for key moments"

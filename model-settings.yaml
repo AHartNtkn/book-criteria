@@ -3,16 +3,20 @@
 # Or full model IDs: claude-opus-4-6, claude-sonnet-4-6, claude-haiku-4-5-20251001
 
 # Creative heavy-lifting (judgment, synthesis, rewriting)
-synthesis: opus
-planning: opus
-enhancement: opus
-fixing: opus
+synthesis: haiku
+planning: haiku
+enhancement: haiku
+fixing: haiku
 
 # Evaluation and extraction (criteria-based, mechanical)
-auditor: sonnet
-consolidation: sonnet
-context_collection: sonnet
-backtracking: sonnet
+auditor: haiku
+consolidation: haiku
+context_collection: haiku
+backtracking: haiku
 
 # Brainstorming (quantity over quality, synthesis curates)
-ideation: sonnet
+ideation: haiku
+
+# Ambition synthesis (translates criteria into creative dares)
+ambition: haiku
+
