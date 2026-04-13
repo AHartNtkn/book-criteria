@@ -92,11 +92,20 @@ METAJSON
         step_done "$description" "${duration}s, $(wc -c < "$output_file") bytes"
         echo "    [log] $description (${duration}s, $(wc -c < "$output_file") bytes)" >&2
         return 0
-    else
-        step_failed "$description" "output file not written after ${duration}s"
-        echo "    [log] $description FAILED — no output file (${duration}s)" >&2
-        return 1
     fi
+
+    # Fallback: model wrote to stdout instead of using Write tool
+    if [[ -f "$call_dir/claude-stdout.txt" && -s "$call_dir/claude-stdout.txt" ]]; then
+        cp "$call_dir/claude-stdout.txt" "$output_file"
+        cp "$call_dir/claude-stdout.txt" "$call_dir/response.md"
+        step_done "$description" "${duration}s, $(wc -c < "$output_file") bytes (from stdout)"
+        echo "    [log] $description (${duration}s, $(wc -c < "$output_file") bytes, stdout fallback)" >&2
+        return 0
+    fi
+
+    step_failed "$description" "output file not written after ${duration}s"
+    echo "    [log] $description FAILED — no output file (${duration}s)" >&2
+    return 1
 }
 
 # Legacy: capture response via stdout. Still used for auditor calls where
