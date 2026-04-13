@@ -49,9 +49,9 @@ REASON: [one sentence]
 
 And stop. The pipeline will handle removal.
 
-### If the scene should be kept: rewrite it.
+### If the scene should be kept: revise it.
 
-This is a full rewrite, not a patch job. Produce a new version that addresses the problems while preserving what works.
+Modify only the passages that need to change. Preserve everything that works — if a paragraph wasn't flagged, keep it as-is. The goal is targeted surgery, not reconstruction.
 
 Priority:
 1. **Sentinel failures** — these indicate autocomplete behavior. The affected passages need genuine creative thought, not superficial rewording.
