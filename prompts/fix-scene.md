@@ -51,7 +51,7 @@ And stop. The pipeline will handle removal.
 
 ### If the scene should be kept: revise it.
 
-Modify only the passages that need to change. Preserve everything that works — if a paragraph wasn't flagged, keep it as-is.
+You may revise specific passages or do a full rewrite — use your judgment based on how deep the problems go. Preserve what works.
 
 Priority:
 1. **Sentinel failures** — these indicate autocomplete behavior. The affected passages need genuine creative thought, not superficial rewording.
