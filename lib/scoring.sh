@@ -95,8 +95,8 @@ if blocks:
         print(json.dumps(parsed))
         sys.exit(0)
 
-# Fallback: find bare JSON objects with criteria/sentinels keys
-matches = re.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', text, re.DOTALL)
+# Fallback: find bare JSON objects with criteria/sentinels keys (up to 3 levels deep)
+matches = re.findall(r'\{[^{}]*(?:\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}[^{}]*)*\}', text, re.DOTALL)
 for m in reversed(matches):
     parsed = try_parse(m)
     if parsed and ('criteria' in parsed or 'sentinels' in parsed):
@@ -106,10 +106,10 @@ for m in reversed(matches):
 # Fallback: extract scores from Markdown prose (e.g., **Score: 2** under ### ID: headings)
 result = {'criteria': {}, 'sentinels': {}}
 
-# Find criterion scores: ### XX-NNN: ... followed by **Score: N** or **Score: N/A**
-for m in re.finditer(r'###\s+([A-Z]{2}-\d+):.*?(?:\*\*Score:\s*([\dN/A]+)\*\*|\*\*Score\*\*:\s*([\dN/A]+))', text, re.DOTALL):
+# Find criterion scores: ### XX-NNN: or XX-NNN: followed by Score/SCORE variants
+for m in re.finditer(r'(?:###?\s+)?([A-Z]{2}-\d+):.*?(?:\*\*Score:\s*([\dN/A]+)\*\*|\*\*Score\*\*:\s*([\dN/A]+)|SCORE:\s*([\dN/A]+))', text, re.DOTALL):
     cid = m.group(1)
-    score_raw = m.group(2) or m.group(3)
+    score_raw = m.group(2) or m.group(3) or m.group(4)
     if score_raw in ('N/A', 'n/a'):
         score = 'N/A'
     else:
@@ -119,10 +119,10 @@ for m in re.finditer(r'###\s+([A-Z]{2}-\d+):.*?(?:\*\*Score:\s*([\dN/A]+)\*\*|\*
             continue
     result['criteria'][cid] = {'score': score, 'evidence': '(extracted from Markdown prose)'}
 
-# Find sentinel statuses: ### XX-NNN: ... followed by **Status: PASS** or **FAIL**
-for m in re.finditer(r'###\s+([A-Z]{2}-\d+):.*?(?:\*\*Status:\s*(PASS|FAIL)\*\*|\*\*Status\*\*:\s*(PASS|FAIL))', text, re.DOTALL):
+# Find sentinel statuses: ### XX-NNN: or XX-NNN: followed by Status/STATUS variants
+for m in re.finditer(r'(?:###?\s+)?([A-Z]{2}-\d+):.*?(?:\*\*Status:\s*(PASS|FAIL)\*\*|\*\*Status\*\*:\s*(PASS|FAIL)|STATUS:\s*(PASS|FAIL))', text, re.DOTALL):
     sid = m.group(1)
-    status = m.group(2) or m.group(3)
+    status = m.group(2) or m.group(3) or m.group(4)
     result['sentinels'][sid] = {'status': status, 'evidence': '(extracted from Markdown prose)'}
 
 if result['criteria'] or result['sentinels']:
