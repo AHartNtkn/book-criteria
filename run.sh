@@ -1,8 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Log shutdown reason and kill all child processes on exit
+# Only the top-level process runs shutdown; children just exit
+_PIPELINE_PID=$$
 _shutdown() {
+    [[ $$ -ne $_PIPELINE_PID ]] && return
     local reason="${1:-unknown}"
     echo "PIPELINE SHUTDOWN: $reason at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
     kill 0
