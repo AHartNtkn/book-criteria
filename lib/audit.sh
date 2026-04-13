@@ -337,6 +337,50 @@ print(json.dumps(merged))
     echo "  All auditors complete ($total new + $resumed resumed)." >&2
 }
 
+# Run one consolidation batch.
+# Args: $1 = auditor output dir, $2 = output file, remaining = feedback file paths
+run_consolidation_batch() {
+    local auditor_out_dir="$1"
+    local output_file="$2"
+    shift 2
+    local feedback_files=("$@")
+
+    # Build file list for the consolidator to Read
+    local list_file
+    list_file=$(mktemp)
+    for fb in "${feedback_files[@]}"; do
+        echo "- $fb" >> "$list_file"
+    done
+
+    local consolidate_prompt
+    consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
+        "$PROJECT_DIR/prompts/consolidate-feedback.md" \
+        "feedback_file_list=$list_file")
+    rm -f "$list_file"
+
+    consolidate_prompt="${consolidate_prompt}
+
+---
+IMPORTANT: Write your consolidated feedback to the file: ${output_file}
+Use the Write tool to create this file. Read each feedback file listed above using the Read tool."
+
+    echo "$consolidate_prompt" | claude -p - \
+        --tools "Read,Write" \
+        --dangerously-skip-permissions \
+        $(get_model_flag consolidation) \
+        --output-format text \
+        > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
+
+    # Stdout fallback
+    if [[ ! -f "$output_file" || ! -s "$output_file" ]]; then
+        local consol_stdout="$auditor_out_dir/consolidate-stdout.txt"
+        if [[ -f "$consol_stdout" && -s "$consol_stdout" ]]; then
+            cp "$consol_stdout" "$output_file"
+            echo "  (stdout fallback for consolidation)" >&2
+        fi
+    fi
+}
+
 # Run the enhancement agent for a level.
 # Args: $1 = level, $2 = output file path, remaining = context key=value pairs
 run_enhancement() {
@@ -439,52 +483,44 @@ audit_refine_loop() {
         else
             echo "  Consolidating audit feedback..." >&2
 
-            # Build list of feedback file paths for the consolidator to read
-            local feedback_list_file="$auditor_out_dir/feedback-file-list.txt"
-            > "$feedback_list_file"
+            # Collect all feedback files
+            local all_feedback=()
             for fb in "$auditor_out_dir"/*.feedback.txt; do
                 if [[ -f "$fb" && -s "$fb" ]]; then
-                    echo "- $fb" >> "$feedback_list_file"
+                    all_feedback+=("$fb")
                 fi
             done
 
-            local consolidate_prompt
-            consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
-                "$PROJECT_DIR/prompts/consolidate-feedback.md" \
-                "feedback_file_list=$feedback_list_file")
+            local batch_size=20
+            local num_files=${#all_feedback[@]}
 
-            # Append file-writing instruction
-            consolidate_prompt="${consolidate_prompt}
-
----
-IMPORTANT: Write your consolidated feedback to the file: ${consolidated_feedback}
-Use the Write tool to create this file. Read each feedback file listed above using the Read tool."
-
-            # Consolidator gets Read+Write tools to access feedback files and write output
-            echo "$consolidate_prompt" | claude -p - \
-                --tools "Read,Write" \
-                --dangerously-skip-permissions \
-                $(get_model_flag consolidation) \
-                --output-format text \
-                > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
-
-            step_start "consolidate-feedback-round-${round}" "Consolidating audit feedback"
-            if [[ -f "$consolidated_feedback" && -s "$consolidated_feedback" ]]; then
-                step_done "consolidate-feedback-round-${round}" "$(wc -c < "$consolidated_feedback") bytes"
+            if [[ "$num_files" -le "$batch_size" ]]; then
+                # Single batch — consolidate directly
+                run_consolidation_batch "$auditor_out_dir" "$consolidated_feedback" "${all_feedback[@]}"
             else
-                step_failed "consolidate-feedback-round-${round}" "no output"
+                # Multiple batches — consolidate in groups, then merge
+                local batch_idx=0
+                local batch_outputs=()
+                local i=0
+                while [[ "$i" -lt "$num_files" ]]; do
+                    batch_idx=$((batch_idx + 1))
+                    local batch_files=("${all_feedback[@]:$i:$batch_size}")
+                    local batch_output="$auditor_out_dir/consolidated-batch-${batch_idx}.md"
+
+                    echo "  Consolidation batch $batch_idx (${#batch_files[@]} files)..." >&2
+                    run_consolidation_batch "$auditor_out_dir" "$batch_output" "${batch_files[@]}"
+                    batch_outputs+=("$batch_output")
+                    i=$((i + batch_size))
+                done
+
+                # Final merge of batch outputs
+                echo "  Merging $batch_idx consolidation batches..." >&2
+                run_consolidation_batch "$auditor_out_dir" "$consolidated_feedback" "${batch_outputs[@]}"
             fi
 
             if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
-                # Fallback: model wrote to stdout instead of using Write tool
-                local consol_stdout="$auditor_out_dir/consolidate-stdout.txt"
-                if [[ -f "$consol_stdout" && -s "$consol_stdout" ]]; then
-                    cp "$consol_stdout" "$consolidated_feedback"
-                    echo "  (stdout fallback for consolidation)" >&2
-                else
-                    echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
-                    exit 1
-                fi
+                echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
+                exit 1
             fi
         fi
 
