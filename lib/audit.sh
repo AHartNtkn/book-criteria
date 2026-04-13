@@ -448,12 +448,24 @@ audit_refine_loop() {
     saved_status=$(read_state "status")
 
     if [[ "$saved_audit_target" == "$log_prefix" && "$saved_round" != "0" && "$saved_round" != "null" ]]; then
+        local candidate_round="$saved_round"
         if [[ "$saved_status" == "fixed" || "$saved_status" == "passed" || "$saved_status" == "cap_reached" ]]; then
-            round=$((saved_round + 1))
-            echo "Resuming audit from round $round (previous fix completed)" >&2
-        elif [[ "$saved_status" == "auditing" || "$saved_status" == "fixing" ]]; then
-            round=$saved_round
-            echo "Resuming audit from round $round (re-running interrupted round)" >&2
+            candidate_round=$((saved_round + 1))
+        fi
+
+        # Verify the round directory exists — if state says round N but the
+        # directory was deleted, start from round 1 instead of trusting stale state
+        local candidate_dir="$STATE_DIR/auditor-results/${log_prefix}/round-${candidate_round}"
+        local prev_dir="$STATE_DIR/auditor-results/${log_prefix}/round-${saved_round}"
+        if [[ -d "$candidate_dir" || -d "$prev_dir" ]]; then
+            round=$candidate_round
+            if [[ "$saved_status" == "fixed" || "$saved_status" == "passed" || "$saved_status" == "cap_reached" ]]; then
+                echo "Resuming audit from round $round (previous fix completed)" >&2
+            else
+                echo "Resuming audit from round $round (re-running interrupted round)" >&2
+            fi
+        else
+            echo "Saved state says round $saved_round but no round directories found — starting from round 1" >&2
         fi
     fi
 
