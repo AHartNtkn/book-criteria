@@ -476,8 +476,15 @@ Use the Write tool to create this file. Read each feedback file listed above usi
             fi
 
             if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
-                echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
-                exit 1
+                # Fallback: model wrote to stdout instead of using Write tool
+                local consol_stdout="$auditor_out_dir/consolidate-stdout.txt"
+                if [[ -f "$consol_stdout" && -s "$consol_stdout" ]]; then
+                    cp "$consol_stdout" "$consolidated_feedback"
+                    echo "  (stdout fallback for consolidation)" >&2
+                else
+                    echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
+                    exit 1
+                fi
             fi
         fi
 
