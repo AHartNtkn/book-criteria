@@ -247,13 +247,16 @@ Do not write any other files. Do not use any other tools."
 
             if [[ ! -f "$feedback_file" || ! -s "$feedback_file" ]]; then
                 # Fallback: model wrote to stdout instead of using Write tool
+                # Only use stdout if it looks like real output (>500 bytes, no error markers)
                 local stdout_file="$auditor_out_dir/${safe_name}.claude-stdout.txt"
-                if [[ -f "$stdout_file" && -s "$stdout_file" ]]; then
+                local stdout_size=0
+                [[ -f "$stdout_file" ]] && stdout_size=$(wc -c < "$stdout_file")
+                if [[ "$stdout_size" -gt 500 ]] && ! head -1 "$stdout_file" | grep -qi "prompt is too long\|error\|fatal"; then
                     cp "$stdout_file" "$feedback_file"
                     echo "    (stdout fallback): $auditor_name" >&2
                 else
                     echo "FAILED: output file not written" > "$status_file"
-                    echo "    FAILED: $auditor_name — no output" >&2
+                    echo "    FAILED: $auditor_name — no output (stdout: ${stdout_size} bytes)" >&2
                     step_failed "audit-${safe_name}" "output file not written"
                     exit 1
                 fi
@@ -371,10 +374,12 @@ Use the Write tool to create this file. Read each feedback file listed above usi
         --output-format text \
         > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
 
-    # Stdout fallback
+    # Stdout fallback — only if content looks real (>500 bytes, no error markers)
     if [[ ! -f "$output_file" || ! -s "$output_file" ]]; then
         local consol_stdout="$auditor_out_dir/consolidate-stdout.txt"
-        if [[ -f "$consol_stdout" && -s "$consol_stdout" ]]; then
+        local consol_size=0
+        [[ -f "$consol_stdout" ]] && consol_size=$(wc -c < "$consol_stdout")
+        if [[ "$consol_size" -gt 500 ]] && ! head -1 "$consol_stdout" | grep -qi "prompt is too long\|error\|fatal"; then
             cp "$consol_stdout" "$output_file"
             echo "  (stdout fallback for consolidation)" >&2
         fi
@@ -498,19 +503,40 @@ audit_refine_loop() {
                 # Single batch — consolidate directly
                 run_consolidation_batch "$auditor_out_dir" "$consolidated_feedback" "${all_feedback[@]}"
             else
-                # Multiple batches — consolidate in groups, then merge
+                # Multiple batches — consolidate in parallel groups, then merge
                 local batch_idx=0
                 local batch_outputs=()
+                local batch_pids=()
                 local i=0
                 while [[ "$i" -lt "$num_files" ]]; do
                     batch_idx=$((batch_idx + 1))
                     local batch_files=("${all_feedback[@]:$i:$batch_size}")
                     local batch_output="$auditor_out_dir/consolidated-batch-${batch_idx}.md"
+                    batch_outputs+=("$batch_output")
 
                     echo "  Consolidation batch $batch_idx (${#batch_files[@]} files)..." >&2
-                    run_consolidation_batch "$auditor_out_dir" "$batch_output" "${batch_files[@]}"
-                    batch_outputs+=("$batch_output")
+                    run_consolidation_batch "$auditor_out_dir" "$batch_output" "${batch_files[@]}" &
+                    batch_pids+=($!)
                     i=$((i + batch_size))
+                done
+
+                # Wait for all batches
+                local batch_failed=0
+                for pid in "${batch_pids[@]}"; do
+                    wait "$pid" || batch_failed=1
+                done
+
+                if [[ "$batch_failed" -eq 1 ]]; then
+                    echo "FATAL: A consolidation batch failed. Stopping pipeline." >&2
+                    exit 1
+                fi
+
+                # Verify all batch outputs exist
+                for bo in "${batch_outputs[@]}"; do
+                    if [[ ! -f "$bo" || ! -s "$bo" ]]; then
+                        echo "FATAL: Consolidation batch output missing: $bo" >&2
+                        exit 1
+                    fi
                 done
 
                 # Final merge of batch outputs
