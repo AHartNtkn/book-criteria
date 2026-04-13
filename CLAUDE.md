@@ -25,3 +25,10 @@ The `kill 0` trap in run.sh will clean up all child processes automatically.
    find state/auditor-results/ -name '*.status' -exec grep -l -v '^OK$' {} \; -exec rm {} \;
    ```
 2. Start the pipeline. It resumes from where it left off — completed audit targets are skipped, OK auditors within an interrupted round are reused.
+
+## Pipeline state rules
+
+- **Never manually edit `state/progress.json`.** The pipeline manages its own state. Manually changing `refinement_round` or `status` creates inconsistencies where the audit round directories and the progress state disagree, causing the pipeline to audit at one round number and fix at another.
+- **To reset a round**, delete the round directory (`rm -rf state/auditor-results/TARGET/round-N`), delete any incomplete consolidation artifacts (`consolidated-batch-*.md`, `consolidated-feedback.md`), and clean failed statuses. The pipeline will detect the missing round and re-run it. Do not touch progress.json.
+- **Kill the pipeline before cleaning state.** If the pipeline is running when you delete directories, it may recreate them immediately. Verify with `ps aux | grep '[r]un.sh'` that all processes are dead before modifying state.
+- **Never start the pipeline without checking the log immediately.** Every restart must be followed by reading the first 10-20 lines of the log to verify it resumed from the correct point. Do not launch and walk away.
