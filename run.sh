@@ -1,18 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-# Only the top-level process runs shutdown; children just exit
-_PIPELINE_PID=$BASHPID
-_shutdown() {
-    [[ $BASHPID -ne $_PIPELINE_PID ]] && return
-    local reason="${1:-unknown}"
-    echo "PIPELINE SHUTDOWN: $reason at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
-    kill 0
-}
-trap '_shutdown "EXIT (set -e or normal)"' EXIT
-trap '_shutdown "SIGINT (ctrl-c)"' INT
-trap '_shutdown "SIGTERM (killed)"' TERM
-trap '_shutdown "SIGHUP (terminal closed)"' HUP
+# On signals, set reason and exit (EXIT trap handles cleanup)
+_SHUTDOWN_REASON=""
+trap '_SHUTDOWN_REASON="SIGINT (ctrl-c)"; exit 1' INT
+trap '_SHUTDOWN_REASON="SIGTERM (killed)"; exit 1' TERM
+trap '_SHUTDOWN_REASON="SIGHUP (terminal closed)"; exit 1' HUP
+trap '
+    if [[ -z "$_SHUTDOWN_REASON" ]]; then _SHUTDOWN_REASON="EXIT (set -e or normal)"; fi
+    echo "PIPELINE SHUTDOWN: $_SHUTDOWN_REASON at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >&2
+    kill 0 2>/dev/null
+' EXIT
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
