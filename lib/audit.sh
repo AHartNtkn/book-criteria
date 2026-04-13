@@ -246,10 +246,17 @@ Do not write any other files. Do not use any other tools."
                 > "$auditor_out_dir/${safe_name}.claude-stdout.txt" 2>&1
 
             if [[ ! -f "$feedback_file" || ! -s "$feedback_file" ]]; then
-                echo "FAILED: output file not written" > "$status_file"
-                echo "    FAILED: $auditor_name — no output" >&2
-                step_failed "audit-${safe_name}" "output file not written"
-                exit 1
+                # Fallback: model wrote to stdout instead of using Write tool
+                local stdout_file="$auditor_out_dir/${safe_name}.claude-stdout.txt"
+                if [[ -f "$stdout_file" && -s "$stdout_file" ]]; then
+                    cp "$stdout_file" "$feedback_file"
+                    echo "    (stdout fallback): $auditor_name" >&2
+                else
+                    echo "FAILED: output file not written" > "$status_file"
+                    echo "    FAILED: $auditor_name — no output" >&2
+                    step_failed "audit-${safe_name}" "output file not written"
+                    exit 1
+                fi
             fi
 
             # Prepend auditor name to feedback
