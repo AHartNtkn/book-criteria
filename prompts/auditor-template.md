@@ -52,9 +52,11 @@ For each sentinel, determine PASS or FAIL:
 
 {sentinels_text}
 
-## Output
+## REQUIRED Output Format
 
-Write your flaw-first analysis. Then for each criterion, state the score with evidence and your adversarial counter-argument. Then output the final scores as a JSON block:
+Write your flaw-first analysis. Then for each criterion, state the score with evidence and your adversarial counter-argument.
+
+**YOU MUST end your response with the following JSON block.** Your response will be rejected if this block is missing. Do not embed scores only in prose — the JSON block is mandatory and is the only thing the pipeline reads.
 
 ```json
 {
@@ -68,3 +70,5 @@ Write your flaw-first analysis. Then for each criterion, state the score with ev
     }
 }
 ```
+
+Include ALL criteria and sentinel IDs listed above in the JSON. Do not omit any.

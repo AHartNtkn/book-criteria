@@ -103,6 +103,32 @@ for m in reversed(matches):
         print(json.dumps(parsed))
         sys.exit(0)
 
+# Fallback: extract scores from Markdown prose (e.g., **Score: 2** under ### ID: headings)
+result = {'criteria': {}, 'sentinels': {}}
+
+# Find criterion scores: ### XX-NNN: ... followed by **Score: N** or **Score: N/A**
+for m in re.finditer(r'###\s+([A-Z]{2}-\d+):.*?(?:\*\*Score:\s*([\dN/A]+)\*\*|\*\*Score\*\*:\s*([\dN/A]+))', text, re.DOTALL):
+    cid = m.group(1)
+    score_raw = m.group(2) or m.group(3)
+    if score_raw in ('N/A', 'n/a'):
+        score = 'N/A'
+    else:
+        try:
+            score = int(score_raw)
+        except ValueError:
+            continue
+    result['criteria'][cid] = {'score': score, 'evidence': '(extracted from Markdown prose)'}
+
+# Find sentinel statuses: ### XX-NNN: ... followed by **Status: PASS** or **FAIL**
+for m in re.finditer(r'###\s+([A-Z]{2}-\d+):.*?(?:\*\*Status:\s*(PASS|FAIL)\*\*|\*\*Status\*\*:\s*(PASS|FAIL))', text, re.DOTALL):
+    sid = m.group(1)
+    status = m.group(2) or m.group(3)
+    result['sentinels'][sid] = {'status': status, 'evidence': '(extracted from Markdown prose)'}
+
+if result['criteria'] or result['sentinels']:
+    print(json.dumps(result))
+    sys.exit(0)
+
 print('FATAL: No valid scores JSON found in auditor output', file=sys.stderr)
 sys.exit(1)
 "
