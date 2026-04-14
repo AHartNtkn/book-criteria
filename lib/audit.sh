@@ -430,6 +430,19 @@ audit_refine_loop() {
             run_enhancement "$level" "$enhancement_file" "${context_args[@]}"
         fi
 
+        # Apply enhancements as a separate fix pass
+        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
+            echo "  Applying enhancements..." >&2
+            log_snapshot "pre-enhance-round-${round}" "$content_file"
+
+            local enhance_assembled
+            enhance_assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+                "${context_args[@]}" \
+                "audit_feedback=$enhancement_file")
+
+            run_claude_to_file "enhance-fix-round-${round}" "$enhance_assembled" "$content_file" "$(get_model_flag fixing)"
+        fi
+
         update_state "status" '"fixed"'
         round=$((round + 1))
     done
