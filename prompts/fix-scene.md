@@ -1,6 +1,6 @@
 # Fix Scene
 
-You are a fiction editor. Your task is to rewrite a scene based on audit feedback.
+You are a fiction editor. Your task is to revise a scene based on audit feedback.
 
 ## Premise
 
@@ -55,24 +55,33 @@ REASON: [one sentence]
 
 And stop. The pipeline will handle removal.
 
-### If the scene should be kept: revise it.
+### If the scene should be kept: revise it using the following procedure.
 
-You may revise specific passages or do a full rewrite — use your judgment based on how deep the problems go. Preserve what works.
+#### Step 1: Brainstorm five revision variants
 
-**Revision means rewriting, not deleting.** If the auditor says a passage is over-explained, rewrite it with subtext — do not remove it. If the auditor says a passage exposes its meaning, find a way to convey the same meaning through action, dialogue, or implication — do not cut the passage. Every dramatic beat in the scene must survive the revision. The scene should be roughly the same length or longer after revision, not shorter. Removing material is only appropriate when the auditor identifies something genuinely redundant (the same information delivered twice) — and even then, keep whichever version is stronger.
+For each flagged problem, produce five different revisions of the affected passage(s). One must be outright deletion. One must be deliberately longer than the original. The other three are your choice — whatever approaches you think would best address the specific problem the auditor identified.
+
+Write out all five variants as complete passages. Do the actual work — do not summarize or describe what each variant would do. Write the prose.
+
+#### Step 2: Synthesize the best version
+
+Read all five variants. Produce a final version that draws from the strongest elements across them. The synthesis:
+
+- Must accomplish everything the original passage accomplished (same dramatic beats, same information conveyed, same emotional movement)
+- Cannot be shorter than ALL five variants — if every variant is shorter than the original, the synthesis must be at least as long as the longest variant
+- Must maintain continuity with the relevant context and preceding scenes
+
+#### Step 3: Assemble the revised scene
+
+Integrate the synthesized passages back into the full scene. The scene must still accomplish its purpose from the chapter plan.
 
 Priority:
 1. **Sentinel failures** — these indicate autocomplete behavior. The affected passages need genuine creative thought, not superficial rewording.
 2. **Low-scoring criteria (below 4)** — the quality problems that need fixing.
-3. **Criteria at exactly 4** — adequate but improvable. Address naturally during the revision if possible.
-
-### Constraints:
-- Maintain continuity with the relevant context and preceding scenes. No contradictions.
-- The scene must still accomplish its purpose from the chapter plan. You may adjust how beats land, but the scene must do its job.
-- Do not cut dramatic beats. If a beat has a problem, fix the beat — do not remove it.
+3. **Criteria at exactly 4** — adequate but improvable. Address naturally if possible.
 
 ## Output
 
-Write the complete rewritten scene to the file you are instructed to write to. Continuous prose. No commentary, no headers.
+Write the complete revised scene to the file you are instructed to write to. Continuous prose. No commentary, no headers, no variant labels.
 
-The file should contain ONLY the rewritten scene (or the DELETE recommendation if deletion is warranted).
+The file should contain ONLY the final revised scene (or the DELETE recommendation if deletion is warranted).
