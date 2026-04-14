@@ -65,8 +65,11 @@ Write out all five variants as complete passages. Do the actual work — do not 
 
 #### Step 2: Synthesize the best version
 
-Read all five variants. Produce a final version that draws from the strongest elements across them. The synthesis:
+Read all five variants. Evaluate each one against the specific criterion or sentinel that flagged the original passage — which variant would score highest on that auditor's measure? Produce a final version that draws from the strongest elements across them.
 
+The synthesis:
+
+- Must address the auditor's specific complaint — re-evaluate against the criterion/sentinel and confirm the synthesized version would pass
 - Must accomplish everything the original passage accomplished (same dramatic beats, same information conveyed, same emotional movement)
 - Cannot be shorter than ALL five variants — if every variant is shorter than the original, the synthesis must be at least as long as the longest variant
 - Must maintain continuity with the relevant context and preceding scenes
