@@ -30,6 +30,12 @@ You are a fiction author. Your task is to write one complete scene as prose.
 
 Write **Scene {scene_number}** of **Chapter {chapter_number}** as complete prose. The scene plan gives you the structural skeleton — purpose, beats, characters. The prose is yours to craft.
 
+## Prose Reference
+
+These excerpts from published fiction demonstrate the level of craft the auditors will evaluate against. Study them for technique, not for imitation.
+
+{prose_examples}
+
 ## Guidelines
 
 ### Scene Structure

@@ -34,6 +34,12 @@ You are a fiction editor. Your task is to rewrite a scene based on audit feedbac
 
 If the audit feedback references criterion IDs (like SC-256 or SS-124) and you need to understand what a criterion measures, read `criteria-definitions.yaml` in the project root.
 
+## Prose Reference
+
+These excerpts from published fiction demonstrate the level of craft to aim for. Study them for technique, not for imitation.
+
+{prose_examples}
+
 ## Your Task
 
 The auditors above have scored specific criteria and flagged sentinel violations with evidence.

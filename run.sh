@@ -556,7 +556,8 @@ author_chapter_scenes() {
                 "preceding_scenes=$preceding_file" \
                 "scene_plan=$scene_plan_file" \
                 "chapter_number=$ch" \
-                "scene_number=$sc")
+                "scene_number=$sc" \
+                "prose_examples=$STATE_DIR/prose-examples.txt")
             run_claude_write "$assembled" "author-scene-ch${ch}-sc${sc}" "$scene_file" "$(get_model_flag planning)"
             marker_set "${mk}-written"
         fi
@@ -573,7 +574,8 @@ author_chapter_scenes() {
                 "chapter_plan=$plan_file" \
                 "relevant_context=$context_file" \
                 "preceding_scenes=$preceding_file" \
-                "scene=$scene_file" || audit_result=$?
+                "scene=$scene_file" \
+                "prose_examples=$STATE_DIR/prose-examples.txt" || audit_result=$?
 
             if [[ "$audit_result" -eq 2 ]]; then
                 echo "    Scene $sc: fixer recommended deletion" >&2
@@ -750,6 +752,9 @@ main() {
     echo "Project dir: $PROJECT_DIR" >&2
     echo "Log dir: $LOG_DIR" >&2
     echo "Pipeline log: $PIPELINE_LOG" >&2
+
+    # Compile prose examples from active criteria
+    python3 compile_prose_examples.py > "$STATE_DIR/prose-examples.txt"
 
     # Synthesize ambition dares from active criteria (once per pipeline run, per level)
     for amb_level in scene chapter_plan novel_plan; do

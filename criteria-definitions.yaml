@@ -2032,6 +2032,16 @@ criteria:
     measures: "Whether emotions are rendered through action, physical detail, dialogue, and behavior rather than stated directly through narration"
     score_0: "Emotions are stated directly: \"She felt afraid,\" \"He was angry,\" \"A sense of unease grew.\" Characters announce how they feel. The narrator summarizes emotional states rather than depicting them. Every emotional moment is explained."
     score_5: "Emotions emerge through physical behavior, dialogue choices, action, and selective detail. The reader infers emotional states from evidence rather than being told. Subtext operates beneath the surface. Some emotions are never named but are unmistakably present."
+    examples:
+      - author: "Cormac McCarthy"
+        work: "The Road"
+        passage: "There were times when he sat watching the boy sleep that he would begin to sob uncontrollably but it wasn't about death. He wasn't sure what it was about but he thought it was about beauty or about goodness. Things that he'd no longer any way to think about at all."
+      - author: "Toni Morrison"
+        work: "Beloved"
+        passage: "The single slow blink of her eyes; the bottom lip sliding up slowly to cover the top; and then a nostril sigh, like the snuff of a candle flame -- signs that Sethe had reached the point beyond which she would not go."
+      - author: "Kazuo Ishiguro"
+        work: "Never Let Me Go"
+        passage: "I half-closed my eyes and imagined this was the spot where everything I'd ever lost since my childhood had washed up... The fantasy never got beyond that -- I didn't let it -- and though the tears rolled down my face, I wasn't sobbing or out of control."
 
   SC-024:
     name: "C9: Temporal Complexity"
@@ -2086,12 +2096,29 @@ criteria:
     measures: "Whether each character speaks, thinks, and expresses themselves in ways unique to their personality, background, and emotional state, such that characters are identifiable without dialogue tags."
     score_0: "All characters speak in the same register, vocabulary, and rhythm; dialogue is interchangeable between characters; the \"cover the name\" test fails completely; characters sound like the author rather than themselves."
     score_5: "Each character has distinct vocabulary, syntax, rhythm, and speech patterns reflecting their background, education, psychology, and emotional state; readers can identify speakers without tags; voice reveals character through what is said, what is avoided, and how things are phrased; internal monologue is as distinctive as spoken dialogue."
+    examples:
+      - author: "Zora Neale Hurston"
+        work: "Their Eyes Were Watching God"
+        passage: "Ships at a distance have every man's wish on board. [Narrator] ... \"Ah don't mean to bother wid tellin' you somethin' unless Ah say so.\" [Character dialogue in deep Southern Black vernacular against high literary narration]"
+      - author: "Charles Portis"
+        work: "True Grit"
+        passage: "\"I will tell you what I will do. I will take back those ponies and the gray horse that my father bought...\" [Mattie's archaic lawyerly formality] vs. \"Well, if it ain't loaded and cocked it don't shoot.\" [Rooster's terse frontier vernacular]"
+      - author: "Irvine Welsh"
+        work: "Trainspotting"
+        passage: "\"Choose us. Choose life. Choose mortgage payments; choose washing machines; choose sitting oan a couch watching mind-numbing and spirit-crushing game shows... Well, ah choose no tae choose life.\""
 
   SC-040:
     name: "Cliche Avoidance"
     measures: "Whether the prose avoids figurative clichés (stock phrases and dead metaphors), prose rhythm clichés (predictable sentence patterns), and descriptive clichés (stock descriptions like \"piercing blue eyes\") — or whether it relies on pre-fabricated language throughout."
     score_0: "The prose is built from stock phrases: \"at the end of the day,\" \"cold as ice,\" \"heart of gold,\" \"light at the end of the tunnel.\" Characters have \"piercing eyes\" and \"chiseled jaws.\" Emotions are described in clichéd terms (\"butterflies in her stomach,\" \"his heart sank\"). The writer has substituted cultural shorthand for fresh observation."
     score_5: "The prose avoids or subverts familiar phrases. Descriptions emerge from fresh observation rather than cultural shorthand. When familiar territory must be covered (describing a sunset, a kiss, a fight), the writer finds an angle that hasn't been used a thousand times. If clichés appear, they are deliberately subverted or placed in a character's mouth for characterization purposes."
+    examples:
+      - author: "Joan Didion"
+        work: "The Year of Magical Thinking"
+        passage: "I could not give away the rest of his shoes. I stood there for a moment, then realized why: he would need shoes if he was to return. The recognition of this thought by no means eradicated the thought."
+      - author: "Denis Johnson"
+        work: "Emergency (Jesus' Son)"
+        passage: "The sky was torn away and the angels were descending out of a brilliant blue summer, their huge faces streaked with light and full of pity... Georgie opened his arms and cried out, \"It's the drive-in, man!\""
 
   SC-041:
     name: "Cliche Avoidance at Sentence Level"
@@ -2116,6 +2143,13 @@ criteria:
     measures: "Whether the prose is tight and efficient — free of unnecessary filler words, throat-clearing phrases, redundant modifiers, and padding that adds word count without meaning."
     score_0: "Prose is padded with filler words (just, really, very, actually, basically, literally, definitely, certainly, probably, somewhat, somehow, quite, rather), throat-clearing phrases (\"it is important to note,\" \"in my opinion\"), and redundant modifiers (\"dark, pitch-black sky\"). Sentences could lose 20-30% of their words without losing meaning."
     score_5: "Every word contributes to meaning, rhythm, or voice. Filler words appear only in dialogue where they characterize the speaker. Narration is lean without being starved. Redundancy is absent. \"Began to\" and \"started to\" appear only when an action is interrupted."
+    examples:
+      - author: "Ernest Hemingway"
+        work: "Big Two-Hearted River: Part I"
+        passage: "There was no town, nothing but the rails and the burned-over country. The thirteen saloons that had lined the one street of Seney had not left a trace. The foundations of the Mansion House hotel stuck up above the ground. The stone was chipped and split by the fire."
+      - author: "Denis Johnson"
+        work: "Car Crash While Hitchhiking (Jesus' Son)"
+        passage: "A salesman who shared his liquor and steered while sleeping... A Cherokee filled with bourbon... A VW no more than a bubble of hashish fumes, captained by a college student..."
 
   SC-045:
     name: "Conflict and Tension Within Exchanges"
@@ -2176,6 +2210,13 @@ criteria:
     measures: "Whether descriptive passages are colored by the observing character's psychology, knowledge, emotional state, and sensory priorities rather than delivered from a neutral omniscient camera."
     score_0: "Description reads as a neutral camera recording—an impartial inventory of details with no trace of a perceiving consciousness. Any character could be looking at this scene and the description would be identical. The POV character's personality, emotion, and knowledge do not color what is noticed or how it is described."
     score_5: "Every descriptive detail reveals the perceiving character—what they notice (and don't notice), the language they use to process it, the emotional valence they assign to it, and the associations it triggers for them. Different characters would describe the same scene differently. Description is simultaneously world-building and characterization."
+    examples:
+      - author: "Raymond Chandler"
+        work: "The Big Sleep"
+        passage: "The air was thick, wet, steamy and larded with the cloying smell of tropical orchids in bloom... The plants filled the place, a forest of them, with nasty meaty leaves and stalks like the newly washed fingers of dead men."
+      - author: "Joan Didion"
+        work: "Play It As It Lays"
+        passage: "She drove it as a riverman runs a river, every day more attuned to its currents, its deceptions, and just as a riverman feels the pull of the rapids in the lull between sleeping and waking, so Maria lay at night in the still of Beverly Hills and saw the great signs soar overhead at seventy miles an hour."
 
   SC-057:
     name: "Description Pacing and Proportion"
@@ -2230,6 +2271,13 @@ criteria:
     measures: "Whether dialogue attribution is handled with invisible, purposeful tags that serve the scene rather than drawing attention to themselves through overuse of creative verbs, adverbs, or said-bookisms."
     score_0: "Dialogue tags are ornate (\"he exclaimed,\" \"she retorted,\" \"he opined gravely\"), drawing constant attention to the attribution rather than the dialogue. Adverbs prop up weak dialogue (\"she said angrily\"). Physical impossibilities are used as tags (\"she laughed,\" \"he smiled\" as speech verbs). Every line has a tag even when the speaker is obvious. The tags constitute \"telling\" rather than showing."
     score_5: "Attribution is invisible. \"Said\" and \"asked\" predominate, functioning like punctuation readers skip. Tags appear only when needed for speaker clarity. Action beats replace many tags, simultaneously identifying the speaker and adding characterization or subtext. No adverbs modify \"said.\" No physical impossibilities are used as speech verbs. Tag placement varies for rhythm. Some exchanges run without any attribution, relying on turn-taking and voice distinction."
+    examples:
+      - author: "Elmore Leonard"
+        work: "Out of Sight"
+        passage: "\"You make eye contact without meaning to.\" \"And for a few moments,\" Foley said, \"there's a kind of recognition.\" \"Or once,\" Karen said."
+      - author: "Richard Price"
+        work: "Lush Life"
+        passage: "\"You're him, OK? Now... The guy shot your friend, knows you're the only eyewitness. Wouldn't you be worried that that guy might be coming back to tie up loose ends?\" ... \"Don't do this to yourself,\" Matty said."
 
   SC-067:
     name: "Dialogue-Action Integration (Beats)"
@@ -2410,6 +2458,13 @@ criteria:
     measures: "Whether metaphors, similes, and other figurative language are fresh, surprising, and contextually appropriate rather than clichéd or generic."
     score_0: "Figurative language consists entirely of clichés (\"heart of gold,\" \"cold as ice,\" \"tears fell like rain\"), dead metaphors, or stock comparisons that add no new perception. Metaphors are interchangeable with any other scene."
     score_5: "Every metaphor or simile creates a surprising but apt connection that illuminates something specific about this moment, character, or situation. Figurative language is contextually grounded (thematically coherent with setting, character, genre) and reveals something that literal description could not. The reader sees the subject newly through the comparison."
+    examples:
+      - author: "Raymond Chandler"
+        work: "Farewell, My Lovely"
+        passage: "He was a big man but not more than six feet five inches tall and not wider than a beer truck... Even on Central Avenue, not the quietest dressed street in the world, he looked about as inconspicuous as a tarantula on a slice of angel food."
+      - author: "Vladimir Nabokov"
+        work: "Lolita"
+        passage: "Lolita, light of my life, fire of my loins. My sin, my soul. Lo-lee-ta: the tip of the tongue taking a trip of three steps down the palate to tap, at three, on the teeth."
 
   SC-103:
     name: "Figurative Language Quality"
@@ -3118,6 +3173,16 @@ criteria:
     measures: "Whether the prose varies sentence length, structure, and opening patterns to create natural rhythm and avoid monotony — mixing short punchy sentences with longer flowing ones, varying sentence openers, and matching rhythm to emotional content."
     score_0: "Sentences are monotonously uniform in length, structure, or opening pattern. Multiple consecutive sentences begin with the same word or pattern (e.g., \"She... She... She...\" or \"He walked... He turned... He looked...\"). Long passages lack any short sentences, or vice versa. No relationship between sentence rhythm and emotional content."
     score_5: "Sentence length varies naturally. Short sentences appear at moments of impact, tension, or revelation. Longer sentences unfold during reflection or description. Sentence openers are varied (subjects, prepositional phrases, participial phrases, adverbial clauses). The rhythm matches the scene's emotional register."
+    examples:
+      - author: "Toni Morrison"
+        work: "Beloved"
+        passage: "124 WAS SPITEFUL. Full of a baby's venom. The women in the house knew it and so did the children."
+      - author: "Cormac McCarthy"
+        work: "The Road"
+        passage: "When he woke in the woods in the dark and the cold of the night he'd reach out to touch the child sleeping beside him. Nights dark beyond darkness and the days more gray each one than what had gone before. Like the onset of some cold glaucoma dimming away the world."
+      - author: "Virginia Woolf"
+        work: "Mrs Dalloway"
+        passage: "Mrs. Dalloway said she would buy the flowers herself. For Lucy had her work cut out for her. The doors would be taken off their hinges; Rumpelmayer's men were coming. And then, thought Clarissa Dalloway, what a morning -- fresh as if issued to children on a beach. What a lark! What a plunge!"
 
   SC-236:
     name: "Sequel (Reaction) Quality"
@@ -3244,6 +3309,16 @@ criteria:
     measures: "Whether tension is created through what goes unsaid — the gap between surface dialogue/action and underlying emotional reality."
     score_0: "Everything is stated explicitly; characters say exactly what they mean; there is no gap between surface and depth; dialogue functions purely as information delivery."
     score_5: "Tension lies between the saying, thinking, and doing; characters are riddled with conflict between what they express and what they feel; scenes function on multiple levels simultaneously; the most important information is communicated through implication."
+    examples:
+      - author: "Ernest Hemingway"
+        work: "Hills Like White Elephants"
+        passage: "\"It's really an awfully simple operation, Jig,\" the man said. \"It's not really an operation at all.\" The girl looked at the ground the table legs rested on. \"I know you wouldn't mind it, Jig. It's really not anything. It's just to let the air in.\" The girl did not say anything."
+      - author: "Kazuo Ishiguro"
+        work: "The Remains of the Day"
+        passage: "\"But that doesn't mean to say, of course, there aren't occasions now and then -- extremely desolate occasions -- when you think to yourself: 'What a terrible mistake I've made with my life.'\" [Stevens narrates:] \"Indeed -- why should I not admit it? -- at that moment, my heart was breaking.\""
+      - author: "Raymond Carver"
+        work: "Cathedral"
+        passage: "My eyes were still closed. I was in my house. I knew that. But I didn't feel like I was inside anything. \"It's really something,\" I said."
 
   SC-260:
     name: "Subtext as Pacing Lubricant"
@@ -3442,6 +3517,16 @@ criteria:
     measures: "Whether the prose adopts the classic prose stance of presenting observations to an equal rather than lecturing down, performing expertise, or hedging anxiously — creating what Thomas and Turner call 'classic joint attention' where writer and reader contemplate a subject together."
     score_0: "The prose adopts an inappropriate relational stance. The writer lectures the reader as a student, hedges every observation with anxiety markers ('it seems,' 'perhaps,' 'one might argue'), or performs expertise to impress rather than communicate. The prose relationship between writer and reader is unequal — condescending, timid, or ostentatious."
     score_5: "The writer presents observations with quiet confidence, as if pointing something out to a companion. No hedging, no lecturing, no performing. Both writer and reader gaze through an undistorting window at the subject. Truth is presented as available to anyone paying attention. The reader is trusted as an intellectual equal. The prose achieves what Steven Pinker called 'the strongest cure' for enfeebled prose — brief, efficient, clear, and appearing as if it could have been written no other way."
+    examples:
+      - author: "George Orwell"
+        work: "Nineteen Eighty-Four"
+        passage: "It was a bright cold day in April, and the clocks were striking thirteen. Winston Smith, his chin nuzzled into his breast in an effort to escape the vile wind, slipped quickly through the glass doors of Victory Mansions, though not quickly enough to prevent a swirl of gritty dust from entering along with him."
+      - author: "John Cheever"
+        work: "The Swimmer"
+        passage: "It was one of those midsummer Sundays when everyone sits around saying, \"I drank too much last night.\" You might have heard it whispered by the parishioners leaving church, heard it from the lips of the priest himself, struggling with his cassock in the vestiarium."
+      - author: "Kazuo Ishiguro"
+        work: "Never Let Me Go"
+        passage: "My name is Kathy H. I'm thirty-one years old, and I've been a carer now for over eleven years. That sounds long enough, I know, but actually they want me to go on for another eight months, until the end of this year."
 
 sentinels:
   CS-001:
