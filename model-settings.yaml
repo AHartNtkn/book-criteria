@@ -10,7 +10,6 @@ fixing: haiku
 
 # Evaluation and extraction (criteria-based, mechanical)
 auditor: haiku
-consolidation: haiku
 context_collection: haiku
 backtracking: haiku
 

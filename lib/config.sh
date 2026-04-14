@@ -82,7 +82,7 @@ load_model_settings() {
 }
 
 # Get the model for a pipeline role.
-# Args: $1 = role (synthesis|planning|enhancement|fixing|auditor|consolidation|context_collection|backtracking|ideation)
+# Args: $1 = role (synthesis|planning|enhancement|fixing|auditor|context_collection|backtracking|ideation|ambition)
 # Returns: model flag string (e.g., "--model sonnet") or empty string for CLI default
 get_model_flag() {
     local role="$1"

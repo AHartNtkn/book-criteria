@@ -97,293 +97,115 @@ with open(passed_file, 'w') as f:
 " "$passed_items_file" <<< "$scores_json"
 }
 
-# Set by audit_refine_loop before calling run_auditors
+# Set by audit_refine_loop before calling run_audit_fix_cycle
 CURRENT_AUDIT_ROUND=0
 CURRENT_AUDIT_PREFIX=""
+CURRENT_PASSED_ITEMS_FILE=""
 
-# Run all auditors for a level in parallel using dynamic prompt assembly.
-# Sets: COMBINED_FEEDBACK (file path), COMBINED_SCORES (JSON string)
-# FATAL on any auditor failure.
-#
-# Args: $1 = level (novel_plan|chapter_plan|scene)
-#        $2 = content file being audited
-#        remaining args = KEY=FILE pairs for context
-run_auditors() {
-    local level="$1"
-    local content_file="$2"
-    shift 2
-    local context_args=("$@" "content=$content_file")
+# Run a single auditor and return its scores.
+# Args: $1 = auditor name, $2 = filled prompt file, $3 = output dir
+# Sets: AUDITOR_SCORES (JSON string), AUDITOR_FEEDBACK (file path)
+# Returns: 0 on success, 1 on failure
+run_single_auditor() {
+    local auditor_name="$1"
+    local filled_file="$2"
+    local auditor_out_dir="$3"
 
-    local auditor_names
-    auditor_names=$(get_auditors_for_level "$level")
+    local safe_name
+    safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
 
-    # Generate round-specific settings
-    local round_settings="$STATE_DIR/round-settings.yaml"
-    generate_round_settings "$round_settings"
+    local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
+    local scores_file="$auditor_out_dir/${safe_name}.scores.json"
+    local status_file="$auditor_out_dir/${safe_name}.status"
 
-    # Organized output: auditor-results/target/round-N/
-    local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
-    mkdir -p "$auditor_out_dir"
+    AUDITOR_FEEDBACK="$feedback_file"
+    AUDITOR_SCORES=""
 
-    COMBINED_FEEDBACK="$auditor_out_dir/combined-feedback.txt"
-    COMBINED_SCORES='{"criteria":{},"sentinels":{}}'
-    > "$COMBINED_FEEDBACK"
+    step_start "audit-${safe_name}" "Auditor: $auditor_name"
 
-    # Phase 1: Assemble prompts and identify active auditors (sequential, fast)
-    local active_auditors=()
-    local resumed_auditors=()
-    local skipped=0
-    local resumed=0
-    while IFS= read -r auditor_name; do
-        [[ -z "$auditor_name" ]] && continue
-
-        local safe_name
-        safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
-
-        # Skip auditors that already completed in this round (mid-round resume)
-        local existing_status="$auditor_out_dir/${safe_name}.status"
-        if [[ -f "$existing_status" && "$(cat "$existing_status")" == "OK" ]]; then
-            echo "    Already done: $auditor_name (resuming)" >&2
-            resumed=$((resumed + 1))
-            # Still need to include in active_auditors for merge phase
-            resumed_auditors+=("$safe_name|$auditor_name")
-            continue
-        fi
-
-        local prompt_file="$auditor_out_dir/${safe_name}.prompt.md"
-
-        if ! python3 "$PROJECT_DIR/assemble_auditor.py" "$auditor_name" \
-                --settings "$round_settings" \
-                > "$prompt_file" 2>/dev/null; then
-            echo "WARNING: Could not assemble auditor '$auditor_name'" >&2
-            continue
-        fi
-
-        # Skip auditors with no remaining active criteria/sentinels
-        if grep -q "No active criteria" "$prompt_file" && \
-           grep -q "No active sentinels" "$prompt_file"; then
-            skipped=$((skipped + 1))
-            continue
-        fi
-
-        # Fill context placeholders
-        local filled_file="$auditor_out_dir/${safe_name}.filled.md"
-        python3 "$PROJECT_DIR/fill_template.py" "$prompt_file" \
-            "${context_args[@]}" > "$filled_file"
-
-        active_auditors+=("$safe_name|$auditor_name")
-    done <<< "$auditor_names"
-
-    local total=${#active_auditors[@]}
-    local status_parts=()
-    [[ "$total" -gt 0 ]] && status_parts+=("$total to run")
-    [[ "$resumed" -gt 0 ]] && status_parts+=("$resumed already done")
-    [[ "$skipped" -gt 0 ]] && status_parts+=("$skipped skipped (all criteria passed)")
-    echo "  Auditors: $(IFS=', '; echo "${status_parts[*]}")" >&2
-
-    if [[ "$total" -eq 0 && "$resumed" -eq 0 ]]; then
-        echo "  All criteria/sentinels passed in previous rounds." >&2
-        return
-    fi
-
-    # Phase 2: Run auditors in parallel, maintaining AUDITOR_BATCH_SIZE concurrent.
-    # Uses `wait -n` to wait for any one job to finish before launching next.
-    # Fail-fast: if any auditor fails, kill remaining jobs and exit immediately.
-    # Completed (OK) auditors survive in status files for resume on restart.
-    local running=0
-    for entry in "${active_auditors[@]}"; do
-        if [[ "$running" -ge "$AUDITOR_BATCH_SIZE" ]]; then
-            local wait_rc=0
-            wait -n || wait_rc=$?
-            running=$((running - 1))
-            if [[ "$wait_rc" -ne 0 ]]; then
-                echo "FATAL: An auditor failed. Killing remaining jobs." >&2
-                kill $(jobs -p) 2>/dev/null
-                wait 2>/dev/null
-                # Report which auditor(s) failed
-                for chk in "${active_auditors[@]}"; do
-                    local chk_name="${chk%%|*}"
-                    local chk_display="${chk#*|}"
-                    local chk_status="$auditor_out_dir/${chk_name}.status"
-                    if [[ -f "$chk_status" && "$(cat "$chk_status")" != "OK" ]]; then
-                        echo "FATAL: Auditor '$chk_display' failed: $(cat "$chk_status")" >&2
-                    fi
-                done
-                exit 1
-            fi
-        fi
-
-        local safe_name="${entry%%|*}"
-        local auditor_name="${entry#*|}"
-        local filled_file="$auditor_out_dir/${safe_name}.filled.md"
-        local feedback_file="$auditor_out_dir/${safe_name}.feedback.txt"
-        local scores_file="$auditor_out_dir/${safe_name}.scores.json"
-        local status_file="$auditor_out_dir/${safe_name}.status"
-
-        echo "    Launched: $auditor_name" >&2
-        (
-            # Write status on exit — but only if we weren't killed by a signal
-            # (fail-fast kills siblings; they shouldn't write spurious status)
-            _auditor_killed=0
-            trap '_auditor_killed=1' TERM INT
-            trap 'if [[ "$_auditor_killed" -eq 0 && ! -f "$status_file" ]]; then echo "CRASHED: unexpected exit" > "$status_file"; fi' EXIT
-
-            step_start "audit-${safe_name}" "Auditor: $auditor_name"
-
-            # Auditor writes its analysis to the feedback file
-            local write_prompt="$(cat "$filled_file")
+    local write_prompt="$(cat "$filled_file")
 
 ---
 IMPORTANT: Write your complete analysis and JSON scores block to the file: ${feedback_file}
 Use the Write tool to create this file. Do not output your response as text — write it to the file.
 Do not write any other files. Do not use any other tools."
 
-            echo "$write_prompt" | claude -p - \
-                --tools "Read,Write" \
-                --dangerously-skip-permissions \
-                $(get_model_flag auditor) \
-                --output-format text \
-                > "$auditor_out_dir/${safe_name}.claude-stdout.txt" 2>&1
+    echo "$write_prompt" | claude -p - \
+        --tools "Read,Write" \
+        --dangerously-skip-permissions \
+        $(get_model_flag auditor) \
+        --output-format text \
+        > "$auditor_out_dir/${safe_name}.claude-stdout.txt" 2>&1
 
-            if [[ ! -f "$feedback_file" || ! -s "$feedback_file" ]]; then
-                # Fallback: model wrote to stdout instead of using Write tool
-                # Only use stdout if it looks like real output (>500 bytes, no error markers)
-                local stdout_file="$auditor_out_dir/${safe_name}.claude-stdout.txt"
-                local stdout_size=0
-                [[ -f "$stdout_file" ]] && stdout_size=$(wc -c < "$stdout_file")
-                if [[ "$stdout_size" -gt 500 ]] && ! head -1 "$stdout_file" | grep -qi "prompt is too long\|error\|fatal"; then
-                    cp "$stdout_file" "$feedback_file"
-                    echo "    (stdout fallback): $auditor_name" >&2
-                else
-                    echo "FAILED: output file not written" > "$status_file"
-                    echo "    FAILED: $auditor_name — no output (stdout: ${stdout_size} bytes)" >&2
-                    step_failed "audit-${safe_name}" "output file not written"
-                    exit 1
-                fi
-            fi
+    if [[ ! -f "$feedback_file" || ! -s "$feedback_file" ]]; then
+        # Fallback: model wrote to stdout instead of using Write tool
+        local stdout_file="$auditor_out_dir/${safe_name}.claude-stdout.txt"
+        local stdout_size=0
+        [[ -f "$stdout_file" ]] && stdout_size=$(wc -c < "$stdout_file")
+        if [[ "$stdout_size" -gt 500 ]] && ! head -1 "$stdout_file" | grep -qi "prompt is too long\|error\|fatal"; then
+            cp "$stdout_file" "$feedback_file"
+            echo "    (stdout fallback): $auditor_name" >&2
+        else
+            echo "FAILED: output file not written" > "$status_file"
+            echo "    FAILED: $auditor_name — no output (stdout: ${stdout_size} bytes)" >&2
+            step_failed "audit-${safe_name}" "output file not written"
+            return 1
+        fi
+    fi
 
-            # Prepend auditor name to feedback
-            local tmp_feedback
-            tmp_feedback=$(mktemp)
-            echo "--- Auditor: ${auditor_name} ---" > "$tmp_feedback"
-            cat "$feedback_file" >> "$tmp_feedback"
-            mv "$tmp_feedback" "$feedback_file"
+    # Prepend auditor name to feedback
+    local tmp_feedback
+    tmp_feedback=$(mktemp)
+    echo "--- Auditor: ${auditor_name} ---" > "$tmp_feedback"
+    cat "$feedback_file" >> "$tmp_feedback"
+    mv "$tmp_feedback" "$feedback_file"
 
-            # Extract scores from the feedback
-            local scores
-            scores=$(extract_scores < "$feedback_file" 2>/dev/null) || {
-                echo "FAILED: could not extract scores" > "$status_file"
-                step_failed "audit-${safe_name}" "could not extract scores"
-                exit 1
-            }
-            echo "$scores" > "$scores_file"
+    # Extract scores from the feedback
+    local scores
+    scores=$(extract_scores < "$feedback_file" 2>/dev/null) || {
+        echo "FAILED: could not extract scores" > "$status_file"
+        step_failed "audit-${safe_name}" "could not extract scores"
+        return 1
+    }
+    echo "$scores" > "$scores_file"
 
-            echo "OK" > "$status_file"
-            echo "    Done: $auditor_name" >&2
-            step_done "audit-${safe_name}" "$(echo "$scores" | python3 -c "
+    AUDITOR_SCORES="$scores"
+    echo "OK" > "$status_file"
+    echo "    Done: $auditor_name" >&2
+    step_done "audit-${safe_name}" "$(echo "$scores" | python3 -c "
 import json,sys
 d=json.load(sys.stdin)
 nc=len(d.get('criteria',{}))
 ns=len(d.get('sentinels',{}))
 print(f'{nc} criteria, {ns} sentinels scored')
 " 2>/dev/null)"
-        ) &
-        running=$((running + 1))
-    done
-    # Drain remaining jobs, fail-fast on any failure
-    while [[ "$running" -gt 0 ]]; do
-        local wait_rc=0
-        wait -n || wait_rc=$?
-        running=$((running - 1))
-        if [[ "$wait_rc" -ne 0 ]]; then
-            echo "FATAL: An auditor failed. Killing remaining jobs." >&2
-            kill $(jobs -p) 2>/dev/null
-            wait 2>/dev/null
-            for chk in "${active_auditors[@]}"; do
-                local chk_name="${chk%%|*}"
-                local chk_display="${chk#*|}"
-                local chk_status="$auditor_out_dir/${chk_name}.status"
-                if [[ -f "$chk_status" && "$(cat "$chk_status")" != "OK" ]]; then
-                    echo "FATAL: Auditor '$chk_display' failed: $(cat "$chk_status")" >&2
-                fi
-            done
-            exit 1
-        fi
-    done
-
-    # All auditors succeeded — merge results (both newly run and resumed)
-    # Concatenate feedback files
-    for fb in "$auditor_out_dir"/*.feedback.txt; do
-        if [[ -f "$fb" && -s "$fb" ]]; then
-            printf '\n\n' >> "$COMBINED_FEEDBACK"
-            cat "$fb" >> "$COMBINED_FEEDBACK"
-        fi
-    done
-
-    # Merge all score files in one Python call (avoids bash JSON corruption)
-    COMBINED_SCORES=$(python3 -c "
-import json, os, sys, glob
-
-scores_dir = sys.argv[1]
-merged = {'criteria': {}, 'sentinels': {}}
-for f in sorted(glob.glob(os.path.join(scores_dir, '*.scores.json'))):
-    with open(f) as fh:
-        data = json.load(fh)
-    merged['criteria'].update(data.get('criteria', {}))
-    merged['sentinels'].update(data.get('sentinels', {}))
-print(json.dumps(merged))
-" "$auditor_out_dir")
-
-    # Record passing items from the merged scores
-    record_passing_items "$COMBINED_SCORES"
-
-    echo "  All auditors complete ($total new + $resumed resumed)." >&2
+    return 0
 }
 
-# Run one consolidation batch.
-# Args: $1 = auditor output dir, $2 = output file, remaining = feedback file paths
-run_consolidation_batch() {
-    local auditor_out_dir="$1"
-    local output_file="$2"
-    shift 2
-    local feedback_files=("$@")
-
-    # Build file list for the consolidator to Read
-    local list_file
-    list_file=$(mktemp)
-    for fb in "${feedback_files[@]}"; do
-        echo "- $fb" >> "$list_file"
-    done
-
-    local consolidate_prompt
-    consolidate_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
-        "$PROJECT_DIR/prompts/consolidate-feedback.md" \
-        "feedback_file_list=$list_file")
-    rm -f "$list_file"
-
-    consolidate_prompt="${consolidate_prompt}
-
----
-IMPORTANT: Write your consolidated feedback to the file: ${output_file}
-Use the Write tool to create this file. Read each feedback file listed above using the Read tool."
-
-    echo "$consolidate_prompt" | claude -p - \
-        --tools "Read,Write" \
-        --dangerously-skip-permissions \
-        $(get_model_flag consolidation) \
-        --output-format text \
-        > "$auditor_out_dir/consolidate-stdout.txt" 2>&1
-
-    # Stdout fallback — only if content looks real (>500 bytes, no error markers)
-    if [[ ! -f "$output_file" || ! -s "$output_file" ]]; then
-        local consol_stdout="$auditor_out_dir/consolidate-stdout.txt"
-        local consol_size=0
-        [[ -f "$consol_stdout" ]] && consol_size=$(wc -c < "$consol_stdout")
-        if [[ "$consol_size" -gt 500 ]] && ! head -1 "$consol_stdout" | grep -qi "prompt is too long\|error\|fatal"; then
-            cp "$consol_stdout" "$output_file"
-            echo "  (stdout fallback for consolidation)" >&2
-        fi
-    fi
+# Check if an auditor's scores require a fix (any criteria < 4 or sentinels FAIL)
+auditor_needs_fix() {
+    local scores_json="$1"
+    python3 -c "
+import json, sys
+scores = json.loads(sys.stdin.read())
+needs_fix = False
+for name, data in scores.get('criteria', {}).items():
+    score = data.get('score', 0)
+    if score == 'N/A' or score == 'n/a':
+        continue
+    if isinstance(score, str):
+        try: score = int(score)
+        except ValueError: continue
+    if score < 4:
+        needs_fix = True
+        break
+if not needs_fix:
+    for name, data in scores.get('sentinels', {}).items():
+        if data.get('status', 'FAIL') != 'PASS':
+            needs_fix = True
+            break
+print('FIX' if needs_fix else 'PASS')
+" <<< "$scores_json"
 }
 
 # Run the enhancement agent for a level.
@@ -483,143 +305,129 @@ audit_refine_loop() {
         update_state "refinement_round" "$round"
         update_state "status" '"auditing"'
 
-        # Set context for run_auditors directory structure
         CURRENT_AUDIT_ROUND=$round
         CURRENT_AUDIT_PREFIX=$log_prefix
 
-        # Run auditors — FATAL on any failure (exits the pipeline)
-        run_auditors "$level" "$content_file" "${context_args[@]}"
-        log_scores "$log_prefix" "$round" "$COMBINED_SCORES"
+        local auditor_out_dir="$STATE_DIR/auditor-results/${log_prefix}/round-${round}"
+        mkdir -p "$auditor_out_dir"
 
-        # Consolidate audit feedback (deduplicate across auditors)
-        local auditor_out_dir="$STATE_DIR/auditor-results/${CURRENT_AUDIT_PREFIX}/round-${CURRENT_AUDIT_ROUND}"
-        local consolidated_feedback="$auditor_out_dir/consolidated-feedback.md"
+        # Generate round-specific settings (disables already-passed criteria)
+        local round_settings="$STATE_DIR/round-settings.yaml"
+        generate_round_settings "$round_settings"
 
-        if [[ -f "$consolidated_feedback" && -s "$consolidated_feedback" ]]; then
-            echo "  Consolidated feedback exists ($(wc -c < "$consolidated_feedback") bytes), skipping." >&2
-        else
-            echo "  Consolidating audit feedback..." >&2
+        local auditor_names
+        auditor_names=$(get_auditors_for_level "$level")
 
-            # Collect all feedback files
-            local all_feedback=()
-            for fb in "$auditor_out_dir"/*.feedback.txt; do
-                if [[ -f "$fb" && -s "$fb" ]]; then
-                    all_feedback+=("$fb")
+        local any_fix_applied=0
+        local all_passed=1
+
+        # Sequential: for each auditor, audit then fix if needed
+        while IFS= read -r auditor_name; do
+            [[ -z "$auditor_name" ]] && continue
+
+            local safe_name
+            safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
+
+            # Skip if already done in this round (resume)
+            local existing_status="$auditor_out_dir/${safe_name}.status"
+            if [[ -f "$existing_status" && "$(cat "$existing_status")" == "OK" ]]; then
+                echo "    Already done: $auditor_name (resuming)" >&2
+                # Still check if it needed a fix (load scores)
+                local prev_scores_file="$auditor_out_dir/${safe_name}.scores.json"
+                if [[ -f "$prev_scores_file" ]]; then
+                    local prev_result
+                    prev_result=$(auditor_needs_fix "$(cat "$prev_scores_file")")
+                    if [[ "$prev_result" == "FIX" ]]; then
+                        all_passed=0
+                    fi
                 fi
-            done
+                continue
+            fi
 
-            local batch_size=20
-            local num_files=${#all_feedback[@]}
+            # Assemble auditor prompt
+            local prompt_file="$auditor_out_dir/${safe_name}.prompt.md"
+            if ! python3 "$PROJECT_DIR/assemble_auditor.py" "$auditor_name" \
+                    --settings "$round_settings" \
+                    > "$prompt_file" 2>/dev/null; then
+                echo "WARNING: Could not assemble auditor '$auditor_name'" >&2
+                continue
+            fi
 
-            if [[ "$num_files" -le "$batch_size" ]]; then
-                # Single batch — consolidate directly
-                run_consolidation_batch "$auditor_out_dir" "$consolidated_feedback" "${all_feedback[@]}"
-            else
-                # Multiple batches — consolidate in parallel groups, then merge
-                local batch_idx=0
-                local batch_outputs=()
-                local batch_pids=()
-                local i=0
-                while [[ "$i" -lt "$num_files" ]]; do
-                    batch_idx=$((batch_idx + 1))
-                    local batch_files=("${all_feedback[@]:$i:$batch_size}")
-                    local batch_output="$auditor_out_dir/consolidated-batch-${batch_idx}.md"
-                    batch_outputs+=("$batch_output")
+            # Skip auditors with no remaining active criteria/sentinels
+            if grep -q "No active criteria" "$prompt_file" && \
+               grep -q "No active sentinels" "$prompt_file"; then
+                continue
+            fi
 
-                    echo "  Consolidation batch $batch_idx (${#batch_files[@]} files)..." >&2
-                    run_consolidation_batch "$auditor_out_dir" "$batch_output" "${batch_files[@]}" &
-                    batch_pids+=($!)
-                    i=$((i + batch_size))
-                done
+            # Fill context placeholders (content_file may have been updated by previous fix)
+            local filled_file="$auditor_out_dir/${safe_name}.filled.md"
+            python3 "$PROJECT_DIR/fill_template.py" "$prompt_file" \
+                "${context_args[@]}" "content=$content_file" > "$filled_file"
 
-                # Wait for all batches
-                local batch_failed=0
-                for pid in "${batch_pids[@]}"; do
-                    wait "$pid" || batch_failed=1
-                done
+            # Run the auditor
+            echo "  Auditing: $auditor_name" >&2
+            if ! run_single_auditor "$auditor_name" "$filled_file" "$auditor_out_dir"; then
+                echo "FATAL: Auditor '$auditor_name' failed." >&2
+                exit 1
+            fi
 
-                if [[ "$batch_failed" -eq 1 ]]; then
-                    echo "FATAL: A consolidation batch failed. Stopping pipeline." >&2
+            # Record passing items
+            record_passing_items "$AUDITOR_SCORES"
+
+            # Check if this auditor's scores require a fix
+            local fix_needed
+            fix_needed=$(auditor_needs_fix "$AUDITOR_SCORES")
+
+            if [[ "$fix_needed" == "FIX" ]]; then
+                all_passed=0
+                echo "    Fixing for: $auditor_name" >&2
+
+                log_snapshot "pre-fix-${safe_name}-round-${round}" "$content_file"
+
+                local assembled
+                assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+                    "${context_args[@]}" \
+                    "audit_feedback=$AUDITOR_FEEDBACK")
+
+                run_claude_to_file "fix-${safe_name}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
+
+                # Check for deletion recommendation
+                if [[ -f "$content_file" ]] && head -5 "$content_file" | grep -q "^RECOMMENDATION: DELETE"; then
+                    echo "FIXER RECOMMENDS DELETION" >&2
+                    cp "$content_file" "$STATE_DIR/delete-recommendation.txt"
+                    return 2
+                fi
+
+                # Verify fixer produced output
+                if [[ ! -f "$content_file" || ! -s "$content_file" ]]; then
+                    echo "FATAL: Fixer produced no output. Stopping pipeline." >&2
+                    local snapshot_dir="$LOG_DIR/snapshots"
+                    local latest_snapshot
+                    latest_snapshot=$(ls -t "$snapshot_dir"/*"$(basename "$content_file")" 2>/dev/null | head -1)
+                    if [[ -n "$latest_snapshot" ]]; then
+                        cp "$latest_snapshot" "$content_file"
+                        echo "  Restored from snapshot: $latest_snapshot" >&2
+                    fi
                     exit 1
                 fi
 
-                # Verify all batch outputs exist
-                for bo in "${batch_outputs[@]}"; do
-                    if [[ ! -f "$bo" || ! -s "$bo" ]]; then
-                        echo "FATAL: Consolidation batch output missing: $bo" >&2
-                        exit 1
-                    fi
-                done
+                any_fix_applied=1
 
-                # Final merge of batch outputs
-                echo "  Merging $batch_idx consolidation batches..." >&2
-                run_consolidation_batch "$auditor_out_dir" "$consolidated_feedback" "${batch_outputs[@]}"
+                # Regenerate round settings (newly passed items should be skipped)
+                generate_round_settings "$round_settings"
             fi
+        done <<< "$auditor_names"
 
-            if [[ ! -f "$consolidated_feedback" || ! -s "$consolidated_feedback" ]]; then
-                echo "FATAL: Consolidation failed — no output produced. Stopping pipeline." >&2
-                exit 1
-            fi
-        fi
-
-        # Check pass conditions
-        local criteria_ok sentinel_ok
-        criteria_ok=$(check_criteria_passing "$COMBINED_SCORES" 4 2>/dev/null)
-        sentinel_ok=$(check_sentinels_passing "$COMBINED_SCORES" 2>/dev/null)
-
-        if [[ "$criteria_ok" == "PASS" ]] && [[ "$sentinel_ok" == "PASS" ]]; then
+        if [[ "$all_passed" -eq 1 ]]; then
             echo "PASS: All criteria >= 4, all sentinels pass (round $round)" >&2
             update_state "status" '"passed"'
             return 0
         fi
 
-        # Run enhancement (separate from audit feedback)
+        # Run enhancement once per round (after all auditors)
         local enhancement_file="$auditor_out_dir/enhancements.md"
-        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
-            echo "  Enhancement exists ($(wc -c < "$enhancement_file") bytes), skipping." >&2
-        else
+        if [[ ! -f "$enhancement_file" || ! -s "$enhancement_file" ]]; then
             run_enhancement "$level" "$enhancement_file" "${context_args[@]}"
-        fi
-
-        # Append enhancement suggestions to consolidated feedback for the fixer (only once)
-        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]] && ! grep -q "ENHANCEMENT OPPORTUNITIES" "$consolidated_feedback" 2>/dev/null; then
-            printf '\n\n=== ENHANCEMENT OPPORTUNITIES ===\n' >> "$consolidated_feedback"
-            printf 'The following are not problems to fix, but opportunities to elevate the work.\n' >> "$consolidated_feedback"
-            printf 'Consider pursuing any that would significantly improve quality without destabilizing what works.\n\n' >> "$consolidated_feedback"
-            cat "$enhancement_file" >> "$consolidated_feedback"
-        fi
-
-        # Run fixer with consolidated audit feedback + enhancement suggestions
-        echo "Fixing (round $round)..." >&2
-        update_state "status" '"fixing"'
-
-        log_snapshot "pre-fix-round-${round}" "$content_file"
-
-        local assembled
-        assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
-            "${context_args[@]}" \
-            "audit_feedback=$consolidated_feedback")
-
-        run_claude_to_file "fix-${level}-round-${round}" "$assembled" "$content_file" "$(get_model_flag fixing)"
-
-        # Check for deletion recommendation
-        if [[ -f "$content_file" ]] && head -5 "$content_file" | grep -q "^RECOMMENDATION: DELETE"; then
-            echo "FIXER RECOMMENDS DELETION" >&2
-            cp "$content_file" "$STATE_DIR/delete-recommendation.txt"
-            return 2
-        fi
-
-        # Verify fixer produced output
-        if [[ ! -f "$content_file" || ! -s "$content_file" ]]; then
-            echo "FATAL: Fixer produced no output for round $round. Stopping pipeline." >&2
-            local snapshot_dir="$LOG_DIR/snapshots"
-            local latest_snapshot
-            latest_snapshot=$(ls -t "$snapshot_dir"/*"$(basename "$content_file")" 2>/dev/null | head -1)
-            if [[ -n "$latest_snapshot" ]]; then
-                cp "$latest_snapshot" "$content_file"
-                echo "  Restored from snapshot: $latest_snapshot" >&2
-            fi
-            exit 1
         fi
 
         update_state "status" '"fixed"'
