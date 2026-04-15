@@ -311,12 +311,32 @@ audit_refine_loop() {
         local auditor_out_dir="$STATE_DIR/auditor-results/${log_prefix}/round-${round}"
         mkdir -p "$auditor_out_dir"
 
-        # Generate round-specific settings (disables already-passed criteria)
-        local round_settings="$STATE_DIR/round-settings.yaml"
-        generate_round_settings "$round_settings"
+        # Use base settings (all active criteria evaluated every round)
+        local round_settings="$PROJECT_DIR/criteria-settings.yaml"
 
         local auditor_names
         auditor_names=$(get_auditors_for_level "$level")
+
+        # Build set of Phase 2 (prose refinement) auditor names from config
+        # Everything after "Phase 2: Prose Refinement" comment is prose phase
+        local prose_auditors
+        prose_auditors=$(python3 -c "
+import sys
+in_phase2 = False
+with open(sys.argv[1]) as f:
+    for line in f:
+        if 'Phase 2: Prose Refinement' in line:
+            in_phase2 = True
+            continue
+        if in_phase2 and ('Chapter-Plan' in line or 'Novel-Plan' in line or 'chapter_plan' in line or 'novel_plan' in line):
+            break
+        if in_phase2:
+            stripped = line.strip()
+            if stripped.startswith('- name:'):
+                name = stripped.split('\"')[1] if '\"' in stripped else ''
+                if name:
+                    print(name)
+" "$PROJECT_DIR/auditor-config.yaml" 2>/dev/null)
 
         local any_fix_applied=0
         local all_passed=1
@@ -371,8 +391,6 @@ audit_refine_loop() {
                 exit 1
             fi
 
-            # Record passing items
-            record_passing_items "$AUDITOR_SCORES"
 
             # Check if this auditor's scores require a fix
             local fix_needed
@@ -380,12 +398,25 @@ audit_refine_loop() {
 
             if [[ "$fix_needed" == "FIX" ]]; then
                 all_passed=0
-                echo "    Fixing for: $auditor_name" >&2
+
+                # Select fix prompt based on phase
+                local active_fixer="$fixer_prompt"
+                if echo "$prose_auditors" | grep -qF "$auditor_name"; then
+                    local prose_fixer="${fixer_prompt%.md}-prose.md"
+                    if [[ -f "$prose_fixer" ]]; then
+                        active_fixer="$prose_fixer"
+                        echo "    Fixing (prose): $auditor_name" >&2
+                    else
+                        echo "    Fixing for: $auditor_name" >&2
+                    fi
+                else
+                    echo "    Fixing for: $auditor_name" >&2
+                fi
 
                 log_snapshot "pre-fix-${safe_name}-round-${round}" "$content_file"
 
                 local assembled
-                assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+                assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$active_fixer" \
                     "${context_args[@]}" \
                     "audit_feedback=$AUDITOR_FEEDBACK")
 
@@ -413,8 +444,6 @@ audit_refine_loop() {
 
                 any_fix_applied=1
 
-                # Regenerate round settings (newly passed items should be skipped)
-                generate_round_settings "$round_settings"
             fi
         done <<< "$auditor_names"
 

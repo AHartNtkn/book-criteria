@@ -3,50 +3,591 @@ auditors:
   # Scene-Level Auditors
   # ============================================================
 
-  - name: "Grammar and Mechanical Correctness"
+  # ── Phase 1: Content Auditors (can restructure, add, remove) ──
+
+  - name: "Scene Structure and Dramatic Shape"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-111
+      - SC-182
+      - SC-208
+      - SC-210
+      - SC-211
+      - SC-212
+      - SC-213
+      - SC-214
+      - SC-215
+      - SC-220
+      - SC-221
+      - SC-236
+      - ML-035
+      - ML-076
+    sentinels:
+      - SS-073
+      - SS-082
+      - SS-090
+      - SS-100
+      - SS-106
+      - SS-114
+      - SS-164
+      - SS-172
+
+  - name: "Scene Polarity, Turns, and Value Shifts"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - ML-083
+    sentinels:
+      - SS-147
+      - SS-190
+      - SS-200
+      - SS-275
+      - SS-276
+      - SS-284
+      - SS-285
+      - ML-090
+
+  - name: "Scene-Level Plot Mechanics"
+    level: scene
+    context: [scene, chapter_plan, relevant_context]
+    criteria:
+      - ML-004
+    sentinels:
+      - ML-037
+
+  - name: "Scene-Level Character Dynamics"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - ML-068
+      - ML-084
+      - ML-088
+      - SC-196
+    sentinels:
+      - SS-321
+      - SS-328
+      - SS-186
+      - ML-094
+      - ML-095
+      - ML-097
+
+  - name: "Exposition Handling and Information Delivery"
     level: scene
     context: [scene]
     criteria:
-      - SC-005
-      - SC-042
-      - SC-117
-      - SC-173
-      - SC-189
-      - SC-230
-      - SC-250
-      - SC-255
-      - SC-271
-      - SC-053
+      - SC-013
+      - SC-073
+      - SC-095
+      - SC-096
+      - SC-125
+      - SC-141
+      - SC-183
+      - SC-260
+      - SC-288
+      - SC-297
     sentinels:
-      - SS-048
-      - SS-059
-      - SS-133
-      - SS-195
-      - SS-268
+      - SS-101
+      - SS-110
+      - SS-131
+      - SS-157
+      - SS-162
+      - SS-188
+      - SS-192
+      - SS-286
+      - SS-327
+      - SS-301
 
-  - name: "Punctuation and Formatting Consistency"
+  - name: "Scene-Level Subtext, Theme, and Irony"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-262
+      - SC-276
+      - SC-278
+    sentinels:
+      - ML-023
+      - ML-045
+      - SS-033
+      - SS-056
+      - SS-096
+      - SS-306
+      - SS-067
+
+  - name: "Scene Transition and Backstory Integration"
     level: scene
     context: [scene, preceding_scenes]
     criteria:
-      - SC-025
-      - SC-046
-      - SC-062
-      - SC-078
-      - SC-079
-      - SC-121
-      - SC-133
-      - SC-157
-      - SC-192
-      - SC-209
-      - SC-296
-      - ML-008
+      - SC-216
+      - SC-217
+      - SC-219
+      - SC-274
+      - SC-280
+      - SC-281
+      - ML-077
     sentinels:
-      - SS-077
-      - SS-078
-      - SS-081
-      - SS-169
-      - SS-241
-      - SS-317
+      - SS-047
+      - SS-166
+
+  - name: "Pacing — Macro-Rhythm and Tempo Control"
+    level: scene
+    context: [scene, preceding_scenes, chapter_plan]
+    criteria:
+      - SC-001
+      - SC-014
+      - SC-115
+      - SC-126
+      - SC-170
+      - SC-218
+      - SC-269
+    sentinels:
+      - SS-071
+      - SS-072
+      - SS-093
+      - SS-158
+      - SS-167
+      - SS-173
+
+  - name: "Character Interiority and Psychological Depth"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - SC-030
+      - SC-032
+      - SC-130
+      - SC-197
+      - ML-066
+      - ML-069
+      - ML-079
+      - ML-103
+    sentinels:
+      - SS-180
+      - SS-287
+      - ML-093
+      - ML-098
+      - ML-100
+
+  - name: "Emotional Rendering Craft"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-021
+      - SC-081
+      - SC-084
+      - SC-085
+      - SC-086
+      - SC-193
+      - SC-238
+      - SC-239
+      - SC-241
+      - SC-187
+    sentinels:
+      - SS-053
+      - SS-055
+      - SS-083
+      - SS-095
+      - SS-132
+      - SS-151
+      - SS-187
+      - SS-299
+
+  - name: "Emotional Tone and Positivity Bias"
+    level: scene
+    context: [scene, preceding_scenes]
+    criteria:
+      - SC-088
+      - SC-145
+      - ML-053
+    sentinels:
+      - SS-040
+      - SS-082
+      - SS-086
+      - SS-087
+      - SS-088
+      - SS-112
+      - SS-123
+      - SS-126
+      - SS-148
+      - SS-152
+      - SS-177
+      - SS-206
+      - SS-253
+      - ML-055
+
+  - name: "Reader Engagement and Immersion"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-031
+      - SC-052
+      - SC-090
+      - SC-100
+      - SC-142
+      - SC-151
+      - SC-198
+      - SC-251
+      - SC-286
+      - SC-290
+      - ML-046
+    sentinels:
+      - SS-031
+      - SS-074
+      - SS-075
+      - SS-122
+      - SS-137
+      - SS-222
+
+  - name: "Reader Emotion and Engagement Mechanics"
+    level: scene
+    context: [scene]
+    criteria:
+      - ML-073
+      - ML-085
+      - ML-086
+      - ML-127
+    sentinels:
+      - SS-197
+      - SS-278
+      - SS-291
+      - SS-293
+      - SS-294
+      - SS-305
+      - SS-307
+
+  - name: "POV Consistency and Discipline"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-110
+      - SC-116
+      - SC-119
+      - SC-162
+      - SC-163
+      - SC-164
+      - SC-165
+      - SC-166
+      - SC-167
+      - SC-169
+      - SC-180
+      - SC-272
+      - SC-273
+      - ML-022
+    sentinels:
+      - SS-010
+      - SS-120
+      - SS-242
+
+  - name: "POV Techniques and Narrative Distance"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-009
+      - SC-010
+      - SC-011
+      - SC-047
+      - SC-104
+      - SC-105
+      - SC-107
+      - SC-112
+      - SC-128
+      - SC-148
+      - SC-150
+      - SC-188
+      - SC-204
+      - SC-242
+    sentinels:
+      - SS-030
+      - SS-032
+      - SS-046
+      - SS-099
+      - SS-102
+      - SS-150
+
+  - name: "Specialized Narration Modes"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-072
+      - SC-092
+      - SC-129
+      - SC-153
+      - SC-160
+      - SC-222
+      - SC-252
+      - SC-287
+    sentinels:
+      - SS-136
+      - SS-174
+
+  - name: "Continuity — Factual Details and Physical Logic"
+    level: scene
+    context: [scene, relevant_context, preceding_scenes]
+    criteria:
+      - SC-004
+      - SC-033
+      - SC-043
+      - SC-098
+      - SC-099
+      - SC-123
+      - SC-248
+      - SC-282
+    sentinels:
+      - SS-049
+      - SS-060
+      - SS-063
+      - SS-085
+      - SS-118
+      - SS-130
+      - SS-145
+      - SS-163
+      - SS-176
+      - SS-311
+
+  - name: "Continuity — Internal Rules and World Consistency"
+    level: scene
+    context: [scene, relevant_context, preceding_scenes]
+    criteria:
+      - SC-132
+      - SC-179
+      - SC-203
+      - SC-300
+      - ML-074
+    sentinels:
+      - ML-027
+      - SS-107
+      - SS-142
+      - SS-175
+      - SS-189
+      - SS-198
+      - SS-260
+
+  - name: "Scene-Level Worldbuilding in Prose"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - ML-047
+    sentinels:
+      - ML-102
+      - ML-135
+      - ML-099
+      - SS-315
+
+  - name: "Worldbuilding in Setting Description"
+    level: scene
+    context: [scene]
+    criteria: []
+    sentinels:
+      - SS-036
+      - SS-054
+      - SS-323
+      - SS-304
+      - SS-303
+
+  - name: "Atmosphere, Mood, and Setting Integration"
+    level: scene
+    context: [scene, chapter_plan]
+    criteria:
+      - SC-007
+      - SC-050
+      - SC-223
+      - ML-063
+      - ML-018
+    sentinels:
+      - SS-036
+      - SS-054
+      - SS-116
+      - SS-309
+      - SS-322
+
+  # ── Phase 2: Prose Refinement (rephrase only, delete only redundancy) ──
+
+  - name: "Dialogue Voice and Distinctiveness"
+    level: scene
+    context: [scene, relevant_context]
+    criteria:
+      - SC-034
+      - SC-036
+      - SC-059
+      - SC-201
+      - SC-291
+    sentinels:
+      - ML-059
+      - SS-037
+      - SS-038
+      - SS-051
+      - SS-094
+      - SS-156
+      - SS-209
+      - SS-314
+      - SS-324
+
+  - name: "Dialogue Craft and Exchange Dynamics"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-045
+      - SC-048
+      - SC-061
+      - SC-063
+      - SC-064
+      - SC-065
+      - SC-067
+      - SC-068
+      - SC-144
+      - SC-147
+      - SC-155
+      - SC-181
+      - SC-246
+    sentinels:
+      - SS-064
+      - SS-159
+      - SS-191
+      - SS-319
+
+  - name: "Dialogue Tags and Attribution Mechanics"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-206
+      - SC-080
+    sentinels:
+      - SS-003
+      - SS-035
+      - SS-171
+      - SS-249
+      - SS-274
+
+  - name: "Dialogue Subtext and On-the-Nose Avoidance"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-060
+      - SC-131
+      - SC-161
+      - SC-256
+    sentinels:
+      - SS-005
+      - SS-006
+      - SS-052
+      - SS-084
+      - SS-117
+      - SS-121
+      - SS-127
+      - SS-165
+
+  - name: "Dialogue Grounding and Physical Integration"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-118
+      - SC-178
+      - ML-040
+    sentinels:
+      - SS-298
+      - SS-325
+      - SS-326
+
+  - name: "Description — Sensory Detail and Imagery"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-076
+      - SC-122
+      - SC-224
+      - SC-225
+      - SC-226
+      - SC-227
+      - SC-228
+      - SC-249
+      - SC-299
+      - ML-006
+      - ML-039
+    sentinels:
+      - SS-029
+      - SS-042
+      - SS-115
+      - SS-281
+      - SS-283
+      - SS-288
+      - ML-038
+
+  - name: "Description — Structure, Pacing, and Integration"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-057
+      - SC-137
+      - SC-184
+      - SC-191
+      - SC-207
+      - SC-237
+      - SC-240
+      - SC-245
+      - SC-270
+      - ML-009
+    sentinels:
+      - SS-009
+      - SS-034
+      - SS-045
+      - SS-069
+      - SS-105
+      - SS-149
+      - SS-170
+      - SS-258
+      - SS-080
+
+  - name: "Description Filtered Through Character"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-056
+      - SC-058
+      - SC-158
+      - SC-159
+      - SC-229
+    sentinels:
+      - SS-111
+      - SS-282
+      - SS-109
+      - SS-098
+      - SS-223
+
+  - name: "Figurative Language Quality"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-097
+      - SC-101
+      - SC-102
+      - SC-103
+      - SC-175
+      - SC-177
+      - SC-267
+    sentinels:
+      - ML-021
+      - SS-007
+      - SS-023
+      - SS-043
+      - SS-103
+      - SS-143
+      - SS-181
+      - SS-248
+      - ML-034
+
+  - name: "Purple Prose and Overwrought Language"
+    level: scene
+    context: [scene]
+    criteria:
+      - SC-190
+      - SC-301
+      - ML-054
+    sentinels:
+      - SS-168
+      - SS-182
+      - SS-183
+      - SS-243
+      - SS-300
+      - ML-136
 
   - name: "Line-Level Prose Craft (Clarity, Concision, Polish)"
     level: scene
@@ -69,108 +610,6 @@ auditors:
       - SS-178
       - SS-215
       - SS-320
-
-  - name: "AI Vocabulary and Diction Tells"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-017
-      - SC-019
-      - SC-020
-    sentinels:
-      - SS-014
-      - SS-021
-      - SS-025
-      - SS-026
-      - SS-027
-      - SS-201
-      - SS-208
-      - SS-211
-      - SS-216
-      - SS-217
-      - SS-224
-      - SS-225
-      - SS-239
-      - SS-262
-      - SS-273
-      - SS-329
-
-  - name: "AI Stock Phrases and Formulaic Constructions"
-    level: scene
-    context: [scene]
-    criteria: []
-    sentinels:
-      - ML-019
-      - SS-001
-      - SS-002
-      - SS-004
-      - SS-011
-      - SS-012
-      - SS-013
-      - SS-022
-      - SS-024
-      - SS-202
-      - SS-220
-      - SS-226
-      - SS-227
-      - SS-228
-      - SS-229
-      - SS-230
-      - SS-231
-      - SS-232
-      - SS-203
-      - SS-221
-
-  - name: "AI Formulaic Patterns (Structural Tics)"
-    level: scene
-    context: [scene]
-    criteria: []
-    sentinels:
-      - SS-015
-      - SS-016
-      - SS-017
-      - SS-018
-      - SS-019
-      - SS-020
-      - SS-065
-      - SS-108
-      - SS-154
-      - SS-155
-      - SS-212
-      - SS-213
-      - SS-214
-      - SS-233
-      - SS-234
-      - SS-235
-      - SS-250
-      - SS-251
-      - SS-330
-      - SS-331
-
-  - name: "AI Generation Tells (Broader Patterns)"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-018
-      - SC-024
-    sentinels:
-      - SS-028
-      - SS-138
-      - SS-139
-      - SS-140
-      - SS-141
-      - SS-144
-      - SS-196
-      - SS-205
-      - SS-252
-      - SS-254
-      - SS-255
-      - SS-256
-      - SS-257
-      - SS-269
-      - SS-277
-      - SS-316
-      - SS-236
 
   - name: "Sentence Rhythm and Prose Cadence"
     level: scene
@@ -274,524 +713,152 @@ auditors:
       - SS-279
       - SS-280
 
-  - name: "Dialogue Voice and Distinctiveness"
-    level: scene
-    context: [scene, relevant_context]
-    criteria:
-      - SC-034
-      - SC-036
-      - SC-059
-      - SC-201
-      - SC-291
-    sentinels:
-      - ML-059
-      - SS-037
-      - SS-038
-      - SS-051
-      - SS-094
-      - SS-156
-      - SS-209
-      - SS-314
-      - SS-324
-
-  - name: "Dialogue Craft and Exchange Dynamics"
+  - name: "Grammar and Mechanical Correctness"
     level: scene
     context: [scene]
     criteria:
-      - SC-045
-      - SC-048
-      - SC-061
-      - SC-063
-      - SC-064
-      - SC-065
-      - SC-067
-      - SC-068
-      - SC-144
-      - SC-147
-      - SC-155
-      - SC-181
-      - SC-246
+      - SC-005
+      - SC-042
+      - SC-117
+      - SC-173
+      - SC-189
+      - SC-230
+      - SC-250
+      - SC-255
+      - SC-271
+      - SC-053
     sentinels:
-      - SS-064
-      - SS-159
-      - SS-191
-      - SS-319
+      - SS-048
+      - SS-059
+      - SS-133
+      - SS-195
+      - SS-268
 
-  - name: "Dialogue Tags and Attribution Mechanics"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-206
-      - SC-080
-    sentinels:
-      - SS-003
-      - SS-035
-      - SS-171
-      - SS-249
-      - SS-274
-
-  - name: "Dialogue Subtext and On-the-Nose Avoidance"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-060
-      - SC-131
-      - SC-161
-      - SC-256
-    sentinels:
-      - SS-005
-      - SS-006
-      - SS-052
-      - SS-084
-      - SS-117
-      - SS-121
-      - SS-127
-      - SS-165
-
-  - name: "Dialogue Grounding and Physical Integration"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-118
-      - SC-178
-      - ML-040
-    sentinels:
-      - SS-298
-      - SS-325
-      - SS-326
-
-  - name: "Figurative Language Quality"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-097
-      - SC-101
-      - SC-102
-      - SC-103
-      - SC-175
-      - SC-177
-      - SC-267
-    sentinels:
-      - ML-021
-      - SS-007
-      - SS-023
-      - SS-043
-      - SS-103
-      - SS-143
-      - SS-181
-      - SS-248
-      - ML-034
-
-  - name: "Description — Sensory Detail and Imagery"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-076
-      - SC-122
-      - SC-224
-      - SC-225
-      - SC-226
-      - SC-227
-      - SC-228
-      - SC-249
-      - SC-299
-      - ML-006
-      - ML-039
-    sentinels:
-      - SS-029
-      - SS-042
-      - SS-115
-      - SS-281
-      - SS-283
-      - SS-288
-      - ML-038
-
-  - name: "Description — Structure, Pacing, and Integration"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-057
-      - SC-137
-      - SC-184
-      - SC-191
-      - SC-207
-      - SC-237
-      - SC-240
-      - SC-245
-      - SC-270
-      - ML-009
-    sentinels:
-      - SS-009
-      - SS-034
-      - SS-045
-      - SS-069
-      - SS-105
-      - SS-149
-      - SS-170
-      - SS-258
-      - SS-080
-
-  - name: "Description Filtered Through Character"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-056
-      - SC-058
-      - SC-158
-      - SC-159
-      - SC-229
-    sentinels:
-      - SS-111
-      - SS-282
-      - SS-109
-      - SS-098
-      - SS-223
-
-  - name: "Purple Prose and Overwrought Language"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-190
-      - SC-301
-      - ML-054
-    sentinels:
-      - SS-168
-      - SS-182
-      - SS-183
-      - SS-243
-      - SS-300
-      - ML-136
-
-  - name: "Atmosphere, Mood, and Setting Integration"
-    level: scene
-    context: [scene, chapter_plan]
-    criteria:
-      - SC-007
-      - SC-050
-      - SC-223
-      - ML-063
-      - ML-018
-    sentinels:
-      - SS-036
-      - SS-054
-      - SS-116
-      - SS-309
-      - SS-322
-
-  - name: "POV Consistency and Discipline"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-110
-      - SC-116
-      - SC-119
-      - SC-162
-      - SC-163
-      - SC-164
-      - SC-165
-      - SC-166
-      - SC-167
-      - SC-169
-      - SC-180
-      - SC-272
-      - SC-273
-      - ML-022
-    sentinels:
-      - SS-010
-      - SS-120
-      - SS-242
-
-  - name: "POV Techniques and Narrative Distance"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-009
-      - SC-010
-      - SC-011
-      - SC-047
-      - SC-104
-      - SC-105
-      - SC-107
-      - SC-112
-      - SC-128
-      - SC-148
-      - SC-150
-      - SC-188
-      - SC-204
-      - SC-242
-    sentinels:
-      - SS-030
-      - SS-032
-      - SS-046
-      - SS-099
-      - SS-102
-      - SS-150
-
-  - name: "Specialized Narration Modes"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-072
-      - SC-092
-      - SC-129
-      - SC-153
-      - SC-160
-      - SC-222
-      - SC-252
-      - SC-287
-    sentinels:
-      - SS-136
-      - SS-174
-
-  - name: "Emotional Rendering Craft"
-    level: scene
-    context: [scene]
-    criteria:
-      - SC-021
-      - SC-081
-      - SC-084
-      - SC-085
-      - SC-086
-      - SC-193
-      - SC-238
-      - SC-239
-      - SC-241
-      - SC-187
-    sentinels:
-      - SS-053
-      - SS-055
-      - SS-083
-      - SS-095
-      - SS-132
-      - SS-151
-      - SS-187
-      - SS-299
-
-  - name: "Emotional Tone and Positivity Bias"
+  - name: "Punctuation and Formatting Consistency"
     level: scene
     context: [scene, preceding_scenes]
     criteria:
-      - SC-088
-      - SC-145
-      - ML-053
+      - SC-025
+      - SC-046
+      - SC-062
+      - SC-078
+      - SC-079
+      - SC-121
+      - SC-133
+      - SC-157
+      - SC-192
+      - SC-209
+      - SC-296
+      - ML-008
     sentinels:
-      - SS-040
-      - SS-082
-      - SS-086
-      - SS-087
-      - SS-088
-      - SS-112
-      - SS-123
-      - SS-126
-      - SS-148
-      - SS-152
-      - SS-177
-      - SS-206
-      - SS-253
-      - ML-055
+      - SS-077
+      - SS-078
+      - SS-081
+      - SS-169
+      - SS-241
+      - SS-317
 
-  - name: "Character Interiority and Psychological Depth"
-    level: scene
-    context: [scene, relevant_context]
-    criteria:
-      - SC-030
-      - SC-032
-      - SC-130
-      - SC-197
-      - ML-066
-      - ML-069
-      - ML-079
-      - ML-103
-    sentinels:
-      - SS-180
-      - SS-287
-      - ML-093
-      - ML-098
-      - ML-100
-
-  - name: "Reader Engagement and Immersion"
+  - name: "AI Vocabulary and Diction Tells"
     level: scene
     context: [scene]
     criteria:
-      - SC-031
-      - SC-052
-      - SC-090
-      - SC-100
-      - SC-142
-      - SC-151
-      - SC-198
-      - SC-251
-      - SC-286
-      - SC-290
-      - ML-046
+      - SC-017
+      - SC-019
+      - SC-020
     sentinels:
-      - SS-031
-      - SS-074
-      - SS-075
-      - SS-122
-      - SS-137
-      - SS-222
+      - SS-014
+      - SS-021
+      - SS-025
+      - SS-026
+      - SS-027
+      - SS-201
+      - SS-208
+      - SS-211
+      - SS-216
+      - SS-217
+      - SS-224
+      - SS-225
+      - SS-239
+      - SS-262
+      - SS-273
+      - SS-329
 
-  - name: "Exposition Handling and Information Delivery"
+  - name: "AI Stock Phrases and Formulaic Constructions"
+    level: scene
+    context: [scene]
+    criteria: []
+    sentinels:
+      - ML-019
+      - SS-001
+      - SS-002
+      - SS-004
+      - SS-011
+      - SS-012
+      - SS-013
+      - SS-022
+      - SS-024
+      - SS-202
+      - SS-220
+      - SS-226
+      - SS-227
+      - SS-228
+      - SS-229
+      - SS-230
+      - SS-231
+      - SS-232
+      - SS-203
+      - SS-221
+
+  - name: "AI Formulaic Patterns (Structural Tics)"
+    level: scene
+    context: [scene]
+    criteria: []
+    sentinels:
+      - SS-015
+      - SS-016
+      - SS-017
+      - SS-018
+      - SS-019
+      - SS-020
+      - SS-065
+      - SS-108
+      - SS-154
+      - SS-155
+      - SS-212
+      - SS-213
+      - SS-214
+      - SS-233
+      - SS-234
+      - SS-235
+      - SS-250
+      - SS-251
+      - SS-330
+      - SS-331
+
+  - name: "AI Generation Tells (Broader Patterns)"
     level: scene
     context: [scene]
     criteria:
-      - SC-013
-      - SC-073
-      - SC-095
-      - SC-096
-      - SC-125
-      - SC-141
-      - SC-183
-      - SC-260
-      - SC-288
-      - SC-297
+      - SC-018
+      - SC-024
     sentinels:
-      - SS-101
-      - SS-110
-      - SS-131
-      - SS-157
-      - SS-162
-      - SS-188
-      - SS-192
-      - SS-286
-      - SS-327
-      - SS-301
-
-  - name: "Scene Structure and Dramatic Shape"
-    level: scene
-    context: [scene, chapter_plan]
-    criteria:
-      - SC-111
-      - SC-182
-      - SC-208
-      - SC-210
-      - SC-211
-      - SC-212
-      - SC-213
-      - SC-214
-      - SC-215
-      - SC-220
-      - SC-221
-      - SC-236
-      - ML-035
-      - ML-076
-    sentinels:
-      - SS-073
-      - SS-082
-      - SS-090
-      - SS-100
-      - SS-106
-      - SS-114
-      - SS-164
-      - SS-172
-
-  - name: "Scene Polarity, Turns, and Value Shifts"
-    level: scene
-    context: [scene, chapter_plan]
-    criteria:
-      - ML-083
-    sentinels:
-      - SS-147
-      - SS-190
-      - SS-200
-      - SS-275
-      - SS-276
-      - SS-284
-      - SS-285
-      - ML-090
-
-  - name: "Scene-Level Subtext, Theme, and Irony"
-    level: scene
-    context: [scene, chapter_plan]
-    criteria:
-      - SC-262
-      - SC-276
-      - SC-278
-    sentinels:
-      - ML-023
-      - ML-045
-      - SS-033
-      - SS-056
-      - SS-096
-      - SS-306
-      - SS-067
-
-  - name: "Pacing — Macro-Rhythm and Tempo Control"
-    level: scene
-    context: [scene, preceding_scenes, chapter_plan]
-    criteria:
-      - SC-001
-      - SC-014
-      - SC-115
-      - SC-126
-      - SC-170
-      - SC-218
-      - SC-269
-    sentinels:
-      - SS-071
-      - SS-072
-      - SS-093
-      - SS-158
-      - SS-167
-      - SS-173
-
-  - name: "Scene Transition and Backstory Integration"
-    level: scene
-    context: [scene, preceding_scenes]
-    criteria:
-      - SC-216
-      - SC-217
-      - SC-219
-      - SC-274
-      - SC-280
-      - SC-281
-      - ML-077
-    sentinels:
-      - SS-047
-      - SS-166
-
-  - name: "Continuity — Factual Details and Physical Logic"
-    level: scene
-    context: [scene, relevant_context, preceding_scenes]
-    criteria:
-      - SC-004
-      - SC-033
-      - SC-043
-      - SC-098
-      - SC-099
-      - SC-123
-      - SC-248
-      - SC-282
-    sentinels:
-      - SS-049
-      - SS-060
-      - SS-063
-      - SS-085
-      - SS-118
-      - SS-130
-      - SS-145
-      - SS-163
-      - SS-176
-      - SS-311
-
-  - name: "Continuity — Internal Rules and World Consistency"
-    level: scene
-    context: [scene, relevant_context, preceding_scenes]
-    criteria:
-      - SC-132
-      - SC-179
-      - SC-203
-      - SC-300
-      - ML-074
-    sentinels:
-      - ML-027
-      - SS-107
-      - SS-142
-      - SS-175
-      - SS-189
-      - SS-198
-      - SS-260
+      - SS-028
+      - SS-138
+      - SS-139
+      - SS-140
+      - SS-141
+      - SS-144
+      - SS-196
+      - SS-205
+      - SS-252
+      - SS-254
+      - SS-255
+      - SS-256
+      - SS-257
+      - SS-269
+      - SS-277
+      - SS-316
+      - SS-236
 
   - name: "AI Structural Tells (Scene-Level)"
     level: scene
@@ -833,69 +900,6 @@ auditors:
       - SS-272
       - SS-310
       - SS-313
-
-  - name: "Reader Emotion and Engagement Mechanics"
-    level: scene
-    context: [scene]
-    criteria:
-      - ML-073
-      - ML-085
-      - ML-086
-      - ML-127
-    sentinels:
-      - SS-197
-      - SS-278
-      - SS-291
-      - SS-293
-      - SS-294
-      - SS-305
-      - SS-307
-
-  - name: "Scene-Level Plot Mechanics"
-    level: scene
-    context: [scene, chapter_plan, relevant_context]
-    criteria:
-      - ML-004
-    sentinels:
-      - ML-037
-
-  - name: "Scene-Level Character Dynamics"
-    level: scene
-    context: [scene, relevant_context]
-    criteria:
-      - ML-068
-      - ML-084
-      - ML-088
-      - SC-196
-    sentinels:
-      - SS-321
-      - SS-328
-      - SS-186
-      - ML-094
-      - ML-095
-      - ML-097
-
-  - name: "Scene-Level Worldbuilding in Prose"
-    level: scene
-    context: [scene, relevant_context]
-    criteria:
-      - ML-047
-    sentinels:
-      - ML-102
-      - ML-135
-      - ML-099
-      - SS-315
-
-  - name: "Worldbuilding in Setting Description"
-    level: scene
-    context: [scene]
-    criteria: []
-    sentinels:
-      - SS-036
-      - SS-054
-      - SS-323
-      - SS-304
-      - SS-303
 
   # ============================================================
   # Chapter-Plan-Level Auditors

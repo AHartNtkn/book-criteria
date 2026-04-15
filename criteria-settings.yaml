@@ -3,6 +3,12 @@
 
 iteration_cap: 5
 
+iteration_caps:
+  novel_plan: 5
+  chapter_plan: 5
+  scene: 3
+  backtrack: 1
+
 criteria:
   CC-001: false
   CC-025: false
