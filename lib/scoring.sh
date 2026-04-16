@@ -107,7 +107,8 @@ for m in reversed(matches):
 result = {'criteria': {}, 'sentinels': {}}
 
 # Find criterion scores: XX-NNN followed by Score/SCORE in various formats
-for m in re.finditer(r'(?:###?\s+|CRITERION:\s*|\*\*\s*)([A-Z]{2}-\d+)[\s\S]*?(?:\*\*Score:\s*([\dN/A]+)\*\*|\*\*Score\*\*:\s*([\dN/A]+)|SCORE:\s*([\dN/A]+)|Score:\s*([\dN/A]+))', text):
+# ID can be prefixed by ###, CRITERION:, **, or appear at line start
+for m in re.finditer(r'(?:###?\s+|CRITERION:\s*|\*\*\s*|(?:^|\n))([A-Z]{2}-\d+)(?::[^\n]*)?\s*[\s\S]{0,200}?(?:\*\*Score:\s*([\dN/A]+)\*\*|\*\*Score\*\*:\s*([\dN/A]+)|SCORE:\s*([\dN/A]+)|Score:\s*([\dN/A]+))', text):
     cid = m.group(1)
     score_raw = m.group(2) or m.group(3) or m.group(4) or m.group(5)
     if score_raw in ('N/A', 'n/a'):
@@ -120,7 +121,8 @@ for m in re.finditer(r'(?:###?\s+|CRITERION:\s*|\*\*\s*)([A-Z]{2}-\d+)[\s\S]*?(?
     result['criteria'][cid] = {'score': score, 'evidence': '(extracted from Markdown prose)'}
 
 # Find sentinel statuses: XX-NNN followed by Status/STATUS in various formats
-for m in re.finditer(r'(?:###?\s+|SENTINEL:\s*|\*\*\s*)([A-Z]{2}-\d+)[\s\S]*?(?:\*\*Status:\s*(PASS|FAIL)\*\*|\*\*Status\*\*:\s*(PASS|FAIL)|STATUS:\s*(PASS|FAIL)|Status:\s*(PASS|FAIL))', text):
+# ID can be prefixed by ###, SENTINEL:, **, or appear at line start
+for m in re.finditer(r'(?:###?\s+|SENTINEL:\s*|\*\*\s*|(?:^|\n))([A-Z]{2}-\d+)(?::[^\n]*)?\s*[\s\S]{0,200}?(?:\*\*Status:\s*(PASS|FAIL)\*\*|\*\*Status\*\*:\s*(PASS|FAIL)|STATUS:\s*(PASS|FAIL)|Status:\s*(PASS|FAIL))', text):
     sid = m.group(1)
     status = m.group(2) or m.group(3) or m.group(4) or m.group(5)
     result['sentinels'][sid] = {'status': status, 'evidence': '(extracted from Markdown prose)'}
