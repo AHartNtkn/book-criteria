@@ -340,6 +340,7 @@ with open(sys.argv[1]) as f:
 
         local any_fix_applied=0
         local all_passed=1
+        local enhancement_applied=0
 
         # Sequential: for each auditor, audit then fix if needed
         while IFS= read -r auditor_name; do
@@ -347,6 +348,39 @@ with open(sys.argv[1]) as f:
 
             local safe_name
             safe_name=$(echo "$auditor_name" | tr ' /:' '---' | tr -cd 'a-zA-Z0-9-')
+
+            # When transitioning from content to prose phase, run enhancement
+            local is_prose_auditor=0
+            if echo "$prose_auditors" | grep -qF "$auditor_name"; then
+                is_prose_auditor=1
+            fi
+            if [[ "$is_prose_auditor" -eq 1 && "$enhancement_applied" -eq 0 ]]; then
+                local auditor_out_dir_for_enhance="$STATE_DIR/auditor-results/${log_prefix}/round-${round}"
+                local enhancement_file="$auditor_out_dir_for_enhance/enhancements.md"
+                if [[ ! -f "$enhancement_file" || ! -s "$enhancement_file" ]]; then
+                    run_enhancement "$level" "$enhancement_file" "${context_args[@]}"
+                fi
+                if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
+                    echo "  Applying enhancements (between content and prose phases)..." >&2
+                    log_snapshot "pre-enhance-round-${round}" "$content_file"
+                    local enhance_assembled
+                    enhance_assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+                        "${context_args[@]}" \
+                        "audit_feedback=$enhancement_file")
+                    run_claude_to_file "enhance-fix-round-${round}" "$enhance_assembled" "$content_file" "$(get_model_flag fixing)"
+                    if grep -qE '^#{1,3} |REVISED|REFINEMENT|^## Scene' "$content_file"; then
+                        echo "    Cleaning enhancement output (headers/metadata detected)..." >&2
+                        local clean_prompt
+                        clean_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
+                            "$PROJECT_DIR/prompts/clean-scene.md" \
+                            "raw_scene=$content_file" \
+                            "scene_number=$(read_state scene)" \
+                            "chapter_number=$(read_state chapter)")
+                        run_claude_to_file "clean-enhance-round-${round}" "$clean_prompt" "$content_file" "$(get_model_flag fixing)"
+                    fi
+                fi
+                enhancement_applied=1
+            fi
 
             # Skip if already done in this round (resume)
             local existing_status="$auditor_out_dir/${safe_name}.status"
@@ -465,23 +499,22 @@ with open(sys.argv[1]) as f:
             return 0
         fi
 
-        # Run enhancement once per round (after all auditors)
-        local enhancement_file="$auditor_out_dir/enhancements.md"
-        if [[ ! -f "$enhancement_file" || ! -s "$enhancement_file" ]]; then
-            run_enhancement "$level" "$enhancement_file" "${context_args[@]}"
-        fi
-
-        # Apply enhancements as a separate fix pass
-        if [[ -f "$enhancement_file" && -s "$enhancement_file" ]]; then
-            echo "  Applying enhancements..." >&2
-            log_snapshot "pre-enhance-round-${round}" "$content_file"
-
-            local enhance_assembled
-            enhance_assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
-                "${context_args[@]}" \
-                "audit_feedback=$enhancement_file")
-
-            run_claude_to_file "enhance-fix-round-${round}" "$enhance_assembled" "$content_file" "$(get_model_flag fixing)"
+        # If enhancement wasn't applied during the loop (e.g., level has no prose phase),
+        # run it now at the end of the round
+        if [[ "$enhancement_applied" -eq 0 ]]; then
+            local end_enhancement_file="$auditor_out_dir/enhancements.md"
+            if [[ ! -f "$end_enhancement_file" || ! -s "$end_enhancement_file" ]]; then
+                run_enhancement "$level" "$end_enhancement_file" "${context_args[@]}"
+            fi
+            if [[ -f "$end_enhancement_file" && -s "$end_enhancement_file" ]]; then
+                echo "  Applying enhancements (end of round)..." >&2
+                log_snapshot "pre-enhance-round-${round}" "$content_file"
+                local enhance_assembled
+                enhance_assembled=$(python3 "$PROJECT_DIR/fill_template.py" "$fixer_prompt" \
+                    "${context_args[@]}" \
+                    "audit_feedback=$end_enhancement_file")
+                run_claude_to_file "enhance-fix-round-${round}" "$enhance_assembled" "$content_file" "$(get_model_flag fixing)"
+            fi
         fi
 
         update_state "status" '"fixed"'

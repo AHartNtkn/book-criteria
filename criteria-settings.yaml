@@ -6,7 +6,7 @@ iteration_cap: 5
 iteration_caps:
   novel_plan: 5
   chapter_plan: 5
-  scene: 3
+  scene: 1
   backtrack: 1
 
 criteria:
