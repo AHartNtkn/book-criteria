@@ -442,15 +442,16 @@ with open(sys.argv[1]) as f:
                     exit 1
                 fi
 
-                # Validate fix output is continuous prose (no headers, no metadata, no scene breaks)
-                if grep -qE '^#{1,3} |^---$|REVISED|REFINEMENT' "$content_file"; then
-                    echo "    INVALID: fixer output contains headers/metadata — restoring snapshot" >&2
-                    local snapshot_dir="$LOG_DIR/snapshots"
-                    local latest_snapshot
-                    latest_snapshot=$(ls -t "$snapshot_dir"/*"$(basename "$content_file")" 2>/dev/null | head -1)
-                    if [[ -n "$latest_snapshot" ]]; then
-                        cp "$latest_snapshot" "$content_file"
-                    fi
+                # Clean fix output if it contains headers, metadata, or extra scenes
+                if grep -qE '^#{1,3} |REVISED|REFINEMENT|^## Scene' "$content_file"; then
+                    echo "    Cleaning fixer output (headers/metadata detected)..." >&2
+                    local clean_prompt
+                    clean_prompt=$(python3 "$PROJECT_DIR/fill_template.py" \
+                        "$PROJECT_DIR/prompts/clean-scene.md" \
+                        "raw_scene=$content_file" \
+                        "scene_number=$(read_state scene)" \
+                        "chapter_number=$(read_state chapter)")
+                    run_claude_to_file "clean-${safe_name}-round-${round}" "$clean_prompt" "$content_file" "$(get_model_flag fixing)"
                 fi
 
                 any_fix_applied=1
