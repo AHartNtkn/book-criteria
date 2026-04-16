@@ -442,6 +442,17 @@ with open(sys.argv[1]) as f:
                     exit 1
                 fi
 
+                # Validate fix output is continuous prose (no headers, no metadata, no scene breaks)
+                if grep -qE '^#{1,3} |^---$|REVISED|REFINEMENT' "$content_file"; then
+                    echo "    INVALID: fixer output contains headers/metadata — restoring snapshot" >&2
+                    local snapshot_dir="$LOG_DIR/snapshots"
+                    local latest_snapshot
+                    latest_snapshot=$(ls -t "$snapshot_dir"/*"$(basename "$content_file")" 2>/dev/null | head -1)
+                    if [[ -n "$latest_snapshot" ]]; then
+                        cp "$latest_snapshot" "$content_file"
+                    fi
+                fi
+
                 any_fix_applied=1
 
             fi
